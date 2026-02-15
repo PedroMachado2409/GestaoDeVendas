@@ -3,23 +3,14 @@
   "WorkspaceRootPath": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidos\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{7E3D54DF-8144-4E05-8EE1-B1FC8317B21E}|..\\GestaoPedidosTests\\GestaoPedidosTests.csproj|c:\\users\\celso\\source\\repos\\pedidos\\gestaopedidostests\\application\\usecases\\clientes\\commands\\cadastrarclientesusecasetests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{7E3D54DF-8144-4E05-8EE1-B1FC8317B21E}|..\\GestaoPedidosTests\\GestaoPedidosTests.csproj|c:\\users\\celso\\source\\repos\\pedidos\\gestaopedidostests\\application\\usecases\\clientes\\commands\\inativarclienteusecasetests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7E3D54DF-8144-4E05-8EE1-B1FC8317B21E}|..\\GestaoPedidosTests\\GestaoPedidosTests.csproj|c:\\users\\celso\\source\\repos\\pedidos\\gestaopedidostests\\application\\usecases\\clientes\\commands\\ativarclienteusecasetests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{8F6B467A-3706-49E0-B4DE-D5E352F65564}|GestaoPedidos.csproj|c:\\users\\celso\\source\\repos\\pedidos\\gestaopedidos\\application\\usecases\\clientes\\commands\\cadastrarclienteusecase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{8F6B467A-3706-49E0-B4DE-D5E352F65564}|GestaoPedidos.csproj|solutionrelative:application\\usecases\\clientes\\commands\\cadastrarclienteusecase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{8F6B467A-3706-49E0-B4DE-D5E352F65564}|GestaoPedidos.csproj|c:\\users\\celso\\source\\repos\\pedidos\\gestaopedidos\\exceptions\\clientes\\clientesexceptions.resx||{FF4D6ACA-9352-4A5F-821E-F4D6EBDCAB11}",
-      "RelativeMoniker": "D:0:0:{8F6B467A-3706-49E0-B4DE-D5E352F65564}|GestaoPedidos.csproj|solutionrelative:exceptions\\clientes\\clientesexceptions.resx||{FF4D6ACA-9352-4A5F-821E-F4D6EBDCAB11}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{8F6B467A-3706-49E0-B4DE-D5E352F65564}|GestaoPedidos.csproj|c:\\users\\celso\\source\\repos\\pedidos\\gestaopedidos\\domain\\abstractions\\iclienterepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{8F6B467A-3706-49E0-B4DE-D5E352F65564}|GestaoPedidos.csproj|solutionrelative:domain\\abstractions\\iclienterepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{8F6B467A-3706-49E0-B4DE-D5E352F65564}|GestaoPedidos.csproj|c:\\users\\celso\\source\\repos\\pedidos\\gestaopedidos\\infrastructure\\repositories\\clienterepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{8F6B467A-3706-49E0-B4DE-D5E352F65564}|GestaoPedidos.csproj|solutionrelative:infrastructure\\repositories\\clienterepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -29,75 +20,50 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 5,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "ClientesExceptions.resx",
-              "DocumentMoniker": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidos\\Exceptions\\Clientes\\ClientesExceptions.resx",
-              "RelativeDocumentMoniker": "Exceptions\\Clientes\\ClientesExceptions.resx",
-              "ToolTip": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidos\\Exceptions\\Clientes\\ClientesExceptions.resx",
-              "RelativeToolTip": "Exceptions\\Clientes\\ClientesExceptions.resx",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001005|",
-              "WhenOpened": "2026-02-15T13:58:30.903Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "CadastrarClienteUseCase.cs",
-              "DocumentMoniker": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidos\\Application\\UseCases\\Clientes\\Commands\\CadastrarClienteUseCase.cs",
-              "RelativeDocumentMoniker": "Application\\UseCases\\Clientes\\Commands\\CadastrarClienteUseCase.cs",
-              "ToolTip": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidos\\Application\\UseCases\\Clientes\\Commands\\CadastrarClienteUseCase.cs",
-              "RelativeToolTip": "Application\\UseCases\\Clientes\\Commands\\CadastrarClienteUseCase.cs",
-              "ViewState": "AgIAAA0AAAAAAAAAAAA1wB4AAAAAAAAAAAAAAA==",
+              "Title": "AtivarClienteUseCaseTests.cs",
+              "DocumentMoniker": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidosTests\\Application\\UseCases\\Clientes\\Commands\\AtivarClienteUseCaseTests.cs",
+              "RelativeDocumentMoniker": "..\\GestaoPedidosTests\\Application\\UseCases\\Clientes\\Commands\\AtivarClienteUseCaseTests.cs",
+              "ToolTip": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidosTests\\Application\\UseCases\\Clientes\\Commands\\AtivarClienteUseCaseTests.cs",
+              "RelativeToolTip": "..\\GestaoPedidosTests\\Application\\UseCases\\Clientes\\Commands\\AtivarClienteUseCaseTests.cs",
+              "ViewState": "AgIAACoAAAAAAAAAAAAowAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-15T13:58:06.395Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{e1b7d1f8-9b3c-49b1-8f4f-bfc63a88835d}"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "ClienteRepository.cs",
-              "DocumentMoniker": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidos\\Infrastructure\\Repositories\\ClienteRepository.cs",
-              "RelativeDocumentMoniker": "Infrastructure\\Repositories\\ClienteRepository.cs",
-              "ToolTip": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidos\\Infrastructure\\Repositories\\ClienteRepository.cs",
-              "RelativeToolTip": "Infrastructure\\Repositories\\ClienteRepository.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAAJAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-15T13:56:08.772Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "IClienteRepository.cs",
-              "DocumentMoniker": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidos\\Domain\\Abstractions\\IClienteRepository.cs",
-              "RelativeDocumentMoniker": "Domain\\Abstractions\\IClienteRepository.cs",
-              "ToolTip": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidos\\Domain\\Abstractions\\IClienteRepository.cs",
-              "RelativeToolTip": "Domain\\Abstractions\\IClienteRepository.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-15T13:50:13Z",
+              "WhenOpened": "2026-02-15T15:31:40.569Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "CadastrarClientesUseCaseTests.cs",
-              "DocumentMoniker": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidosTests\\Application\\UseCases\\Clientes\\Commands\\CadastrarClientesUseCaseTests.cs",
-              "RelativeDocumentMoniker": "..\\GestaoPedidosTests\\Application\\UseCases\\Clientes\\Commands\\CadastrarClientesUseCaseTests.cs",
-              "ToolTip": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidosTests\\Application\\UseCases\\Clientes\\Commands\\CadastrarClientesUseCaseTests.cs",
-              "RelativeToolTip": "..\\GestaoPedidosTests\\Application\\UseCases\\Clientes\\Commands\\CadastrarClientesUseCaseTests.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAIkAAAAAAAAAAAAAAA==",
+              "Title": "InativarClienteUseCaseTests.cs",
+              "DocumentMoniker": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidosTests\\Application\\UseCases\\Clientes\\Commands\\InativarClienteUseCaseTests.cs",
+              "RelativeDocumentMoniker": "..\\GestaoPedidosTests\\Application\\UseCases\\Clientes\\Commands\\InativarClienteUseCaseTests.cs",
+              "ToolTip": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidosTests\\Application\\UseCases\\Clientes\\Commands\\InativarClienteUseCaseTests.cs",
+              "RelativeToolTip": "..\\GestaoPedidosTests\\Application\\UseCases\\Clientes\\Commands\\InativarClienteUseCaseTests.cs",
+              "ViewState": "AgIAABMAAAAAAAAAAAA1wCkAAABIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-14T22:13:42.559Z",
+              "WhenOpened": "2026-02-15T15:08:54.693Z",
               "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "CadastrarClienteUseCase.cs",
+              "DocumentMoniker": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidos\\Application\\UseCases\\Clientes\\Commands\\CadastrarClienteUseCase.cs",
+              "RelativeDocumentMoniker": "Application\\UseCases\\Clientes\\Commands\\CadastrarClienteUseCase.cs",
+              "ToolTip": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidos\\Application\\UseCases\\Clientes\\Commands\\CadastrarClienteUseCase.cs",
+              "RelativeToolTip": "Application\\UseCases\\Clientes\\Commands\\CadastrarClienteUseCase.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACUAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-15T14:59:08.285Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{e1b7d1f8-9b3c-49b1-8f4f-bfc63a88835d}"
             }
           ]
         }

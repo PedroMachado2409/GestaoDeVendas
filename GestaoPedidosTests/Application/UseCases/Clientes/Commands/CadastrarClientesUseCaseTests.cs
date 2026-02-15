@@ -7,11 +7,7 @@ using GestaoPedidos.Domain.Entities;
 using GestaoPedidos.Exceptions.Clientes;
 using Microsoft.AspNetCore.Http;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace GestaoPedidosTests.Application.UseCases.Clientes.Commands
 {
@@ -132,7 +128,6 @@ namespace GestaoPedidosTests.Application.UseCases.Clientes.Commands
 
             _repositoryMock.Verify(r => r.ObterPorCpf(dto.Cpf), Times.Once());
             _repositoryMock.Verify(r => r.Cadastrar(It.IsAny<Cliente>()), Times.Never);
-
 
         }
     }
