@@ -52,14 +52,10 @@ namespace GestaoPedidosTests.Application.UseCases.Clientes.Commands
 
             var result = await _useCase.Execute(dto);
 
-            //VERIFICA SE TODOS OS METODOS FORAM ADICIONADOS CORRETAMENTE
-
             result.Should().NotBeNull();
             result.Nome.Should().Be(dto.Nome);
             result.Cpf.Should().Be(dto.Cpf);
             result.Email.Should().Be(dto.Email);
-
-            //Verificar se os chamados ao respositorio foram feitos apenas uma vez
 
             _repositoryMock.Verify(r => r.ObterPorCpf(dto.Cpf), Times.Once());
             _repositoryMock.Verify(r => r.ObterPorEmail(dto.Email), Times.Once());

@@ -26,6 +26,10 @@ namespace GestaoPedidos.Application.UseCases.Clientes.Commands
             if (clienteComCpfExistente != null && clienteComCpfExistente.Id != dto.Id)
                 throw new BadHttpRequestException(ClientesExceptions.Cliente_CpfExistente);
 
+            var clienteComEmailExistente = await _repository.ObterPorEmail(dto.Email);
+            if (clienteComEmailExistente != null && clienteComEmailExistente.Id != dto.Id)
+                throw new BadHttpRequestException(ClientesExceptions.Cliente_EmailExistente);
+
             cliente.Atualizar(dto.Nome, dto.Email, dto.Cpf);
 
             await _repository.Atualizar(cliente);

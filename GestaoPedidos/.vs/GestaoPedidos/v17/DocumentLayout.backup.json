@@ -3,14 +3,11 @@
   "WorkspaceRootPath": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidos\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{7E3D54DF-8144-4E05-8EE1-B1FC8317B21E}|..\\GestaoPedidosTests\\GestaoPedidosTests.csproj|c:\\users\\celso\\source\\repos\\pedidos\\gestaopedidostests\\application\\usecases\\clientes\\commands\\inativarclienteusecasetests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{7E3D54DF-8144-4E05-8EE1-B1FC8317B21E}|..\\GestaoPedidosTests\\GestaoPedidosTests.csproj|c:\\users\\celso\\source\\repos\\pedidos\\gestaopedidostests\\application\\usecases\\clientes\\validators\\updateclientevalidatortests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{7E3D54DF-8144-4E05-8EE1-B1FC8317B21E}|..\\GestaoPedidosTests\\GestaoPedidosTests.csproj|c:\\users\\celso\\source\\repos\\pedidos\\gestaopedidostests\\application\\usecases\\clientes\\commands\\ativarclienteusecasetests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{8F6B467A-3706-49E0-B4DE-D5E352F65564}|GestaoPedidos.csproj|c:\\users\\celso\\source\\repos\\pedidos\\gestaopedidos\\application\\usecases\\clientes\\commands\\cadastrarclienteusecase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{8F6B467A-3706-49E0-B4DE-D5E352F65564}|GestaoPedidos.csproj|solutionrelative:application\\usecases\\clientes\\commands\\cadastrarclienteusecase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{8F6B467A-3706-49E0-B4DE-D5E352F65564}|GestaoPedidos.csproj|c:\\users\\celso\\source\\repos\\pedidos\\gestaopedidos\\application\\validators\\clientes\\clienteupdatevalidator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8F6B467A-3706-49E0-B4DE-D5E352F65564}|GestaoPedidos.csproj|solutionrelative:application\\validators\\clientes\\clienteupdatevalidator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -20,45 +17,32 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "AtivarClienteUseCaseTests.cs",
-              "DocumentMoniker": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidosTests\\Application\\UseCases\\Clientes\\Commands\\AtivarClienteUseCaseTests.cs",
-              "RelativeDocumentMoniker": "..\\GestaoPedidosTests\\Application\\UseCases\\Clientes\\Commands\\AtivarClienteUseCaseTests.cs",
-              "ToolTip": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidosTests\\Application\\UseCases\\Clientes\\Commands\\AtivarClienteUseCaseTests.cs",
-              "RelativeToolTip": "..\\GestaoPedidosTests\\Application\\UseCases\\Clientes\\Commands\\AtivarClienteUseCaseTests.cs",
-              "ViewState": "AgIAACoAAAAAAAAAAAAowAAAAAAAAAAAAAAAAA==",
+              "Title": "ClienteUpdateValidator.cs",
+              "DocumentMoniker": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidos\\Application\\Validators\\Clientes\\ClienteUpdateValidator.cs",
+              "RelativeDocumentMoniker": "Application\\Validators\\Clientes\\ClienteUpdateValidator.cs",
+              "ToolTip": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidos\\Application\\Validators\\Clientes\\ClienteUpdateValidator.cs",
+              "RelativeToolTip": "Application\\Validators\\Clientes\\ClienteUpdateValidator.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-15T15:31:40.569Z",
+              "WhenOpened": "2026-02-16T01:47:10.366Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "InativarClienteUseCaseTests.cs",
-              "DocumentMoniker": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidosTests\\Application\\UseCases\\Clientes\\Commands\\InativarClienteUseCaseTests.cs",
-              "RelativeDocumentMoniker": "..\\GestaoPedidosTests\\Application\\UseCases\\Clientes\\Commands\\InativarClienteUseCaseTests.cs",
-              "ToolTip": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidosTests\\Application\\UseCases\\Clientes\\Commands\\InativarClienteUseCaseTests.cs",
-              "RelativeToolTip": "..\\GestaoPedidosTests\\Application\\UseCases\\Clientes\\Commands\\InativarClienteUseCaseTests.cs",
-              "ViewState": "AgIAABMAAAAAAAAAAAA1wCkAAABIAAAAAAAAAA==",
+              "Title": "UpdateClienteValidatorTests.cs",
+              "DocumentMoniker": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidosTests\\Application\\UseCases\\Clientes\\Validators\\UpdateClienteValidatorTests.cs",
+              "RelativeDocumentMoniker": "..\\GestaoPedidosTests\\Application\\UseCases\\Clientes\\Validators\\UpdateClienteValidatorTests.cs",
+              "ToolTip": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidosTests\\Application\\UseCases\\Clientes\\Validators\\UpdateClienteValidatorTests.cs",
+              "RelativeToolTip": "..\\GestaoPedidosTests\\Application\\UseCases\\Clientes\\Validators\\UpdateClienteValidatorTests.cs",
+              "ViewState": "AgIAAGoAAAAAAAAAAAAmwIgAAACTAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-15T15:08:54.693Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "CadastrarClienteUseCase.cs",
-              "DocumentMoniker": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidos\\Application\\UseCases\\Clientes\\Commands\\CadastrarClienteUseCase.cs",
-              "RelativeDocumentMoniker": "Application\\UseCases\\Clientes\\Commands\\CadastrarClienteUseCase.cs",
-              "ToolTip": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidos\\Application\\UseCases\\Clientes\\Commands\\CadastrarClienteUseCase.cs",
-              "RelativeToolTip": "Application\\UseCases\\Clientes\\Commands\\CadastrarClienteUseCase.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAACUAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-15T14:59:08.285Z",
+              "WhenOpened": "2026-02-16T01:45:26.845Z",
               "EditorCaption": ""
             },
             {
