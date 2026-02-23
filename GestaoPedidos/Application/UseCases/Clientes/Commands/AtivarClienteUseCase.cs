@@ -1,4 +1,5 @@
 ﻿using GestaoPedidos.Domain.Abstractions;
+using GestaoPedidos.Domain.Exceptions;
 using GestaoPedidos.Domain.Exceptions.Clientes;
 
 
@@ -18,10 +19,10 @@ namespace GestaoPedidos.Application.UseCases.Clientes.Commands
         public async Task<bool> Execute(int id)
         {
             var cliente = await _repository.ObterPorId(id)
-                ?? throw new BadHttpRequestException(ClientesExceptions.Cliente_NaoEncontrado);
+                ?? throw new NotFoundException(ClientesExceptions.Cliente_NaoEncontrado);
 
             if (cliente.Ativo == true)
-                throw new BadHttpRequestException(ClientesExceptions.Cliente_JaAtivo);
+                throw new BadRequestException(ClientesExceptions.Cliente_JaAtivo);
 
             cliente.Ativar();
             await _repository.Atualizar(cliente);

@@ -142,6 +142,15 @@ namespace GestaoPedidos.Domain.Exceptions.Clientes {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a O cliente esta inativo.
+        /// </summary>
+        public static string Cliente_Inativo {
+            get {
+                return ResourceManager.GetString("Cliente_Inativo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a O Cliente ja esta ativo .
         /// </summary>
         public static string Cliente_JaAtivo {

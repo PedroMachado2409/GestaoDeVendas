@@ -95,6 +95,70 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "GestaoPedidos.WebAPI.Controllers.PedidoController",
+    "Method": "CadastrarPedido",
+    "RelativePath": "api/Pedido",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "GestaoPedidos.Application.DTO.Pedidos.CriarPedidoRequestDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "GestaoPedidos.WebAPI.Controllers.PedidoController",
+    "Method": "ObterPorId",
+    "RelativePath": "api/Pedido/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "GestaoPedidos.WebAPI.Controllers.PedidoController",
+    "Method": "CancelarPedido",
+    "RelativePath": "api/Pedido/cancelar/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "GestaoPedidos.WebAPI.Controllers.PedidoController",
+    "Method": "FinalizarPedido",
+    "RelativePath": "api/Pedido/finalizar/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "GestaoPedidos.WebAPI.Controllers.ProdutoController",
     "Method": "Listar",
     "RelativePath": "api/Produto",
@@ -140,7 +204,7 @@
     "ContainingType": "GestaoPedidos.WebAPI.Controllers.ProdutoController",
     "Method": "Atualizar",
     "RelativePath": "api/Produto/{id}",
-    "HttpMethod": "PUT",
+    "HttpMethod": "PATCH",
     "IsController": true,
     "Order": 0,
     "Parameters": [

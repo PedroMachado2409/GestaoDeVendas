@@ -22,7 +22,7 @@ namespace GestaoPedidos.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("GestaoPedidos.Domain.Entities.Cliente", b =>
+            modelBuilder.Entity("Cliente", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -53,6 +53,55 @@ namespace GestaoPedidos.Migrations
                     b.ToTable("Clientes");
                 });
 
+            modelBuilder.Entity("GestaoPedidos.Domain.Entities.Pedidos.Pedido", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ClienteId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("DataCadastro")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Pedidos");
+                });
+
+            modelBuilder.Entity("GestaoPedidos.Domain.Entities.Pedidos.PedidoItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("PedidoId")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("Preco")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("ProdutoId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Quantidade")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PedidoId");
+
+                    b.ToTable("PedidoItens");
+                });
+
             modelBuilder.Entity("GestaoPedidos.Domain.Entities.Produto", b =>
                 {
                     b.Property<int>("Id")
@@ -80,6 +129,9 @@ namespace GestaoPedidos.Migrations
 
                     b.Property<decimal>("Preco")
                         .HasColumnType("numeric");
+
+                    b.Property<int>("QuantidadeReservada")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -118,6 +170,20 @@ namespace GestaoPedidos.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Usuarios");
+                });
+
+            modelBuilder.Entity("GestaoPedidos.Domain.Entities.Pedidos.PedidoItem", b =>
+                {
+                    b.HasOne("GestaoPedidos.Domain.Entities.Pedidos.Pedido", null)
+                        .WithMany("Itens")
+                        .HasForeignKey("PedidoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("GestaoPedidos.Domain.Entities.Pedidos.Pedido", b =>
+                {
+                    b.Navigation("Itens");
                 });
 #pragma warning restore 612, 618
         }

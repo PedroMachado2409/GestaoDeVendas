@@ -40,7 +40,7 @@ namespace GestaoPedidos.Infrastructure.Repositories
 
         public async Task<Usuario> Cadastrar(Usuario usuario)
         {
-             _context.Usuarios.AddAsync(usuario);
+             await _context.Usuarios.AddAsync(usuario);
             await _context.SaveChangesAsync();
             return usuario;
         }

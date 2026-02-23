@@ -32,7 +32,7 @@ namespace GestaoPedidosTests.Application.UseCases.Clientes.Validators
         }
 
         [TestMethod]
-        public async Task Deve_Validar_Com_Sucesso_Quando_Dados_Validos()
+        public void Deve_Validar_Com_Sucesso_Quando_Dados_Validos()
         {
             var dto = new ClienteCreateDTO
             {
@@ -49,7 +49,7 @@ namespace GestaoPedidosTests.Application.UseCases.Clientes.Validators
         }
 
         [TestMethod]
-        public async Task Nao_Deve_Cadastrar_Sem_Email()
+        public void Nao_Deve_Cadastrar_Sem_Email()
         {
             var dto = new ClienteCreateDTO
             {
@@ -67,7 +67,7 @@ namespace GestaoPedidosTests.Application.UseCases.Clientes.Validators
         }
 
         [TestMethod]
-        public async Task Nao_Deve_Cadastrar_Com_Email_Invalido()
+        public void Nao_Deve_Cadastrar_Com_Email_Invalido()
         {
             var dto = new ClienteCreateDTO
             {
@@ -84,7 +84,7 @@ namespace GestaoPedidosTests.Application.UseCases.Clientes.Validators
         }
 
         [TestMethod]
-        public async Task Nao_Deve_Cadastrar_Sem_Cpf()
+        public void Nao_Deve_Cadastrar_Sem_Cpf()
         {
             var dto = new ClienteCreateDTO
             {
@@ -100,7 +100,7 @@ namespace GestaoPedidosTests.Application.UseCases.Clientes.Validators
         }
 
         [TestMethod]
-        public async Task Nao_Deve_Cadastrar_Com_Cpf_Invalido()
+        public void Nao_Deve_Cadastrar_Com_Cpf_Invalido()
         {
             var dto = new ClienteCreateDTO
             {
@@ -116,7 +116,7 @@ namespace GestaoPedidosTests.Application.UseCases.Clientes.Validators
         }
 
         [TestMethod]
-        public async Task Nao_Deve_Cadastrar_Sem_Nome()
+        public void Nao_Deve_Cadastrar_Sem_Nome()
         {
             var dto = new ClienteCreateDTO
             {

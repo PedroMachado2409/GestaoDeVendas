@@ -70,6 +70,15 @@ namespace GestaoPedidos.Domain.Exceptions.Produtos {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a O produto está inativo.
+        /// </summary>
+        public static string Produto_Inativo {
+            get {
+                return ResourceManager.GetString("Produto_Inativo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a O Produto já está ativo !.
         /// </summary>
         public static string Produto_jaAtivo {

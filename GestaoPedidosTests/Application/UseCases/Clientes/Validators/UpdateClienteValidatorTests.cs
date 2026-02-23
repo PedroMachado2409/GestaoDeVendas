@@ -29,7 +29,7 @@ namespace GestaoPedidosTests.Application.UseCases.Clientes.Validators
         }
 
         [TestMethod]
-        public async Task Deve_Editar_Quando_Os_Dados_Forem_Validos()
+        public void Deve_Editar_Quando_Os_Dados_Forem_Validos()
         {
             var dto = new ClienteUpdateDTO
             {
@@ -47,7 +47,7 @@ namespace GestaoPedidosTests.Application.UseCases.Clientes.Validators
         }
 
         [TestMethod]
-        public async Task Deve_Lancar_Excecao_Ao_Editar_Sem_Nome()
+        public void Deve_Lancar_Excecao_Ao_Editar_Sem_Nome()
         {
             var dto = new ClienteUpdateDTO
             {
@@ -64,7 +64,7 @@ namespace GestaoPedidosTests.Application.UseCases.Clientes.Validators
         }
 
         [TestMethod]
-        public async Task Deve_Lancar_Excecao_Ao_Editar_Sem_Cpf()
+        public void Deve_Lancar_Excecao_Ao_Editar_Sem_Cpf()
         {
             var dto = new ClienteUpdateDTO
             {
@@ -81,7 +81,7 @@ namespace GestaoPedidosTests.Application.UseCases.Clientes.Validators
         }
 
         [TestMethod]
-        public async Task Deve_Lancar_Excecao_Ao_Editar_Com_Cpf_Invalido()
+        public void Deve_Lancar_Excecao_Ao_Editar_Com_Cpf_Invalido()
         {
             var dto = new ClienteUpdateDTO
             {
@@ -98,7 +98,7 @@ namespace GestaoPedidosTests.Application.UseCases.Clientes.Validators
         }
 
         [TestMethod]
-        public async Task Deve_Lancar_Excecao_Ao_Editar_Com_Email_Invalido()
+        public void Deve_Lancar_Excecao_Ao_Editar_Com_Email_Invalido()
         {
             var dto = new ClienteUpdateDTO
             {
@@ -116,7 +116,7 @@ namespace GestaoPedidosTests.Application.UseCases.Clientes.Validators
 
 
         [TestMethod]
-        public async Task Deve_Lancar_Excecao_Ao_Editar_Sem_Email()
+        public void Deve_Lancar_Excecao_Ao_Editar_Sem_Email()
         {
             var dto = new ClienteUpdateDTO
             {

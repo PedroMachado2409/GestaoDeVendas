@@ -1,11 +1,13 @@
 ﻿using GestaoPedidos.Application.DTO.Clientes;
 using GestaoPedidos.Application.UseCases.Clientes.Commands;
 using GestaoPedidos.Application.UseCases.Clientes.Queries;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GestaoPedidos.WebAPI.Controllers
 {
     [ApiController]
+    [Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     public class ClienteController : ControllerBase
     {

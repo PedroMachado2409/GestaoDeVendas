@@ -138,4 +138,7 @@
   <data name="Produto_PrecoInvalido" xml:space="preserve">
     <value>O Preço deve ser maior que 0 </value>
   </data>
+  <data name="Produto_Inativo" xml:space="preserve">
+    <value>O produto está inativo</value>
+  </data>
 </root>

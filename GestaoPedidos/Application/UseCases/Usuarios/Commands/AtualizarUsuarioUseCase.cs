@@ -26,7 +26,7 @@ namespace GestaoPedidos.Application.UseCases.Usuarios.Commands
                 throw new BadHttpRequestException(UsuariosExceptions.Usuario_NaoEncontrado);
 
              var usuario = await _repository.ObterPorId(usuarioDto.Id);
-            if (usuarioDto == null)
+            if (usuario == null)
                 throw new BadHttpRequestException(UsuariosExceptions.Usuario_NaoEncontrado);
 
             dto.Id = usuario.Id;

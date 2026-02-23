@@ -27,7 +27,7 @@ namespace GestaoPedidosTests.Application.UseCases.Produtos.Validators
         }
 
         [TestMethod]
-        public async Task Deve_Cadastrar_Com_Sucesso_Quando_Dados_Forem_Validos()
+        public void Deve_Cadastrar_Com_Sucesso_Quando_Dados_Forem_Validos()
         {
             var dto = new ProdutoCreateDTO
             {
@@ -44,7 +44,7 @@ namespace GestaoPedidosTests.Application.UseCases.Produtos.Validators
         }
 
         [TestMethod]
-        public async Task Nao_Deve_Cadastrar_Sem_Nome()
+        public void Nao_Deve_Cadastrar_Sem_Nome()
         {
             var dto = new ProdutoCreateDTO
             {
@@ -62,7 +62,7 @@ namespace GestaoPedidosTests.Application.UseCases.Produtos.Validators
         }
 
         [TestMethod]
-        public async Task Nao_Deve_Cadastrar_Com_Estoque_Negativo()
+        public void Nao_Deve_Cadastrar_Com_Estoque_Negativo()
         {
             var dto = new ProdutoCreateDTO
             {
@@ -80,7 +80,7 @@ namespace GestaoPedidosTests.Application.UseCases.Produtos.Validators
         }
 
         [TestMethod]
-        public async Task Nao_Deve_Cadastrar_Sem_Marca()
+        public void Nao_Deve_Cadastrar_Sem_Marca()
         {
             var dto = new ProdutoCreateDTO
             {
@@ -98,7 +98,7 @@ namespace GestaoPedidosTests.Application.UseCases.Produtos.Validators
         }
 
         [TestMethod]
-        public async Task Nao_Deve_Cadastrar_Com_Preco_negativo()
+        public void Nao_Deve_Cadastrar_Com_Preco_negativo()
         {
             var dto = new ProdutoCreateDTO
             {
@@ -116,7 +116,7 @@ namespace GestaoPedidosTests.Application.UseCases.Produtos.Validators
         }
 
         [TestMethod]
-        public async Task Nao_Deve_Cadastrar_Com_Preco_Zerado()
+        public void Nao_Deve_Cadastrar_Com_Preco_Zerado()
         {
             var dto = new ProdutoCreateDTO
             {

@@ -130,3 +130,4 @@ C:\Users\celso\source\repos\Pedidos\GestaoPedidos\bin\Debug\net8.0\System.Identi
 C:\Users\celso\source\repos\Pedidos\GestaoPedidos\obj\Debug\net8.0\GestaoPedidos.Domain.Exceptions.Clientes.ClientesExceptions.resources
 C:\Users\celso\source\repos\Pedidos\GestaoPedidos\obj\Debug\net8.0\GestaoPedidos.Domain.Exceptions.Produtos.ProdutoExceptions.resources
 C:\Users\celso\source\repos\Pedidos\GestaoPedidos\obj\Debug\net8.0\GestaoPedidos.Domain.Exceptions.Usuarios.UsuariosExceptions.resources
+C:\Users\celso\source\repos\Pedidos\GestaoPedidos\obj\Debug\net8.0\GestaoPedidos.Domain.Exceptions.Pedidos.PedidosExceptions.resources

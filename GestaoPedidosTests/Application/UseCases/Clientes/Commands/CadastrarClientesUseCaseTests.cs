@@ -4,6 +4,7 @@ using GestaoPedidos.Application.DTO.Clientes;
 using GestaoPedidos.Application.UseCases.Clientes.Commands;
 using GestaoPedidos.Domain.Abstractions;
 using GestaoPedidos.Domain.Entities;
+using GestaoPedidos.Domain.Exceptions;
 using GestaoPedidos.Domain.Exceptions.Clientes;
 using Microsoft.AspNetCore.Http;
 using Moq;
@@ -88,7 +89,7 @@ namespace GestaoPedidosTests.Application.UseCases.Clientes.Commands
 
             Func<Task> act = () => _useCase.Execute(dto);
 
-            var exception = await act.Should().ThrowAsync<BadHttpRequestException>();
+            var exception = await act.Should().ThrowAsync<BadRequestException>();
             exception.Which.Message.Should().Be(ClientesExceptions.Cliente_CpfExistente);
 
             _repositoryMock.Verify(r => r.ObterPorEmail(dto.Email), Times.Never);
@@ -118,7 +119,7 @@ namespace GestaoPedidosTests.Application.UseCases.Clientes.Commands
                  ));
 
             Func<Task> act = () => _useCase.Execute(dto);
-            var exception = await act.Should().ThrowAsync<BadHttpRequestException>();
+            var exception = await act.Should().ThrowAsync<BadRequestException>();
             exception.Which.Message.Should().Be(ClientesExceptions.Cliente_EmailExistente);
 
             _repositoryMock.Verify(r => r.ObterPorCpf(dto.Cpf), Times.Once());

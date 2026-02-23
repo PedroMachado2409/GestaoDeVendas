@@ -34,6 +34,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>ClientesExceptions.resx</DependentUpon>
     </Compile>
+    <Compile Update="Domain\Exceptions\Pedidos\PedidosExceptions.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>PedidosExceptions.resx</DependentUpon>
+    </Compile>
     <Compile Update="Domain\Exceptions\Produtos\ProdutoExceptions.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -50,6 +55,10 @@
     <EmbeddedResource Update="Domain\Exceptions\Clientes\ClientesExceptions.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>ClientesExceptions.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Domain\Exceptions\Pedidos\PedidosExceptions.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>PedidosExceptions.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Domain\Exceptions\Produtos\ProdutoExceptions.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

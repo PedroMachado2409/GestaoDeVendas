@@ -3,11 +3,8 @@
   "WorkspaceRootPath": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidos\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{7E3D54DF-8144-4E05-8EE1-B1FC8317B21E}|..\\GestaoPedidosTests\\GestaoPedidosTests.csproj|c:\\users\\celso\\source\\repos\\pedidos\\gestaopedidostests\\application\\usecases\\produtos\\validators\\createprodutovalidatortests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{8F6B467A-3706-49E0-B4DE-D5E352F65564}|GestaoPedidos.csproj|c:\\users\\celso\\source\\repos\\pedidos\\gestaopedidos\\application\\validators\\produtos\\produtocreatevalidator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{8F6B467A-3706-49E0-B4DE-D5E352F65564}|GestaoPedidos.csproj|solutionrelative:application\\validators\\produtos\\produtocreatevalidator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{8F6B467A-3706-49E0-B4DE-D5E352F65564}|GestaoPedidos.csproj|c:\\users\\celso\\source\\repos\\pedidos\\gestaopedidos\\application\\usecases\\pedidos\\commands\\cadastrarpedidousecase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8F6B467A-3706-49E0-B4DE-D5E352F65564}|GestaoPedidos.csproj|solutionrelative:application\\usecases\\pedidos\\commands\\cadastrarpedidousecase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -17,36 +14,19 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 4,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "ProdutoCreateValidator.cs",
-              "DocumentMoniker": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidos\\Application\\Validators\\Produtos\\ProdutoCreateValidator.cs",
-              "RelativeDocumentMoniker": "Application\\Validators\\Produtos\\ProdutoCreateValidator.cs",
-              "ToolTip": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidos\\Application\\Validators\\Produtos\\ProdutoCreateValidator.cs",
-              "RelativeToolTip": "Application\\Validators\\Produtos\\ProdutoCreateValidator.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAFAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-20T21:45:45.787Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{e1b7d1f8-9b3c-49b1-8f4f-bfc63a88835d}"
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "CreateProdutoValidatorTests.cs",
-              "DocumentMoniker": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidosTests\\Application\\UseCases\\Produtos\\Validators\\CreateProdutoValidatorTests.cs",
-              "RelativeDocumentMoniker": "..\\GestaoPedidosTests\\Application\\UseCases\\Produtos\\Validators\\CreateProdutoValidatorTests.cs",
-              "ToolTip": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidosTests\\Application\\UseCases\\Produtos\\Validators\\CreateProdutoValidatorTests.cs",
-              "RelativeToolTip": "..\\GestaoPedidosTests\\Application\\UseCases\\Produtos\\Validators\\CreateProdutoValidatorTests.cs",
-              "ViewState": "AgIAAGQAAAAAAAAAAAAkwIQAAABIAAAAAAAAAA==",
+              "Title": "CadastrarPedidoUseCase.cs",
+              "DocumentMoniker": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidos\\Application\\UseCases\\Pedidos\\Commands\\CadastrarPedidoUseCase.cs",
+              "RelativeDocumentMoniker": "Application\\UseCases\\Pedidos\\Commands\\CadastrarPedidoUseCase.cs",
+              "ToolTip": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidos\\Application\\UseCases\\Pedidos\\Commands\\CadastrarPedidoUseCase.cs",
+              "RelativeToolTip": "Application\\UseCases\\Pedidos\\Commands\\CadastrarPedidoUseCase.cs",
+              "ViewState": "AgIAAA0AAAAAAAAAAAAcwB0AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-20T21:39:06.065Z",
+              "WhenOpened": "2026-02-23T21:37:35.383Z",
               "EditorCaption": ""
             }
           ]

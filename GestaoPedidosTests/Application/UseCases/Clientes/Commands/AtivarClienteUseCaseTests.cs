@@ -2,6 +2,7 @@
 using GestaoPedidos.Application.UseCases.Clientes.Commands;
 using GestaoPedidos.Domain.Abstractions;
 using GestaoPedidos.Domain.Entities;
+using GestaoPedidos.Domain.Exceptions;
 using GestaoPedidos.Domain.Exceptions.Clientes;
 using Microsoft.AspNetCore.Http;
 using Moq;
@@ -55,7 +56,7 @@ namespace GestaoPedidosTests.Application.UseCases.Clientes.Commands
 
             _repositoryMock.Setup(r => r.ObterPorId(It.IsAny<int>())).ReturnsAsync(cliente);
             Func<Task> act = () => _useCase.Execute(1);
-            var exception = await act .Should().ThrowAsync<BadHttpRequestException>();
+            var exception = await act .Should().ThrowAsync<BadRequestException>();
             exception.Which.Message.Should().Be(ClientesExceptions.Cliente_JaAtivo);
 
             _repositoryMock.Verify(c => c.ObterPorId(1), Times.Once);
@@ -68,7 +69,7 @@ namespace GestaoPedidosTests.Application.UseCases.Clientes.Commands
         {
             _repositoryMock.Setup(c => c.ObterPorId(It.IsAny<int>())).ReturnsAsync((Cliente?)null);
             Func<Task> act = () => _useCase.Execute(1);
-            var exception = await act.Should().ThrowAsync<BadHttpRequestException>();
+            var exception = await act.Should().ThrowAsync<NotFoundException>();
             exception.Which.Message.Should().Be(ClientesExceptions.Cliente_NaoEncontrado);
 
             _repositoryMock.Verify(c => c.ObterPorId(1), Times.Once);

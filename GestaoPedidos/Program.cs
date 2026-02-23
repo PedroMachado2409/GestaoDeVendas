@@ -83,6 +83,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
 builder.Services.AddScoped<IProdutoRepository, ProdutoRepository>();
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+builder.Services.AddScoped<IPedidoRepository, PedidoRepository>();
 
 // ================= AUTOMAPPER =================
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
