@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
 using GestaoPedidos.Application.DTO.Clientes;
 using GestaoPedidos.Domain.Abstractions;
-using GestaoPedidos.Exceptions.Clientes;
+using GestaoPedidos.Domain.Exceptions;
+using GestaoPedidos.Domain.Exceptions.Clientes;
 
 namespace GestaoPedidos.Application.UseCases.Clientes.Commands
 {
@@ -20,11 +21,15 @@ namespace GestaoPedidos.Application.UseCases.Clientes.Commands
         public async Task<ClienteResponseDTO> Execute(ClienteUpdateDTO dto)
         {
             var cliente = await _repository.ObterPorId(dto.Id)
-                ?? throw new BadHttpRequestException(ClientesExceptions.Cliente_NaoEncontrado);
+                ?? throw new NotFoundException(ClientesExceptions.Cliente_NaoEncontrado);
 
             var clienteComCpfExistente = await _repository.ObterPorCpf(dto.Cpf);
             if (clienteComCpfExistente != null && clienteComCpfExistente.Id != dto.Id)
-                throw new BadHttpRequestException(ClientesExceptions.Cliente_CpfExistente);
+                throw new BadRequestException(ClientesExceptions.Cliente_CpfExistente);
+
+            var clienteComEmailExistente = await _repository.ObterPorEmail(dto.Email);
+            if (clienteComEmailExistente != null && clienteComEmailExistente.Id != dto.Id)
+                throw new BadRequestException(ClientesExceptions.Cliente_EmailExistente);
 
             cliente.Atualizar(dto.Nome, dto.Email, dto.Cpf);
 

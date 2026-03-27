@@ -1,6 +1,6 @@
 ﻿using GestaoPedidos.Domain.Abstractions;
-using GestaoPedidos.Exceptions.Clientes;
-
+using GestaoPedidos.Domain.Exceptions;
+using GestaoPedidos.Domain.Exceptions.Clientes;
 namespace GestaoPedidos.Application.UseCases.Clientes.Commands
 {
     public class InativarClienteUseCase
@@ -16,10 +16,10 @@ namespace GestaoPedidos.Application.UseCases.Clientes.Commands
         public async Task<bool> Execute(int id)
         {
             var cliente = await _repository.ObterPorId(id)
-                ?? throw new BadHttpRequestException(ClientesExceptions.Cliente_NaoEncontrado);
+                ?? throw new NotFoundException(ClientesExceptions.Cliente_NaoEncontrado);
 
             if (cliente.Ativo == false)
-                throw new BadHttpRequestException(ClientesExceptions.Cliente_JaInativo);
+                throw new BadRequestException(ClientesExceptions.Cliente_JaInativo);
 
             cliente.Inativar();
             await _repository.Atualizar(cliente);

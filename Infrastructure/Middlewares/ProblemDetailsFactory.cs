@@ -21,20 +21,25 @@
         public static object BadRequest(string detail)
             => new
             {
-                title = "Ocorreu um erro ao enviar a requisição",
+                title = "Requisição inválida",
                 status = StatusCodes.Status400BadRequest,
                 detail
             };
-        
+
         public static object Forbidden(string detail)
             => new
             {
-                title = "Não Autorizado",
+                title = "Acesso negado",
                 status = StatusCodes.Status403Forbidden,
                 detail
-            }; 
-        
+            };
 
-
+        public static object NotFound(string detail)
+            => new
+            {
+                title = "Recurso não encontrado",
+                status = StatusCodes.Status404NotFound,
+                detail
+            };
     }
 }

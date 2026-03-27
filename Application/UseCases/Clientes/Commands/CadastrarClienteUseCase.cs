@@ -2,7 +2,8 @@
 using GestaoPedidos.Application.DTO.Clientes;
 using GestaoPedidos.Domain.Abstractions;
 using GestaoPedidos.Domain.Entities;
-using GestaoPedidos.Exceptions.Clientes;
+using GestaoPedidos.Domain.Exceptions;
+using GestaoPedidos.Domain.Exceptions.Clientes;
 
 namespace GestaoPedidos.Application.UseCases.Clientes.Commands
 {
@@ -21,7 +22,11 @@ namespace GestaoPedidos.Application.UseCases.Clientes.Commands
         {
             var clienteExistente = await _clienteRepository.ObterPorCpf(dto.Cpf);
             if (clienteExistente != null)
-                throw new BadHttpRequestException(ClientesExceptions.Cliente_CpfExistente);
+                throw new BadRequestException(ClientesExceptions.Cliente_CpfExistente);
+            
+            var emailExistente = await _clienteRepository.ObterPorEmail(dto.Email);
+            if (emailExistente != null)
+                throw new BadRequestException(ClientesExceptions.Cliente_EmailExistente);
 
             var novoCliente = new Cliente(dto.Nome, dto.Email, dto.Cpf);
 

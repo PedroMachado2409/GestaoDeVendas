@@ -51,7 +51,7 @@ namespace GestaoPedidos.WebAPI.Controllers
             return Ok(produto);
         }
 
-        [HttpPut("{id}")]
+        [HttpPatch("{id}")]
         public async Task<IActionResult> Atualizar(int id, [FromBody] ProdutoUpdateDTO dto)
         {
             dto.Id = id;

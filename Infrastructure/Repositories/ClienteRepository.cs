@@ -16,7 +16,7 @@ namespace GestaoPedidos.Infrastructure.Repositories
 
         public async Task<List<Cliente>> Listar()
         {
-            var clientes = await _context.Clientes.AsNoTracking().ToListAsync();
+            var clientes = await _context.Clientes.AsNoTracking().OrderBy(c => c.Id).ToListAsync();
             return clientes;
         }
 
@@ -25,9 +25,15 @@ namespace GestaoPedidos.Infrastructure.Repositories
             var cliente = await _context.Clientes.FirstOrDefaultAsync(c => c.Id == id);
             return cliente;
         }  
-        public async Task<Cliente> ObterPorCpf(string cpf)
+        public async Task<Cliente?> ObterPorCpf(string cpf)
         {
             var cliente = await _context.Clientes.FirstOrDefaultAsync(c => c.Cpf == cpf);
+            return cliente;
+        }
+
+        public async Task<Cliente?> ObterPorEmail (string email)
+        {
+            var cliente = await _context.Clientes.FirstOrDefaultAsync (c => c.Email == email);
             return cliente;
         }
 

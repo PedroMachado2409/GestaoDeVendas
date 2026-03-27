@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using GestaoPedidos.Application.DTO.Produtos;
-using GestaoPedidos.Exceptions.Produtos;
+using GestaoPedidos.Domain.Exceptions.Produtos;
+
 
 namespace GestaoPedidos.Application.Validators.Produtos
 {

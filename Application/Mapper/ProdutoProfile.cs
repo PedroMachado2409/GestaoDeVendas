@@ -8,9 +8,9 @@ namespace GestaoPedidos.Application.Mapper
     {
         public ProdutoProfile()
         {
-            CreateMap<Produto, ProdutoCreateDTO>();
-            CreateMap<Produto, ProdutoResponseDTO>();  
-            CreateMap<Produto, ProdutoUpdateDTO>();
+            CreateMap<Produto, ProdutoCreateDTO>().ReverseMap();
+            CreateMap<Produto, ProdutoResponseDTO>().ReverseMap();
+            CreateMap<Produto, ProdutoUpdateDTO>().ReverseMap();
         }
     }
 }

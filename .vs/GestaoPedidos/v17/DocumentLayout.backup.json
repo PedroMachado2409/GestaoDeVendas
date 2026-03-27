@@ -3,20 +3,20 @@
   "WorkspaceRootPath": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidos\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{8F6B467A-3706-49E0-B4DE-D5E352F65564}|GestaoPedidos.csproj|c:\\users\\celso\\source\\repos\\pedidos\\gestaopedidos\\application\\usecases\\produtos\\commands\\ativarprodutousecase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{8F6B467A-3706-49E0-B4DE-D5E352F65564}|GestaoPedidos.csproj|solutionrelative:application\\usecases\\produtos\\commands\\ativarprodutousecase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{8F6B467A-3706-49E0-B4DE-D5E352F65564}|GestaoPedidos.csproj|c:\\users\\celso\\source\\repos\\pedidos\\gestaopedidos\\application\\usecases\\pedidos\\commands\\cancelarpedidousecase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8F6B467A-3706-49E0-B4DE-D5E352F65564}|GestaoPedidos.csproj|solutionrelative:application\\usecases\\pedidos\\commands\\cancelarpedidousecase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{8F6B467A-3706-49E0-B4DE-D5E352F65564}|GestaoPedidos.csproj|c:\\users\\celso\\source\\repos\\pedidos\\gestaopedidos\\application\\usecases\\produtos\\commands\\inativarprodutousecase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{8F6B467A-3706-49E0-B4DE-D5E352F65564}|GestaoPedidos.csproj|solutionrelative:application\\usecases\\produtos\\commands\\inativarprodutousecase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{8F6B467A-3706-49E0-B4DE-D5E352F65564}|GestaoPedidos.csproj|c:\\users\\celso\\source\\repos\\pedidos\\gestaopedidos\\infrastructure\\repositories\\titulosrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8F6B467A-3706-49E0-B4DE-D5E352F65564}|GestaoPedidos.csproj|solutionrelative:infrastructure\\repositories\\titulosrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{8F6B467A-3706-49E0-B4DE-D5E352F65564}|GestaoPedidos.csproj|c:\\users\\celso\\source\\repos\\pedidos\\gestaopedidos\\webapi\\controllers\\produtocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{8F6B467A-3706-49E0-B4DE-D5E352F65564}|GestaoPedidos.csproj|solutionrelative:webapi\\controllers\\produtocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{8F6B467A-3706-49E0-B4DE-D5E352F65564}|GestaoPedidos.csproj|c:\\users\\celso\\source\\repos\\pedidos\\gestaopedidos\\domain\\abstractions\\ititulosrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8F6B467A-3706-49E0-B4DE-D5E352F65564}|GestaoPedidos.csproj|solutionrelative:domain\\abstractions\\ititulosrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{8F6B467A-3706-49E0-B4DE-D5E352F65564}|GestaoPedidos.csproj|c:\\users\\celso\\source\\repos\\pedidos\\gestaopedidos\\webapi\\controllers\\clientecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{8F6B467A-3706-49E0-B4DE-D5E352F65564}|GestaoPedidos.csproj|solutionrelative:webapi\\controllers\\clientecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{8F6B467A-3706-49E0-B4DE-D5E352F65564}|GestaoPedidos.csproj|c:\\users\\celso\\source\\repos\\pedidos\\gestaopedidos\\domain\\entities\\titulo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8F6B467A-3706-49E0-B4DE-D5E352F65564}|GestaoPedidos.csproj|solutionrelative:domain\\entities\\titulo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -26,58 +26,59 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "AtivarProdutoUseCase.cs",
-              "DocumentMoniker": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidos\\Application\\UseCases\\Produtos\\Commands\\AtivarProdutoUseCase.cs",
-              "RelativeDocumentMoniker": "Application\\UseCases\\Produtos\\Commands\\AtivarProdutoUseCase.cs",
-              "ToolTip": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidos\\Application\\UseCases\\Produtos\\Commands\\AtivarProdutoUseCase.cs",
-              "RelativeToolTip": "Application\\UseCases\\Produtos\\Commands\\AtivarProdutoUseCase.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAxAAAAAAAAAA==",
+              "DocumentIndex": 3,
+              "Title": "Titulo.cs",
+              "DocumentMoniker": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidos\\Domain\\Entities\\Titulo.cs",
+              "RelativeDocumentMoniker": "Domain\\Entities\\Titulo.cs",
+              "ToolTip": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidos\\Domain\\Entities\\Titulo.cs",
+              "RelativeToolTip": "Domain\\Entities\\Titulo.cs",
+              "ViewState": "AgIAABMAAAAAAAAAAAAcwDMAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-14T21:46:51.972Z",
+              "WhenOpened": "2026-03-27T00:19:55.833Z",
+              "IsPinned": true,
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "ProdutoController.cs",
-              "DocumentMoniker": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidos\\WebAPI\\Controllers\\ProdutoController.cs",
-              "RelativeDocumentMoniker": "WebAPI\\Controllers\\ProdutoController.cs",
-              "ToolTip": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidos\\WebAPI\\Controllers\\ProdutoController.cs",
-              "RelativeToolTip": "WebAPI\\Controllers\\ProdutoController.cs",
-              "ViewState": "AgIAAC0AAAAAAAAAAAAowAAAAAAAAAAAAAAAAA==",
+              "Title": "ITitulosRepository.cs",
+              "DocumentMoniker": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidos\\Domain\\Abstractions\\ITitulosRepository.cs",
+              "RelativeDocumentMoniker": "Domain\\Abstractions\\ITitulosRepository.cs",
+              "ToolTip": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidos\\Domain\\Abstractions\\ITitulosRepository.cs",
+              "RelativeToolTip": "Domain\\Abstractions\\ITitulosRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAqAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-14T21:46:27.926Z",
+              "WhenOpened": "2026-03-27T00:23:23.471Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "CancelarPedidoUseCase.cs",
+              "DocumentMoniker": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidos\\Application\\UseCases\\Pedidos\\Commands\\CancelarPedidoUseCase.cs",
+              "RelativeDocumentMoniker": "Application\\UseCases\\Pedidos\\Commands\\CancelarPedidoUseCase.cs",
+              "ToolTip": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidos\\Application\\UseCases\\Pedidos\\Commands\\CancelarPedidoUseCase.cs",
+              "RelativeToolTip": "Application\\UseCases\\Pedidos\\Commands\\CancelarPedidoUseCase.cs",
+              "ViewState": "AgIAAA8AAAAAAAAAAAAAAC0AAAA6AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-27T00:23:09.934Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "InativarProdutoUseCase.cs",
-              "DocumentMoniker": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidos\\Application\\UseCases\\Produtos\\Commands\\InativarProdutoUseCase.cs",
-              "RelativeDocumentMoniker": "Application\\UseCases\\Produtos\\Commands\\InativarProdutoUseCase.cs",
-              "ToolTip": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidos\\Application\\UseCases\\Produtos\\Commands\\InativarProdutoUseCase.cs",
-              "RelativeToolTip": "Application\\UseCases\\Produtos\\Commands\\InativarProdutoUseCase.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAxAAAAAAAAAA==",
+              "Title": "TitulosRepository.cs",
+              "DocumentMoniker": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidos\\Infrastructure\\Repositories\\TitulosRepository.cs",
+              "RelativeDocumentMoniker": "Infrastructure\\Repositories\\TitulosRepository.cs",
+              "ToolTip": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidos\\Infrastructure\\Repositories\\TitulosRepository.cs",
+              "RelativeToolTip": "Infrastructure\\Repositories\\TitulosRepository.cs",
+              "ViewState": "AgIAABAAAAAAAAAAAAA2wCMAAAA4AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-14T21:41:38.146Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "ClienteController.cs",
-              "DocumentMoniker": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidos\\WebAPI\\Controllers\\ClienteController.cs",
-              "RelativeDocumentMoniker": "WebAPI\\Controllers\\ClienteController.cs",
-              "ToolTip": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidos\\WebAPI\\Controllers\\ClienteController.cs",
-              "RelativeToolTip": "WebAPI\\Controllers\\ClienteController.cs",
-              "ViewState": "AgIAACcAAAAAAAAAAAAowAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-14T21:40:08.256Z",
+              "WhenOpened": "2026-03-27T00:18:30.361Z",
               "EditorCaption": ""
             }
           ]

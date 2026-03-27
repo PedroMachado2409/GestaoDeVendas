@@ -2,18 +2,57 @@ using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
-using System.Text;
 using System.Text.Json.Serialization;
 using GestaoPedidos.Application.Mapper;
 using GestaoPedidos.Domain.Abstractions;
+using GestaoPedidos.Domain.Abstractions.Usuarios;
 using GestaoPedidos.Infrastructure.Data;
 using GestaoPedidos.Infrastructure.Middlewares;
 using GestaoPedidos.Infrastructure.Repositories;
 using GestaoPedidos.Application.Validators.Clientes;
-
+using GestaoPedidos.Infrastructure.Security;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// ================= JWT SETTINGS =================
+builder.Services.Configure<JwtSettings>(
+    builder.Configuration.GetSection("Jwt"));
+
+// ================= AUTHENTICATION =================
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        var jwtSettings = builder.Configuration.GetSection("Jwt");
+
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+
+            ValidIssuer = jwtSettings["Issuer"],
+            ValidAudience = jwtSettings["Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(jwtSettings["Key"]!)),
+            ClockSkew = TimeSpan.Zero
+        };
+    });
+
+builder.Services.AddAuthorization();
+
+// ================= TOKEN SERVICE =================
+builder.Services.AddScoped<IToken>(sp =>
+{
+    var jwtSettings = sp.GetRequiredService<
+        Microsoft.Extensions.Options.IOptions<JwtSettings>>().Value;
+
+    return new GerarTokenJwt(jwtSettings);
+});
 
 // ================= CORS =================
 builder.Services.AddCors(options =>
@@ -41,27 +80,22 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // ================= REPOSITORIES =================
-
 builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
 builder.Services.AddScoped<IProdutoRepository, ProdutoRepository>();
-
-
+builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+builder.Services.AddScoped<IPedidoRepository, PedidoRepository>();
+builder.Services.AddScoped<ITitulosRepository, TitulosRepository>();
 
 // ================= AUTOMAPPER =================
-
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-
-
 // ================= VALIDATORS =================
-
 builder.Services.AddValidatorsFromAssemblyContaining<ClienteCreateValidator>();
 builder.Services.AddFluentValidationAutoValidation();
 
 builder.Services.AddHttpContextAccessor();
 
-// ================= USE CASES (SCAN) =================
-
+// ================= USE CASES =================
 builder.Services.Scan(scan => scan
     .FromApplicationDependencies()
     .AddClasses(classes => classes.Where(type => type.Name.EndsWith("UseCase")))
@@ -81,7 +115,8 @@ app.UseHttpsRedirection();
 app.UseCors("AllowAll");
 
 app.UseMiddleware<ExceptionMiddleware>();
-app.UseAuthentication();
+
+app.UseAuthentication();   
 app.UseAuthorization();
 
 app.MapControllers();

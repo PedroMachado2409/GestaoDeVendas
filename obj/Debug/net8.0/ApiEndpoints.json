@@ -95,6 +95,70 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "GestaoPedidos.WebAPI.Controllers.PedidoController",
+    "Method": "CadastrarPedido",
+    "RelativePath": "api/Pedido",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "GestaoPedidos.Application.DTO.Pedidos.CriarPedidoRequestDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "GestaoPedidos.WebAPI.Controllers.PedidoController",
+    "Method": "ObterPorId",
+    "RelativePath": "api/Pedido/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "GestaoPedidos.WebAPI.Controllers.PedidoController",
+    "Method": "CancelarPedido",
+    "RelativePath": "api/Pedido/cancelar/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "GestaoPedidos.WebAPI.Controllers.PedidoController",
+    "Method": "FinalizarPedido",
+    "RelativePath": "api/Pedido/finalizar/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "GestaoPedidos.WebAPI.Controllers.ProdutoController",
     "Method": "Listar",
     "RelativePath": "api/Produto",
@@ -140,7 +204,7 @@
     "ContainingType": "GestaoPedidos.WebAPI.Controllers.ProdutoController",
     "Method": "Atualizar",
     "RelativePath": "api/Produto/{id}",
-    "HttpMethod": "PUT",
+    "HttpMethod": "PATCH",
     "IsController": true,
     "Order": 0,
     "Parameters": [
@@ -184,6 +248,122 @@
       {
         "Name": "id",
         "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "GestaoPedidos.WebAPI.Controllers.UsuarioController",
+    "Method": "Listar",
+    "RelativePath": "api/Usuario",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "GestaoPedidos.WebAPI.Controllers.UsuarioController",
+    "Method": "Ativar",
+    "RelativePath": "api/Usuario/ativar/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "GestaoPedidos.WebAPI.Controllers.UsuarioController",
+    "Method": "AtualizarSenha",
+    "RelativePath": "api/Usuario/AtualizarSenha",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "GestaoPedidos.Application.DTO.Usuarios.UsuarioUpdateSenhaDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "GestaoPedidos.WebAPI.Controllers.UsuarioController",
+    "Method": "AtualizarUsuario",
+    "RelativePath": "api/Usuario/AtualizarUsuario",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "GestaoPedidos.Application.DTO.Usuarios.UsuarioUpdateDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "GestaoPedidos.WebAPI.Controllers.UsuarioController",
+    "Method": "ObterAutenticado",
+    "RelativePath": "api/Usuario/Autenticado",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "GestaoPedidos.WebAPI.Controllers.UsuarioController",
+    "Method": "Autenticar",
+    "RelativePath": "api/Usuario/Autenticar",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "GestaoPedidos.Application.DTO.Usuarios.LoginRequestDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "GestaoPedidos.WebAPI.Controllers.UsuarioController",
+    "Method": "Inativar",
+    "RelativePath": "api/Usuario/inativar/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "GestaoPedidos.WebAPI.Controllers.UsuarioController",
+    "Method": "Registrar",
+    "RelativePath": "api/Usuario/Registrar",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "GestaoPedidos.Application.DTO.Usuarios.UsuarioCreateDTO",
         "IsRequired": true
       }
     ],

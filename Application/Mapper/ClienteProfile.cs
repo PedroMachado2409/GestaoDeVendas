@@ -8,9 +8,9 @@ namespace GestaoPedidos.Application.Mapper
     {
        public ClienteProfile()
         {
-            CreateMap<Cliente, ClienteResponseDTO>(); 
-            CreateMap<Cliente, ClienteCreateDTO>();
-            CreateMap<Cliente, ClienteUpdateDTO>();
+            CreateMap<Cliente, ClienteResponseDTO>().ReverseMap();
+            CreateMap<Cliente, ClienteCreateDTO>().ReverseMap();
+            CreateMap<Cliente, ClienteUpdateDTO>().ReverseMap();
         }
     }
 }

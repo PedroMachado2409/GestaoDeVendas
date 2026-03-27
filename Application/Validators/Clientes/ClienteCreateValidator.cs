@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using GestaoPedidos.Application.DTO.Clientes;
-using GestaoPedidos.Exceptions.Clientes;
+using GestaoPedidos.Domain.Exceptions.Clientes;
+
 namespace GestaoPedidos.Application.Validators.Clientes
 {
     public class ClienteCreateValidator : AbstractValidator<ClienteCreateDTO>

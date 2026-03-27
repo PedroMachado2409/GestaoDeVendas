@@ -20,7 +20,6 @@ C:\Users\celso\source\repos\Pedidos\GestaoPedidos\bin\Debug\net8.0\System.Text.E
 C:\Users\celso\source\repos\Pedidos\GestaoPedidos\bin\Debug\net8.0\System.Text.Json.dll
 C:\Users\celso\source\repos\Pedidos\GestaoPedidos\bin\Debug\net8.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
 C:\Users\celso\source\repos\Pedidos\GestaoPedidos\obj\Debug\net8.0\GestaoPedidos.csproj.AssemblyReference.cache
-C:\Users\celso\source\repos\Pedidos\GestaoPedidos\obj\Debug\net8.0\GestaoPedidos.Exceptions.Clientes.ClientesExceptions.resources
 C:\Users\celso\source\repos\Pedidos\GestaoPedidos\obj\Debug\net8.0\GestaoPedidos.csproj.GenerateResource.cache
 C:\Users\celso\source\repos\Pedidos\GestaoPedidos\obj\Debug\net8.0\GestaoPedidos.GeneratedMSBuildEditorConfig.editorconfig
 C:\Users\celso\source\repos\Pedidos\GestaoPedidos\obj\Debug\net8.0\GestaoPedidos.AssemblyInfoInputs.cache
@@ -120,4 +119,15 @@ C:\Users\celso\source\repos\Pedidos\GestaoPedidos\obj\Debug\net8.0\refint\Gestao
 C:\Users\celso\source\repos\Pedidos\GestaoPedidos\obj\Debug\net8.0\GestaoPedidos.pdb
 C:\Users\celso\source\repos\Pedidos\GestaoPedidos\obj\Debug\net8.0\GestaoPedidos.genruntimeconfig.cache
 C:\Users\celso\source\repos\Pedidos\GestaoPedidos\obj\Debug\net8.0\ref\GestaoPedidos.dll
-C:\Users\celso\source\repos\Pedidos\GestaoPedidos\obj\Debug\net8.0\GestaoPedidos.Exceptions.Produtos.ProdutoExceptions.resources
+C:\Users\celso\source\repos\Pedidos\GestaoPedidos\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\celso\source\repos\Pedidos\GestaoPedidos\bin\Debug\net8.0\Microsoft.IdentityModel.Abstractions.dll
+C:\Users\celso\source\repos\Pedidos\GestaoPedidos\bin\Debug\net8.0\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\celso\source\repos\Pedidos\GestaoPedidos\bin\Debug\net8.0\Microsoft.IdentityModel.Logging.dll
+C:\Users\celso\source\repos\Pedidos\GestaoPedidos\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.dll
+C:\Users\celso\source\repos\Pedidos\GestaoPedidos\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+C:\Users\celso\source\repos\Pedidos\GestaoPedidos\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
+C:\Users\celso\source\repos\Pedidos\GestaoPedidos\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
+C:\Users\celso\source\repos\Pedidos\GestaoPedidos\obj\Debug\net8.0\GestaoPedidos.Domain.Exceptions.Clientes.ClientesExceptions.resources
+C:\Users\celso\source\repos\Pedidos\GestaoPedidos\obj\Debug\net8.0\GestaoPedidos.Domain.Exceptions.Produtos.ProdutoExceptions.resources
+C:\Users\celso\source\repos\Pedidos\GestaoPedidos\obj\Debug\net8.0\GestaoPedidos.Domain.Exceptions.Usuarios.UsuariosExceptions.resources
+C:\Users\celso\source\repos\Pedidos\GestaoPedidos\obj\Debug\net8.0\GestaoPedidos.Domain.Exceptions.Pedidos.PedidosExceptions.resources

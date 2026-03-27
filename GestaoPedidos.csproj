@@ -11,6 +11,7 @@
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
     <PackageReference Include="FluentAssertions" Version="8.8.0" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.8">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -24,20 +25,48 @@
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.4" />
     <PackageReference Include="Scrutor" Version="7.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.12.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Exceptions\Produtos\ProdutoExceptions.Designer.cs">
+    <Compile Update="Domain\Exceptions\Clientes\ClientesExceptions.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ClientesExceptions.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Domain\Exceptions\Pedidos\PedidosExceptions.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>PedidosExceptions.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Domain\Exceptions\Produtos\ProdutoExceptions.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>ProdutoExceptions.resx</DependentUpon>
     </Compile>
+    <Compile Update="Domain\Exceptions\Usuarios\UsuariosExceptions.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>UsuariosExceptions.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="Exceptions\Produtos\ProdutoExceptions.resx">
+    <EmbeddedResource Update="Domain\Exceptions\Clientes\ClientesExceptions.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>ClientesExceptions.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Domain\Exceptions\Pedidos\PedidosExceptions.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>PedidosExceptions.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Domain\Exceptions\Produtos\ProdutoExceptions.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>ProdutoExceptions.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Domain\Exceptions\Usuarios\UsuariosExceptions.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>UsuariosExceptions.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
 

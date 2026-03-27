@@ -1,12 +1,38 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidos\\",
-  "Documents": [],
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{8F6B467A-3706-49E0-B4DE-D5E352F65564}|GestaoPedidos.csproj|c:\\users\\celso\\source\\repos\\pedidos\\gestaopedidos\\domain\\entities\\titulo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8F6B467A-3706-49E0-B4DE-D5E352F65564}|GestaoPedidos.csproj|solutionrelative:domain\\entities\\titulo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
       "VerticalTabListWidth": 256,
-      "DocumentGroups": []
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Titulo.cs",
+              "DocumentMoniker": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidos\\Domain\\Entities\\Titulo.cs",
+              "RelativeDocumentMoniker": "Domain\\Entities\\Titulo.cs",
+              "ToolTip": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidos\\Domain\\Entities\\Titulo.cs",
+              "RelativeToolTip": "Domain\\Entities\\Titulo.cs",
+              "ViewState": "AgIAABMAAAAAAAAAAAAcwDIAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-27T00:19:55.833Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
     }
   ]
 }
