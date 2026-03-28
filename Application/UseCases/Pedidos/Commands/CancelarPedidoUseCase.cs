@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using GestaoPedidos.Application.DTO.Pedidos;
 using GestaoPedidos.Domain.Abstractions;
+using GestaoPedidos.Domain.Enum;
 using GestaoPedidos.Domain.Exceptions;
 using GestaoPedidos.Domain.Exceptions.Pedidos;
 using GestaoPedidos.Domain.Exceptions.Produtos;
@@ -29,20 +30,26 @@ namespace GestaoPedidos.Application.UseCases.Pedidos.Commands
             if (pedido == null)
                 throw new BadRequestException(PedidosExceptions.Pedido_NaoEncontrado);
             var titulo = await _titulosRepository.ObterTituloPelaOrigem(pedidoId);
-            if (titulo == null)
-                throw new BadRequestException("Titulo não encontrado");
-
+            if (titulo != null && pedido.Status == StatusPedido.Finalizado)
+                await _titulosRepository.DeletarTitulo(titulo.Id);
+            
             foreach (var item in pedido.Itens)
             {
                 var produto = await _produtoRepository.ObterPorId(item.ProdutoId);
                 if (produto == null)
                     throw new NotFoundException(ProdutoExceptions.Produto_NaoEncontrado);
-                produto.CancelarReservaDeQuantidade(item.Quantidade);
+
+                if(pedido.Status == StatusPedido.Aberto)
+                {
+                   produto.CancelarReservaDeQuantidade(item.Quantidade);
+                } else {
+                    produto.AumentarEstoque(item.Quantidade);
+                }
                 await _produtoRepository.Atualizar(produto);
             }
             pedido.Cancelar();
             await _repository.Atualizar(pedido);
-            await _titulosRepository.DeletarTitulo(titulo.Id);
+            
             return _mapper.Map<PedidoResponseDTO>(pedido);
         }
 

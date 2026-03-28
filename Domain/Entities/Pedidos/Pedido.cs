@@ -68,8 +68,6 @@ namespace GestaoPedidos.Domain.Entities.Pedidos
         {
             if (Status == StatusPedido.Cancelado)
                 throw new BadRequestException(PedidosExceptions.Pedido_NaoPodeCancelar); 
-
-
             Status = StatusPedido.Cancelado;
         }
 

@@ -97,7 +97,7 @@ namespace GestaoPedidos.Domain.Exceptions.Pedidos {
         }
         
         /// <summary>
-        ///   Consulta uma cadeia de caracteres localizada semelhante a O pedido não pode ser cancelado pois nao esta em aberto.
+        ///   Consulta uma cadeia de caracteres localizada semelhante a O pedido não pode ser cancelado pois ja está cancelado.
         /// </summary>
         public static string Pedido_NaoPodeCancelar {
             get {

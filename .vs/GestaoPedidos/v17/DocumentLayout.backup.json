@@ -3,20 +3,16 @@
   "WorkspaceRootPath": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidos\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{8F6B467A-3706-49E0-B4DE-D5E352F65564}|GestaoPedidos.csproj|c:\\users\\celso\\source\\repos\\pedidos\\gestaopedidos\\application\\usecases\\pedidos\\commands\\cancelarpedidousecase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{8F6B467A-3706-49E0-B4DE-D5E352F65564}|GestaoPedidos.csproj|solutionrelative:application\\usecases\\pedidos\\commands\\cancelarpedidousecase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{8F6B467A-3706-49E0-B4DE-D5E352F65564}|GestaoPedidos.csproj|c:\\users\\celso\\source\\repos\\pedidos\\gestaopedidos\\webapi\\controllers\\pedidocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8F6B467A-3706-49E0-B4DE-D5E352F65564}|GestaoPedidos.csproj|solutionrelative:webapi\\controllers\\pedidocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{8F6B467A-3706-49E0-B4DE-D5E352F65564}|GestaoPedidos.csproj|c:\\users\\celso\\source\\repos\\pedidos\\gestaopedidos\\infrastructure\\repositories\\titulosrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{8F6B467A-3706-49E0-B4DE-D5E352F65564}|GestaoPedidos.csproj|solutionrelative:infrastructure\\repositories\\titulosrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{8F6B467A-3706-49E0-B4DE-D5E352F65564}|GestaoPedidos.csproj|c:\\users\\celso\\source\\repos\\pedidos\\gestaopedidos\\application\\usecases\\pedidos\\commands\\atualizarpedidousecase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8F6B467A-3706-49E0-B4DE-D5E352F65564}|GestaoPedidos.csproj|solutionrelative:application\\usecases\\pedidos\\commands\\atualizarpedidousecase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{8F6B467A-3706-49E0-B4DE-D5E352F65564}|GestaoPedidos.csproj|c:\\users\\celso\\source\\repos\\pedidos\\gestaopedidos\\domain\\abstractions\\ititulosrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{8F6B467A-3706-49E0-B4DE-D5E352F65564}|GestaoPedidos.csproj|solutionrelative:domain\\abstractions\\ititulosrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{8F6B467A-3706-49E0-B4DE-D5E352F65564}|GestaoPedidos.csproj|c:\\users\\celso\\source\\repos\\pedidos\\gestaopedidos\\domain\\entities\\titulo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{8F6B467A-3706-49E0-B4DE-D5E352F65564}|GestaoPedidos.csproj|solutionrelative:domain\\entities\\titulo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{8F6B467A-3706-49E0-B4DE-D5E352F65564}|GestaoPedidos.csproj|c:\\users\\celso\\source\\repos\\pedidos\\gestaopedidos\\domain\\entities\\produto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8F6B467A-3706-49E0-B4DE-D5E352F65564}|GestaoPedidos.csproj|solutionrelative:domain\\entities\\produto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -26,59 +22,45 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "Titulo.cs",
-              "DocumentMoniker": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidos\\Domain\\Entities\\Titulo.cs",
-              "RelativeDocumentMoniker": "Domain\\Entities\\Titulo.cs",
-              "ToolTip": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidos\\Domain\\Entities\\Titulo.cs",
-              "RelativeToolTip": "Domain\\Entities\\Titulo.cs",
-              "ViewState": "AgIAABMAAAAAAAAAAAAcwDMAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-27T00:19:55.833Z",
-              "IsPinned": true,
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "ITitulosRepository.cs",
-              "DocumentMoniker": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidos\\Domain\\Abstractions\\ITitulosRepository.cs",
-              "RelativeDocumentMoniker": "Domain\\Abstractions\\ITitulosRepository.cs",
-              "ToolTip": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidos\\Domain\\Abstractions\\ITitulosRepository.cs",
-              "RelativeToolTip": "Domain\\Abstractions\\ITitulosRepository.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAqAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-27T00:23:23.471Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "CancelarPedidoUseCase.cs",
-              "DocumentMoniker": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidos\\Application\\UseCases\\Pedidos\\Commands\\CancelarPedidoUseCase.cs",
-              "RelativeDocumentMoniker": "Application\\UseCases\\Pedidos\\Commands\\CancelarPedidoUseCase.cs",
-              "ToolTip": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidos\\Application\\UseCases\\Pedidos\\Commands\\CancelarPedidoUseCase.cs",
-              "RelativeToolTip": "Application\\UseCases\\Pedidos\\Commands\\CancelarPedidoUseCase.cs",
-              "ViewState": "AgIAAA8AAAAAAAAAAAAAAC0AAAA6AAAAAAAAAA==",
+              "Title": "PedidoController.cs",
+              "DocumentMoniker": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidos\\WebAPI\\Controllers\\PedidoController.cs",
+              "RelativeDocumentMoniker": "WebAPI\\Controllers\\PedidoController.cs",
+              "ToolTip": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidos\\WebAPI\\Controllers\\PedidoController.cs",
+              "RelativeToolTip": "WebAPI\\Controllers\\PedidoController.cs",
+              "ViewState": "AgIAACkAAAAAAAAAAAAwwD4AAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-27T00:23:09.934Z",
+              "WhenOpened": "2026-03-28T15:02:18.247Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "TitulosRepository.cs",
-              "DocumentMoniker": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidos\\Infrastructure\\Repositories\\TitulosRepository.cs",
-              "RelativeDocumentMoniker": "Infrastructure\\Repositories\\TitulosRepository.cs",
-              "ToolTip": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidos\\Infrastructure\\Repositories\\TitulosRepository.cs",
-              "RelativeToolTip": "Infrastructure\\Repositories\\TitulosRepository.cs",
-              "ViewState": "AgIAABAAAAAAAAAAAAA2wCMAAAA4AAAAAAAAAA==",
+              "Title": "AtualizarPedidoUseCase.cs",
+              "DocumentMoniker": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidos\\Application\\UseCases\\Pedidos\\Commands\\AtualizarPedidoUseCase.cs",
+              "RelativeDocumentMoniker": "Application\\UseCases\\Pedidos\\Commands\\AtualizarPedidoUseCase.cs",
+              "ToolTip": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidos\\Application\\UseCases\\Pedidos\\Commands\\AtualizarPedidoUseCase.cs",
+              "RelativeToolTip": "Application\\UseCases\\Pedidos\\Commands\\AtualizarPedidoUseCase.cs",
+              "ViewState": "AgIAAEIAAAAAAAAAAAAowAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-27T00:18:30.361Z",
+              "WhenOpened": "2026-03-28T15:01:52.439Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Produto.cs",
+              "DocumentMoniker": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidos\\Domain\\Entities\\Produto.cs",
+              "RelativeDocumentMoniker": "Domain\\Entities\\Produto.cs",
+              "ToolTip": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidos\\Domain\\Entities\\Produto.cs",
+              "RelativeToolTip": "Domain\\Entities\\Produto.cs",
+              "ViewState": "AgIAADIAAAAAAAAAAAAqwEsAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-28T14:48:09.478Z",
               "EditorCaption": ""
             }
           ]

@@ -128,6 +128,27 @@
   },
   {
     "ContainingType": "GestaoPedidos.WebAPI.Controllers.PedidoController",
+    "Method": "AtualizarPedido",
+    "RelativePath": "api/Pedido/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "dto",
+        "Type": "GestaoPedidos.Application.DTO.Pedidos.AtualizarPedidoRequestDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "GestaoPedidos.WebAPI.Controllers.PedidoController",
     "Method": "CancelarPedido",
     "RelativePath": "api/Pedido/cancelar/{id}",
     "HttpMethod": "PUT",

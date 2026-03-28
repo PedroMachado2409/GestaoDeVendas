@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿
+using AutoMapper;
 using GestaoPedidos.Application.DTO.Pedidos;
 using GestaoPedidos.Domain.Abstractions;
 using GestaoPedidos.Domain.Entities.Pedidos;
@@ -29,40 +30,61 @@ namespace GestaoPedidos.Application.UseCases.Pedidos.Commands
             if (dto.Itens == null || !dto.Itens.Any())
                 throw new BadRequestException(PedidosExceptions.Pedido_ItemObrigatório);
 
-            var pedido = await _pedidoRepository.ObterPorId(dto.Id);
+            if (dto.Itens.Any(i => i.Quantidade <= 0))
+                throw new BadRequestException(PedidosExceptions.Pedido_QuantidadeInvalida);
+
+            if (dto.Itens.GroupBy(i => i.ProdutoId).Any(g => g.Count() > 1))
+                throw new BadRequestException("Existem produtos duplicados na atualização do pedido.");
+
+            var pedido = await _pedidoRepository.ObterPorId(id);
             if (pedido == null)
                 throw new NotFoundException(PedidosExceptions.Pedido_NaoEncontrado);
 
             var itensAtuais = pedido.Itens.ToDictionary(item => item.ProdutoId);
             var itensSolicitados = dto.Itens.ToDictionary(item => item.ProdutoId);
 
-            foreach (var itemDto in dto.Itens)
+            foreach (var itemAtual in pedido.Itens.ToList())
             {
-                var produto = await _produtoRepository.ObterPorId(itemDto.ProdutoId);
+                if (itensSolicitados.ContainsKey(itemAtual.ProdutoId))
+                    continue;
+
+                var produtoAtual = await _produtoRepository.ObterPorId(itemAtual.ProdutoId);
+                if (produtoAtual == null)
+                    throw new NotFoundException(ProdutoExceptions.Produto_NaoEncontrado);
+
+                produtoAtual.CancelarReservaDeQuantidade(itemAtual.Quantidade);
+                pedido.AtualizarItem(itemAtual.ProdutoId, 0);
+                await _produtoRepository.Atualizar(produtoAtual);
+            }
+
+            foreach (var itemSolicitado in dto.Itens)
+            {
+                var produto = await _produtoRepository.ObterPorId(itemSolicitado.ProdutoId);
                 if (produto == null)
                     throw new NotFoundException(ProdutoExceptions.Produto_NaoEncontrado);
+
                 if (!produto.Ativo)
                     throw new BadRequestException(ProdutoExceptions.Produto_Inativo);
 
-                if (itensAtuais.TryGetValue(itemDto.ProdutoId, out var itemAtual))
-                {
-                    var diferencaQuantidade = itemDto.Quantidade - itemAtual.Quantidade;
+                var quantidadeAtual = itensAtuais.TryGetValue(itemSolicitado.ProdutoId, out var itemAtual)
+                    ? itemAtual.Quantidade
+                    : 0;
 
-                    if (diferencaQuantidade > 0)
-                        produto.ReservarQuantidade(diferencaQuantidade);
-                    else if (diferencaQuantidade < 0)
-                        produto.CancelarReservaDeQuantidade(Math.Abs(diferencaQuantidade));
+                var diferencaQuantidade = itemSolicitado.Quantidade - quantidadeAtual;
 
-                    pedido.AtualizarItem(itemDto.ProdutoId, itemDto.Quantidade);
-                    await _produtoRepository.Atualizar(produto);
-                    continue;
-                }
+                if (diferencaQuantidade > 0)
+                    produto.ReservarQuantidade(diferencaQuantidade);
+                else if (diferencaQuantidade < 0)
+                    produto.CancelarReservaDeQuantidade(Math.Abs(diferencaQuantidade));
 
-                produto.ReservarQuantidade(itemDto.Quantidade);
-                pedido.AdicionarItem(new PedidoItem(produto.Id, produto.Preco, itemDto.Quantidade));
+                if (itemAtual == null)
+                    pedido.AdicionarItem(new PedidoItem(produto.Id, produto.Preco, itemSolicitado.Quantidade));
+                else
+                    pedido.AtualizarItem(itemSolicitado.ProdutoId, itemSolicitado.Quantidade);
+
                 await _produtoRepository.Atualizar(produto);
             }
-            id = dto.Id;
+
             await _pedidoRepository.Atualizar(pedido);
             return _mapper.Map<PedidoResponseDTO>(pedido);
         }

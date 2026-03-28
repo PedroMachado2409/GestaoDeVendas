@@ -1,4 +1,4 @@
-﻿using GestaoPedidos.Application.DTO.Clientes;
+﻿
 using GestaoPedidos.Application.DTO.Pedidos;
 using GestaoPedidos.Application.UseCases.Pedidos.Commands;
 using GestaoPedidos.Application.UseCases.Pedidos.Queries;
@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GestaoPedidos.WebAPI.Controllers
 {
-
     [ApiController]
     [Route("/api/[controller]")]
     public class PedidoController : ControllerBase
@@ -16,17 +15,18 @@ namespace GestaoPedidos.WebAPI.Controllers
         private readonly FinalizarPedidoUseCase _finalizarPedidoUseCase;
         private readonly CancelarPedidoUseCase _cancelarPedidoUseCase;
         private readonly AtualizarPedidoUseCase _atualizarPedidoUseCase;
-        public PedidoController(CadastrarPedidoUseCase cadastrarPedidoUseCase,
+
+        public PedidoController(
+            CadastrarPedidoUseCase cadastrarPedidoUseCase,
             ObterPedidoPorIdUseCase obterPedidoPorIdUseCase,
             FinalizarPedidoUseCase finalizarPedidoUseCase,
             CancelarPedidoUseCase cancelarPedidoUseCase,
-            AtualizarPedidoUseCase atualizarPedidoUseCase
-            )
+            AtualizarPedidoUseCase atualizarPedidoUseCase)
         {
             _cadastrarPedidoUseCase = cadastrarPedidoUseCase;
             _obterPedidoPorIdUseCase = obterPedidoPorIdUseCase;
             _finalizarPedidoUseCase = finalizarPedidoUseCase;
-            _cancelarPedidoUseCase= cancelarPedidoUseCase;
+            _cancelarPedidoUseCase = cancelarPedidoUseCase;
             _atualizarPedidoUseCase = atualizarPedidoUseCase;
         }
 
@@ -44,13 +44,19 @@ namespace GestaoPedidos.WebAPI.Controllers
             return Ok(pedido);
         }
 
+        [HttpPut("{id}")]
+        public async Task<IActionResult> AtualizarPedido(int id, [FromBody] AtualizarPedidoRequestDTO dto)
+        {
+            var pedido = await _atualizarPedidoUseCase.Executar(id, dto);
+            return Ok(pedido);
+        }
+
         [HttpPut("finalizar/{id}")]
         public async Task<IActionResult> FinalizarPedido(int id)
         {
             var pedido = await _finalizarPedidoUseCase.Executar(id);
             return Ok(pedido);
         }
-
 
         [HttpPut("cancelar/{id}")]
         public async Task<IActionResult> CancelarPedido(int id)

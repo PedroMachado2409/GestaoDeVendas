@@ -130,7 +130,7 @@
     <value>O Pedido já esta finalizado</value>
   </data>
   <data name="Pedido_NaoPodeCancelar" xml:space="preserve">
-    <value>O pedido não pode ser cancelado pois nao esta em aberto</value>
+    <value>O pedido não pode ser cancelado pois ja está cancelado</value>
   </data>
   <data name="Pedido_QuantidadeInvalida" xml:space="preserve">
     <value>A quantidade informada é invalida </value>

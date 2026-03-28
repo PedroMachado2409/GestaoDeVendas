@@ -63,5 +63,13 @@
             QuantidadeReservada -= quantidade;
             Estoque += quantidade;
         }
+
+        public void AumentarEstoque(int quantidade)
+        {
+            if (quantidade <= 0)
+                throw new Exception("Quantidade invalida");
+
+            Estoque += quantidade;
+        }
     }
 }
