@@ -22,13 +22,13 @@ namespace GestaoPedidos.Infrastructure.Repositories
 
         public async Task<List<Titulo>> ListarTitulos()
         {
-            var titulos = await _context.Titulos.Include(T => T.ClienteId).ToListAsync();
+            var titulos = await _context.Titulos.OrderBy(t => t.Id).ToListAsync();
             return titulos;
         }
 
         public async Task<Titulo?> ObterTituloPorId(int id)
         {
-            var titulo = await _context.Titulos.Include(t => t.ClienteId)
+            var titulo = await _context.Titulos
                 .FirstOrDefaultAsync(t => t.Id == id);
             return titulo;
         }
@@ -37,6 +37,12 @@ namespace GestaoPedidos.Infrastructure.Repositories
         {
             var titulo = await _context.Titulos.FirstOrDefaultAsync(t => t.IdOrigem == origemId);
             return titulo;
+        }
+
+        public async Task AtualizarTitulo(Titulo titulo)
+        {
+             _context.Titulos.Update(titulo);
+            await _context.SaveChangesAsync();
         }
 
         public async Task DeletarTitulo(int id)

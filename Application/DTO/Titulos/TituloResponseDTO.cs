@@ -10,7 +10,8 @@ namespace GestaoPedidos.Application.DTO.Titulos
         public int ClienteId { get; set; }
         public string Observacao { get; set; } = string.Empty;
         public TipoTitulo Tipo { get; set; }
-        public bool StBaixado = false;
+
+        public bool StBaixado { get; set; }
         public DateTime DataCadastro { get; set; } = DateTime.UtcNow;
         public int? IdOrigem { get; set; } = null;
     }

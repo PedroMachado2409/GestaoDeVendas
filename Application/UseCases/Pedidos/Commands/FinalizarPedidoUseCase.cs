@@ -49,18 +49,14 @@ namespace GestaoPedidos.Application.UseCases.Pedidos.Commands
                 if (produto == null)
                     throw new NotFoundException(ProdutoExceptions.Produto_NaoEncontrado);
 
-                produto.CancelarReservaDeQuantidade(item.Quantidade);
-                produto.BaixarEstoque(item.Quantidade);
-
+                produto.FinalizarEstoquePedido(pedido.Tipo, item.Quantidade);
                 await _produtoRepository.Atualizar(produto);
             }
 
-            var titulo = new Titulo(cliente.Nome,pedido.ValorTotal,pedido.ClienteId,string.Empty, TipoTitulo.Entrada, pedidoId);
-            
-
+            var tipoTitulo = pedido.Tipo == TipoPedido.Compra ? TipoTitulo.Saída : TipoTitulo.Entrada;
+            var titulo = new Titulo(cliente.Nome,pedido.ValorTotal,pedido.ClienteId,string.Empty, tipoTitulo, pedidoId, Origem.Pedido);
             await _repository.Atualizar(pedido);
             await _titulosRepository.CadastrarTitulo(titulo);
-
             return _mapper.Map<PedidoResponseDTO>(pedido);
         }
     }

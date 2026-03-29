@@ -14,10 +14,11 @@ namespace GestaoPedidos.Domain.Entities
         public bool StBaixado { get; private set; } = false;
         public DateTime DataCadastro { get; private set; } = DateTime.UtcNow;
         public int? IdOrigem { get; private set; } = null;
+        public Origem? NomeOrigem { get; private set; } = null;
 
         protected Titulo() { }
 
-        public Titulo(string nomeTitulo, decimal valorTitulo, int clienteId, string observacao, TipoTitulo tipo, int? idOrigem)
+        public Titulo(string nomeTitulo, decimal valorTitulo, int clienteId, string observacao, TipoTitulo tipo, int? idOrigem, Origem? nomeOrigem)
         {
             NomeTitulo = nomeTitulo;
             ValorTitulo = valorTitulo;
@@ -25,6 +26,7 @@ namespace GestaoPedidos.Domain.Entities
             Observacao = observacao;
             Tipo = tipo;
             IdOrigem = idOrigem;
+            NomeOrigem = nomeOrigem;
         }
 
         public void ConverterValor()
@@ -32,7 +34,7 @@ namespace GestaoPedidos.Domain.Entities
             if (Tipo == TipoTitulo.Saída)
                 ValorTitulo = -Math.Abs(ValorTitulo);
             else
-                ValorTitulo = Math.Abs(ValorTitulo);
+                ValorTitulo = +Math.Abs(ValorTitulo);
         }
 
         public void BaixarTitulo()

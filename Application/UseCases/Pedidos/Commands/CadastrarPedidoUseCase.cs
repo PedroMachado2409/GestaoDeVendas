@@ -2,6 +2,7 @@
 using GestaoPedidos.Application.DTO.Pedidos;
 using GestaoPedidos.Domain.Abstractions;
 using GestaoPedidos.Domain.Entities.Pedidos;
+using GestaoPedidos.Domain.Enum;
 using GestaoPedidos.Domain.Exceptions;
 using GestaoPedidos.Domain.Exceptions.Clientes;
 using GestaoPedidos.Domain.Exceptions.Pedidos;
@@ -47,10 +48,10 @@ namespace GestaoPedidos.Application.UseCases.Pedidos.Commands
                     throw new BadRequestException(ProdutoExceptions.Produto_Inativo);
 
                 itens.Add(new PedidoItem(produto.Id, produto.Preco, item.Quantidade));
-                produto.ReservarQuantidade(item.Quantidade);
+                produto.ReservarQuantidades(dto.Tipo, item.Quantidade);
             }
 
-            var pedido = new Pedido(dto.ClienteId, itens);
+            var pedido = new Pedido(dto.ClienteId, itens, dto.Tipo);
             await _pedidoRepository.Cadastrar(pedido);
             return _mapper.Map<PedidoResponseDTO>(pedido);
         }

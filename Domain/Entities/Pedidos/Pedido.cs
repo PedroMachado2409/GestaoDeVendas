@@ -9,21 +9,22 @@ namespace GestaoPedidos.Domain.Entities.Pedidos
         public int Id { get; private set; }
         public int ClienteId { get; private set; }
         public StatusPedido Status {  get; private set; }
+        public TipoPedido Tipo { get; private set; }
         public DateTime DataCadastro { get; private set; } = DateTime.UtcNow;
         public decimal ValorTotal => _itens.Sum(i => i.SubTotal);
-
         private readonly List<PedidoItem> _itens = new();
         public IReadOnlyCollection<PedidoItem> Itens => _itens.AsReadOnly();
 
         protected Pedido () { }
         
-        public Pedido (int clienteId, List<PedidoItem> itens)
+        public Pedido (int clienteId, List<PedidoItem> itens, TipoPedido tipo)
         {
             if (itens is null || !itens.Any())
                 throw new BadRequestException(PedidosExceptions.Pedido_ItemObrigatório);
 
             ClienteId = clienteId;
             Status = StatusPedido.Aberto;
+            Tipo = tipo;
             _itens = itens;
         }
         public void AdicionarItem(PedidoItem item)

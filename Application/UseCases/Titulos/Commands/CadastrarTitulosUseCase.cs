@@ -19,7 +19,8 @@ namespace GestaoPedidos.Application.UseCases.Titulos.Commands
 
         public async Task <TituloResponseDTO> Executar(CreateTituloDTO dto)
         {
-            var novoTitulo = new Titulo(dto.NomeTitulo, dto.ValorTitulo, dto.ClienteId, dto.Observacao, dto.Tipo, null);
+            var novoTitulo = new Titulo(dto.NomeTitulo, dto.ValorTitulo, dto.ClienteId, dto.Observacao, dto.Tipo, null, null);
+            novoTitulo.ConverterValor();
             await _repository.CadastrarTitulo(novoTitulo);
             return _mapper.Map<TituloResponseDTO>(novoTitulo);
         }

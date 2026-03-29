@@ -41,7 +41,7 @@ namespace GestaoPedidos.Application.UseCases.Pedidos.Commands
 
                 if(pedido.Status == StatusPedido.Aberto)
                 {
-                   produto.CancelarReservaDeQuantidade(item.Quantidade);
+                   produto.CancelarQuantidades(pedido.Tipo,pedido.Status, item.Quantidade);
                 } else {
                     produto.AumentarEstoque(item.Quantidade);
                 }

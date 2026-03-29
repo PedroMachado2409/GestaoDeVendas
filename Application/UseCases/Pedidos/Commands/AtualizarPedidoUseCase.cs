@@ -3,6 +3,7 @@ using AutoMapper;
 using GestaoPedidos.Application.DTO.Pedidos;
 using GestaoPedidos.Domain.Abstractions;
 using GestaoPedidos.Domain.Entities.Pedidos;
+using GestaoPedidos.Domain.Enum;
 using GestaoPedidos.Domain.Exceptions;
 using GestaoPedidos.Domain.Exceptions.Pedidos;
 using GestaoPedidos.Domain.Exceptions.Produtos;
@@ -27,6 +28,13 @@ namespace GestaoPedidos.Application.UseCases.Pedidos.Commands
 
         public async Task<PedidoResponseDTO> Executar(int id, AtualizarPedidoRequestDTO dto)
         {
+            var pedido = await _pedidoRepository.ObterPorId(id);
+            if (pedido == null)
+                throw new NotFoundException(PedidosExceptions.Pedido_NaoEncontrado);
+
+            if (pedido.Status != StatusPedido.Aberto)
+                throw new BadRequestException("Só é possivel editar pedidos abertos !");
+
             if (dto.Itens == null || !dto.Itens.Any())
                 throw new BadRequestException(PedidosExceptions.Pedido_ItemObrigatório);
 
@@ -35,10 +43,6 @@ namespace GestaoPedidos.Application.UseCases.Pedidos.Commands
 
             if (dto.Itens.GroupBy(i => i.ProdutoId).Any(g => g.Count() > 1))
                 throw new BadRequestException("Existem produtos duplicados na atualização do pedido.");
-
-            var pedido = await _pedidoRepository.ObterPorId(id);
-            if (pedido == null)
-                throw new NotFoundException(PedidosExceptions.Pedido_NaoEncontrado);
 
             var itensAtuais = pedido.Itens.ToDictionary(item => item.ProdutoId);
             var itensSolicitados = dto.Itens.ToDictionary(item => item.ProdutoId);

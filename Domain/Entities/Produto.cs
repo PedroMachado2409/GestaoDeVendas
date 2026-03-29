@@ -1,15 +1,19 @@
-﻿namespace GestaoPedidos.Domain.Entities
+﻿using GestaoPedidos.Domain.Enum;
+using GestaoPedidos.Domain.Exceptions;
+
+namespace GestaoPedidos.Domain.Entities
 {
     public class Produto
     {
-        public int Id { get; set; }
-        public string Nome { get; set; } = string.Empty;
-        public string Marca { get; set; } = string.Empty;
-        public decimal Preco { get; set; }
-        public int Estoque { get; set; } = 0;
-        public int QuantidadeReservada { get; set; } = 0;
-        public DateTime DataCadastro { get; set; } = DateTime.UtcNow;
-        public bool Ativo { get; set; } = true;
+        public int Id { get; private set; }
+        public string Nome { get; private set; } = string.Empty;
+        public string Marca { get; private set; } = string.Empty;
+        public decimal Preco { get; private set; }
+        public int Estoque { get; private set; } = 0;
+        public int QuantidadeReservadaParaVenda { get; private set; } = 0;
+        public int QuantidadeEmCompra { get; private set; } = 0;
+        public DateTime DataCadastro { get; private set; } = DateTime.UtcNow;
+        public bool Ativo { get; private set; } = true;
         protected Produto() { }
 
         public Produto (string nome, string marca, int estoque, decimal preco)
@@ -33,43 +37,61 @@
         public void BaixarEstoque(int quantidade)
         {
             if (quantidade <= 0)
-                throw new Exception("Quantidade inválida.");
+                throw new BadRequestException("Quantidade inválida.");
 
             if (Estoque < quantidade)
-                throw new Exception("Estoque insuficiente.");
+                throw new BadRequestException("Estoque insuficiente.");
 
             Estoque -= quantidade;
-        }
-
-        public void ReservarQuantidade(int quantidade)
-        {
-            {
-                if (quantidade <= 0)
-                    throw new Exception("Quantidade inválida.");
-
-                if (Estoque < quantidade)
-                    throw new Exception("Estoque insuficiente.");
-
-                QuantidadeReservada += quantidade;
-                Estoque -= quantidade;
-            }
-        }
-
-        public void CancelarReservaDeQuantidade(int quantidade)
-        {
-            if (quantidade <= 0)
-                throw new Exception("Quantidade inválida.");
-
-            QuantidadeReservada -= quantidade;
-            Estoque += quantidade;
         }
 
         public void AumentarEstoque(int quantidade)
         {
             if (quantidade <= 0)
-                throw new Exception("Quantidade invalida");
+                throw new BadRequestException("Quantidade invalida");
 
             Estoque += quantidade;
+        }
+        public void FinalizarEstoquePedido(TipoPedido tipoPedido, int quantidade)
+        {
+            if (tipoPedido == TipoPedido.Venda)
+            {
+                QuantidadeReservadaParaVenda -= quantidade;
+            }
+            else if (tipoPedido == TipoPedido.Compra) 
+            {
+                QuantidadeEmCompra -= quantidade;
+                AumentarEstoque(quantidade);
+            }
+        }
+
+        public void ReservarQuantidades(TipoPedido tipoPedido, int quantidade)
+        {
+            if(tipoPedido == TipoPedido.Venda)
+            {
+                QuantidadeReservadaParaVenda += quantidade;
+                BaixarEstoque(quantidade);
+            } else if (tipoPedido == TipoPedido.Compra)
+            {
+                QuantidadeEmCompra += quantidade;
+            }
+        }
+
+        public void CancelarQuantidades(TipoPedido tipoPedido, StatusPedido status, int quantidade)
+        {
+            if (tipoPedido == TipoPedido.Venda)
+            {
+                QuantidadeReservadaParaVenda -= quantidade;
+                AumentarEstoque(quantidade);
+            }
+            else if (tipoPedido == TipoPedido.Compra)
+            {
+                QuantidadeEmCompra -= quantidade;
+                if(status == StatusPedido.Finalizado)
+                {
+                    BaixarEstoque(quantidade);
+                }
+            }
         }
     }
 }
