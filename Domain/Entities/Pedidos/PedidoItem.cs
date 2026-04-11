@@ -10,6 +10,7 @@ namespace GestaoPedidos.Domain.Entities.Pedidos
         public int Id { get; private set; }
         public int PedidoId { get; private set; }
         public int ProdutoId { get; private set; }
+        public Produto produto { get; private set; }
         public decimal Preco {  get; private set; }
         public int Quantidade { get; private set; }
 

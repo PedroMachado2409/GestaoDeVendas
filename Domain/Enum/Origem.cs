@@ -3,6 +3,7 @@
     public enum Origem
     {
         Pedido = 0,
-        TItulo = 1,
+        Inventario = 1,
+        Titulo = 2,
     }
 }

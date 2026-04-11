@@ -56,7 +56,7 @@ namespace GestaoPedidos.Application.UseCases.Pedidos.Commands
                 if (produtoAtual == null)
                     throw new NotFoundException(ProdutoExceptions.Produto_NaoEncontrado);
 
-                produtoAtual.CancelarReservaDeQuantidade(itemAtual.Quantidade);
+                produtoAtual.CancelarQuantidades(pedido.Tipo, pedido.Status,itemAtual.Quantidade);
                 pedido.AtualizarItem(itemAtual.ProdutoId, 0);
                 await _produtoRepository.Atualizar(produtoAtual);
             }
@@ -77,9 +77,9 @@ namespace GestaoPedidos.Application.UseCases.Pedidos.Commands
                 var diferencaQuantidade = itemSolicitado.Quantidade - quantidadeAtual;
 
                 if (diferencaQuantidade > 0)
-                    produto.ReservarQuantidade(diferencaQuantidade);
+                    produto.ReservarQuantidades(pedido.Tipo, diferencaQuantidade);
                 else if (diferencaQuantidade < 0)
-                    produto.CancelarReservaDeQuantidade(Math.Abs(diferencaQuantidade));
+                    produto.CancelarQuantidades(pedido.Tipo, pedido.Status ,Math.Abs(diferencaQuantidade));
 
                 if (itemAtual == null)
                     pedido.AdicionarItem(new PedidoItem(produto.Id, produto.Preco, itemSolicitado.Quantidade));

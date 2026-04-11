@@ -10,8 +10,11 @@ namespace GestaoPedidos.Infrastructure.Data
         public DbSet<Produto> Produtos { get; set; }
         public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<Titulo> Titulos { get; set; }
+        public DbSet<Configuracao> Configuracoes { get; set; }
         public DbSet<Pedido> Pedidos { get; set; }
         public DbSet<PedidoItem> PedidoItens { get; set; }
+        public DbSet<MovimentacaoEstoque> MovimentacaoEstoque { get; set; }
+        public DbSet<MovimentoFinanceiro> MovimentacoesFinanceiras { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options)
            : base(options) { }

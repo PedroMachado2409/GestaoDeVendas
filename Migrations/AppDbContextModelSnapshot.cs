@@ -53,6 +53,124 @@ namespace GestaoPedidos.Migrations
                     b.ToTable("Clientes");
                 });
 
+            modelBuilder.Entity("GestaoPedidos.Domain.Entities.Configuracao", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("ConexaoSSl")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("DiretorioXML")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("EmailOrigem")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("EnviaXMLPorEmail")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("GeraXmlDoPedido")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("HabilitaEnvioDeEmail")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("NomeLoja")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("PermiteEstoqueNegativo")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("Porta")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Senha")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Smtp")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Usuario")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Configuracoes");
+                });
+
+            modelBuilder.Entity("GestaoPedidos.Domain.Entities.MovimentacaoEstoque", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("DataMovimentacao")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("IdOrigem")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("NomeOrigem")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ProdutoId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Quantidade")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Tipo")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("MovimentacaoEstoque");
+                });
+
+            modelBuilder.Entity("GestaoPedidos.Domain.Entities.MovimentoFinanceiro", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("DataCadastro")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Observacao")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("OrigemId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("TipoOrigem")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("TituloId")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("Valor")
+                        .HasColumnType("numeric");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("MovimentacoesFinanceiras");
+                });
+
             modelBuilder.Entity("GestaoPedidos.Domain.Entities.Pedidos.Pedido", b =>
                 {
                     b.Property<int>("Id")
@@ -68,6 +186,9 @@ namespace GestaoPedidos.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Tipo")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -98,6 +219,8 @@ namespace GestaoPedidos.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("PedidoId");
+
+                    b.HasIndex("ProdutoId");
 
                     b.ToTable("PedidoItens");
                 });
@@ -130,7 +253,10 @@ namespace GestaoPedidos.Migrations
                     b.Property<decimal>("Preco")
                         .HasColumnType("numeric");
 
-                    b.Property<int>("QuantidadeReservada")
+                    b.Property<int>("QuantidadeEmCompra")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("QuantidadeReservadaParaVenda")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -221,6 +347,14 @@ namespace GestaoPedidos.Migrations
                         .HasForeignKey("PedidoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("GestaoPedidos.Domain.Entities.Produto", "produto")
+                        .WithMany()
+                        .HasForeignKey("ProdutoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("produto");
                 });
 
             modelBuilder.Entity("GestaoPedidos.Domain.Entities.Pedidos.Pedido", b =>

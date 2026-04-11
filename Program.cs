@@ -1,4 +1,4 @@
-using FluentValidation;
+ using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
@@ -14,6 +14,8 @@ using GestaoPedidos.Infrastructure.Security;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using GestaoPedidos.Infrastructure.Services;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -85,6 +87,10 @@ builder.Services.AddScoped<IProdutoRepository, ProdutoRepository>();
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<IPedidoRepository, PedidoRepository>();
 builder.Services.AddScoped<ITitulosRepository, TitulosRepository>();
+builder.Services.AddScoped<IMovimentacaoEstoqueRepository, MovimentacaoEstoqueRepository>();
+builder.Services.AddScoped<IMovimentosFinanceirosRepository, MovimentoFinanceiroRepository>();
+builder.Services.AddScoped<IConfiguracaoRepository, ConfiguracaoRepository>();
+
 
 // ================= AUTOMAPPER =================
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -94,6 +100,9 @@ builder.Services.AddValidatorsFromAssemblyContaining<ClienteCreateValidator>();
 builder.Services.AddFluentValidationAutoValidation();
 
 builder.Services.AddHttpContextAccessor();
+
+// ================= EMAIL SERVICE =================
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 // ================= USE CASES =================
 builder.Services.Scan(scan => scan

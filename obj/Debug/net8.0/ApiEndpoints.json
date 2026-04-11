@@ -95,6 +95,48 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "GestaoPedidos.WebAPI.Controllers.ConfiguracaoController",
+    "Method": "ObterConfiguracao",
+    "RelativePath": "api/Configuracao",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "GestaoPedidos.WebAPI.Controllers.ConfiguracaoController",
+    "Method": "AtualizarConfiguracao",
+    "RelativePath": "api/Configuracao",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "GestaoPedidos.Application.DTO.Configuracao.UpdateConfiguracaoDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "GestaoPedidos.WebAPI.Controllers.MovimentacaoController",
+    "Method": "ListarMovimentacoesPorProduto",
+    "RelativePath": "api/Movimentacao/{produtoId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "produtoId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "GestaoPedidos.WebAPI.Controllers.PedidoController",
     "Method": "CadastrarPedido",
     "RelativePath": "api/Pedido",

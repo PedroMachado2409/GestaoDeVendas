@@ -2,12 +2,12 @@
 
 public class Cliente
 {
-    public int Id { get; private set; }
-    public string Nome { get; private set; }
+    public int Id { get; private set; } 
+    public string Nome { get; private set; } 
     public string Email { get; private set; }
     public string Cpf { get; private set; }
-    public bool Ativo { get; private set; }
-    public DateTime DataCadastro { get; private set; }
+    public bool Ativo { get; private set; } = true;
+    public DateTime DataCadastro { get; private set; } = DateTime.UtcNow;
 
     protected Cliente() { }
 

@@ -131,3 +131,8 @@ C:\Users\celso\source\repos\Pedidos\GestaoPedidos\obj\Debug\net8.0\GestaoPedidos
 C:\Users\celso\source\repos\Pedidos\GestaoPedidos\obj\Debug\net8.0\GestaoPedidos.Domain.Exceptions.Produtos.ProdutoExceptions.resources
 C:\Users\celso\source\repos\Pedidos\GestaoPedidos\obj\Debug\net8.0\GestaoPedidos.Domain.Exceptions.Usuarios.UsuariosExceptions.resources
 C:\Users\celso\source\repos\Pedidos\GestaoPedidos\obj\Debug\net8.0\GestaoPedidos.Domain.Exceptions.Pedidos.PedidosExceptions.resources
+C:\Users\celso\source\repos\Pedidos\GestaoPedidos\bin\Debug\net8.0\BouncyCastle.Cryptography.dll
+C:\Users\celso\source\repos\Pedidos\GestaoPedidos\bin\Debug\net8.0\MailKit.dll
+C:\Users\celso\source\repos\Pedidos\GestaoPedidos\bin\Debug\net8.0\MimeKit.dll
+C:\Users\celso\source\repos\Pedidos\GestaoPedidos\bin\Debug\net8.0\System.Security.Cryptography.Pkcs.dll
+C:\Users\celso\source\repos\Pedidos\GestaoPedidos\bin\Debug\net8.0\runtimes\win\lib\net8.0\System.Security.Cryptography.Pkcs.dll
