@@ -25,6 +25,6 @@ namespace GestaoPedidos.Infrastructure.Repositories
              _context.Configuracoes.Update(configuracao);
             await _context.SaveChangesAsync();
         }
-
+        
     }
 }

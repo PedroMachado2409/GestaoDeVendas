@@ -2,7 +2,7 @@
 using GestaoPedidos.Application.DTO.Configuracao;
 using GestaoPedidos.Domain.Abstractions;
 
-namespace GestaoPedidos.Application.UseCases.Configuracao.Queries
+namespace GestaoPedidos.Application.UseCases.Configuracoes.Queries
 {
     public class ObterConfiguracaoUseCase
     {

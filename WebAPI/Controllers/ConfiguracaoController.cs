@@ -1,6 +1,6 @@
 ﻿using GestaoPedidos.Application.DTO.Configuracao;
-using GestaoPedidos.Application.UseCases.Configuracao.Commands;
-using GestaoPedidos.Application.UseCases.Configuracao.Queries;
+using GestaoPedidos.Application.UseCases.Configuracoes.Commands;
+using GestaoPedidos.Application.UseCases.Configuracoes.Queries;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GestaoPedidos.WebAPI.Controllers

@@ -317,6 +317,22 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "GestaoPedidos.WebAPI.Controllers.ProdutoController",
+    "Method": "ImportarTxt",
+    "RelativePath": "api/Produto/importar-txt",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "file",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "GestaoPedidos.WebAPI.Controllers.TituloController",
     "Method": "ListarTitulos",
     "RelativePath": "api/Titulo",

@@ -2,7 +2,7 @@
 using GestaoPedidos.Application.DTO.Configuracao;
 using GestaoPedidos.Domain.Abstractions;
 
-namespace GestaoPedidos.Application.UseCases.Configuracao.Commands
+namespace GestaoPedidos.Application.UseCases.Configuracoes.Commands
 {
     public class AtualizarConfiguracaoUseCase
     {

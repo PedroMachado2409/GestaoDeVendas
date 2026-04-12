@@ -19,6 +19,7 @@
         //ConfiguraçãoEnvioDeEmail
         public bool HabilitaEnvioDeEmail { get; set; } = false;
         public bool EnviaXMLPorEmail { get; set; } = false;
+        public string CaminhoTemplateEmailPedido {  get; set; } = string.Empty;
 
         //Configuração XML
         public bool GeraXmlDoPedido { get; set; } = false;

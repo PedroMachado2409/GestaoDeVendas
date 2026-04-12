@@ -103,6 +103,7 @@ builder.Services.AddHttpContextAccessor();
 
 // ================= EMAIL SERVICE =================
 builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<ImportacaoProdutoTxtService, ImportacaoProdutoTxtService>();
 
 // ================= USE CASES =================
 builder.Services.Scan(scan => scan

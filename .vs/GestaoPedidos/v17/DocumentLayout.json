@@ -3,8 +3,8 @@
   "WorkspaceRootPath": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidos\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{8F6B467A-3706-49E0-B4DE-D5E352F65564}|GestaoPedidos.csproj|c:\\users\\celso\\source\\repos\\pedidos\\gestaopedidos\\application\\usecases\\pedidos\\commands\\cadastrarpedidousecase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{8F6B467A-3706-49E0-B4DE-D5E352F65564}|GestaoPedidos.csproj|solutionrelative:application\\usecases\\pedidos\\commands\\cadastrarpedidousecase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{8F6B467A-3706-49E0-B4DE-D5E352F65564}|GestaoPedidos.csproj|c:\\users\\celso\\source\\repos\\pedidos\\gestaopedidos\\infrastructure\\services\\importacaoprodutotxtservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8F6B467A-3706-49E0-B4DE-D5E352F65564}|GestaoPedidos.csproj|solutionrelative:infrastructure\\services\\importacaoprodutotxtservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -19,14 +19,14 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "CadastrarPedidoUseCase.cs",
-              "DocumentMoniker": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidos\\Application\\UseCases\\Pedidos\\Commands\\CadastrarPedidoUseCase.cs",
-              "RelativeDocumentMoniker": "Application\\UseCases\\Pedidos\\Commands\\CadastrarPedidoUseCase.cs",
-              "ToolTip": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidos\\Application\\UseCases\\Pedidos\\Commands\\CadastrarPedidoUseCase.cs",
-              "RelativeToolTip": "Application\\UseCases\\Pedidos\\Commands\\CadastrarPedidoUseCase.cs",
-              "ViewState": "AgIAAAkAAAAAAAAAAAAowB4AAAAAAAAAAAAAAA==",
+              "Title": "ImportacaoProdutoTxtService.cs",
+              "DocumentMoniker": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidos\\Infrastructure\\Services\\ImportacaoProdutoTxtService.cs",
+              "RelativeDocumentMoniker": "Infrastructure\\Services\\ImportacaoProdutoTxtService.cs",
+              "ToolTip": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidos\\Infrastructure\\Services\\ImportacaoProdutoTxtService.cs",
+              "RelativeToolTip": "Infrastructure\\Services\\ImportacaoProdutoTxtService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-11T14:35:09.123Z",
+              "WhenOpened": "2026-04-12T16:42:55.932Z",
               "EditorCaption": ""
             }
           ]

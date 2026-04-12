@@ -32,6 +32,11 @@ namespace GestaoPedidos.Infrastructure.Repositories
             await _context.SaveChangesAsync();
             return produto;
         }
+        public async Task AdicionarEmLote(List<Produto> produtos)
+        {
+            await _context.Produtos.AddRangeAsync(produtos);
+            await _context.SaveChangesAsync();
+        }
 
         public async Task Atualizar(Produto produto)
         {

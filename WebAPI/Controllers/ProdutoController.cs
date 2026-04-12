@@ -17,6 +17,7 @@ namespace GestaoPedidos.WebAPI.Controllers
         private readonly ObterProdutoPorIdUseCase _obterProdutoPorIdUseCase;
         private readonly InativarProdutoUseCase _inativarProdutoUseCase;
         private readonly AtivarProdutoUseCase _ativarProdutoUseCase;
+        private readonly ImportarProdutosTxtUseCase _importarProdutosTxtUseCase;
 
         public ProdutoController(
             CadastrarProdutoUseCase cadastrarProdutoUseCase,
@@ -24,7 +25,9 @@ namespace GestaoPedidos.WebAPI.Controllers
             AtualizarProdutoUseCase atualizarProdutoUseCase,
             ObterProdutoPorIdUseCase obterProdutoPorIdUseCase,
             InativarProdutoUseCase inativarProdutoUseCase,
-            AtivarProdutoUseCase ativarProdutoUseCase
+            AtivarProdutoUseCase ativarProdutoUseCase,
+            ImportarProdutosTxtUseCase importarProdutosTxtUseCase
+
         )
         {
             _cadastrarProdutoUseCase = cadastrarProdutoUseCase;
@@ -33,6 +36,7 @@ namespace GestaoPedidos.WebAPI.Controllers
             _obterProdutoPorIdUseCase = obterProdutoPorIdUseCase;
             _inativarProdutoUseCase = inativarProdutoUseCase;
             _ativarProdutoUseCase = ativarProdutoUseCase;
+            _importarProdutosTxtUseCase = importarProdutosTxtUseCase;
         }
 
         [HttpGet]
@@ -49,6 +53,16 @@ namespace GestaoPedidos.WebAPI.Controllers
         {
             var produto = await _cadastrarProdutoUseCase.Executar(dto);
             return Ok(produto);
+        }
+
+        [HttpPost("importar-txt")]
+        public async Task<IActionResult> ImportarTxt(IFormFile file)
+        {
+            using var stream = file.OpenReadStream();
+
+            var produtos = await _importarProdutosTxtUseCase.Executar(stream);
+
+            return Ok(produtos);
         }
 
         [HttpPatch("{id}")]
