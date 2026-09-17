@@ -1,0 +1,248 @@
+@import 'tailwindcss';
+
+/* Tema escuro por classe no <html>, controlado por src/lib/tema.ts */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ---------------------------------------------------------------------------
+   Paleta semântica. Os utilitários (bg-surface, text-muted, border-line...)
+   são gerados a partir destas variáveis, então trocar o tema é só trocar o
+   valor — nenhum componente precisa saber se está claro ou escuro.
+--------------------------------------------------------------------------- */
+:root {
+  --canvas: oklch(98.4% 0.003 250);
+  --canvas-accent: oklch(96.4% 0.008 255);
+  --surface: oklch(100% 0 0);
+  --surface-2: oklch(97.2% 0.004 250);
+  --surface-3: oklch(94.5% 0.006 250);
+  --line: oklch(91.5% 0.006 250);
+  --line-strong: oklch(85% 0.008 250);
+  --ink: oklch(24% 0.017 260);
+  --ink-soft: oklch(45% 0.014 260);
+  --ink-muted: oklch(58% 0.012 260);
+
+  --brand: oklch(52% 0.196 265);
+  --brand-hover: oklch(46% 0.19 265);
+  --brand-soft: oklch(95% 0.03 265);
+  --brand-ink: oklch(42% 0.18 265);
+  --on-brand: oklch(100% 0 0);
+
+  --positive: oklch(58% 0.13 155);
+  --positive-soft: oklch(95% 0.04 155);
+  --positive-ink: oklch(42% 0.11 155);
+
+  --caution: oklch(70% 0.15 75);
+  --caution-soft: oklch(96% 0.05 85);
+  --caution-ink: oklch(48% 0.12 65);
+
+  --negative: oklch(58% 0.2 25);
+  --negative-soft: oklch(95% 0.03 25);
+  --negative-ink: oklch(47% 0.18 25);
+
+  --shadow-color: 260 25% 20%;
+
+  /* Séries de gráfico com mais de uma cor. Validadas (CVD e contraste) contra
+     a superfície de cada tema; não reaproveitar positivo/negativo, que são
+     cores de estado. */
+  --serie-1: #2a78d6;
+  --serie-2: #eb6834;
+
+  color-scheme: light;
+}
+
+.dark {
+  --canvas: oklch(18.5% 0.014 262);
+  --canvas-accent: oklch(21% 0.017 262);
+  --surface: oklch(22.5% 0.016 262);
+  --surface-2: oklch(26% 0.017 262);
+  --surface-3: oklch(30% 0.018 262);
+  --line: oklch(31% 0.017 262);
+  --line-strong: oklch(38% 0.019 262);
+  --ink: oklch(96% 0.006 262);
+  --ink-soft: oklch(78% 0.012 262);
+  --ink-muted: oklch(64% 0.014 262);
+
+  --brand: oklch(64% 0.17 265);
+  --brand-hover: oklch(70% 0.16 265);
+  --brand-soft: oklch(30% 0.07 265);
+  --brand-ink: oklch(82% 0.11 265);
+  --on-brand: oklch(17% 0.02 265);
+
+  --positive: oklch(70% 0.14 155);
+  --positive-soft: oklch(29% 0.06 155);
+  --positive-ink: oklch(83% 0.13 155);
+
+  --caution: oklch(78% 0.14 80);
+  --caution-soft: oklch(31% 0.06 75);
+  --caution-ink: oklch(86% 0.12 85);
+
+  --negative: oklch(66% 0.18 25);
+  --negative-soft: oklch(30% 0.08 25);
+  --negative-ink: oklch(83% 0.11 25);
+
+  --shadow-color: 260 60% 3%;
+
+  --serie-1: #3987e5;
+  --serie-2: #d95926;
+
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-canvas: var(--canvas);
+  --color-canvas-accent: var(--canvas-accent);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-ink-muted: var(--ink-muted);
+
+  --color-brand: var(--brand);
+  --color-brand-hover: var(--brand-hover);
+  --color-brand-soft: var(--brand-soft);
+  --color-brand-ink: var(--brand-ink);
+  --color-on-brand: var(--on-brand);
+
+  --color-positive: var(--positive);
+  --color-positive-soft: var(--positive-soft);
+  --color-positive-ink: var(--positive-ink);
+
+  --color-caution: var(--caution);
+  --color-caution-soft: var(--caution-soft);
+  --color-caution-ink: var(--caution-ink);
+
+  --color-negative: var(--negative);
+  --color-negative-soft: var(--negative-soft);
+  --color-negative-ink: var(--negative-ink);
+
+  --color-serie-1: var(--serie-1);
+  --color-serie-2: var(--serie-2);
+
+  --font-sans:
+    'Segoe UI Variable Text', 'Segoe UI', system-ui, -apple-system, 'Inter',
+    'Noto Sans', Arial, sans-serif;
+  --font-mono: ui-monospace, 'Cascadia Mono', 'JetBrains Mono', Consolas, monospace;
+
+  --radius-card: 0.875rem;
+
+  --shadow-e1: 0 1px 2px hsl(var(--shadow-color) / 0.06);
+  --shadow-e2:
+    0 1px 2px hsl(var(--shadow-color) / 0.06), 0 4px 12px -4px hsl(var(--shadow-color) / 0.1);
+  --shadow-e3:
+    0 2px 4px hsl(var(--shadow-color) / 0.06), 0 12px 32px -8px hsl(var(--shadow-color) / 0.22);
+}
+
+@layer base {
+  * {
+    border-color: var(--line);
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    margin: 0;
+    /* Rede de segurança: nenhum componente deve provocar rolagem lateral. */
+    overflow-x: clip;
+    background-color: var(--canvas);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-synthesis-weight: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Foco visível em tudo que recebe teclado — acessibilidade é piso. */
+  :focus-visible {
+    outline: 2px solid var(--brand);
+    outline-offset: 2px;
+    border-radius: 0.35rem;
+  }
+
+  ::selection {
+    background-color: var(--brand-soft);
+    color: var(--brand-ink);
+  }
+
+  /* Números em tabelas e cartões alinham por coluna. */
+  .numerico {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum';
+  }
+
+  input[type='number']::-webkit-outer-spin-button,
+  input[type='number']::-webkit-inner-spin-button {
+    appearance: none;
+    margin: 0;
+  }
+}
+
+@layer utilities {
+  .scrollbar-fina {
+    scrollbar-width: thin;
+    scrollbar-color: var(--line-strong) transparent;
+  }
+
+  .scrollbar-fina::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  .scrollbar-fina::-webkit-scrollbar-thumb {
+    background-color: var(--line-strong);
+    border-radius: 999px;
+  }
+
+  .scrollbar-fina::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  /* Para faixas roláveis curtas (filtros): rolam no toque e na roda, sem
+     uma barra ocupando altura dentro do controle. */
+  .scrollbar-oculta {
+    scrollbar-width: none;
+  }
+
+  .scrollbar-oculta::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@keyframes surgir {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes cintilar {
+  50% {
+    opacity: 0.45;
+  }
+}
+
+.animar-surgir {
+  animation: surgir 0.18s ease-out both;
+}
+
+.animar-cintilar {
+  animation: cintilar 1.4s ease-in-out infinite;
+}
+
+/* Respeita quem pediu menos movimento no sistema operacional. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
