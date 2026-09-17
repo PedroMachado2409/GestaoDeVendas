@@ -136,6 +136,14 @@
             Gets the current test outcome.
             </summary>
         </member>
+        <member name="P:Microsoft.VisualStudio.TestTools.UnitTesting.TestContext.TestException">
+            <summary>
+            Gets or sets the exception that occurred in the TestInitialize or TestMethod steps.
+            </summary>
+            <remarks>
+            The property is always <c>null</c> when accessed during the TestInitialize or TestMethod steps.
+            </remarks>
+        </member>
         <member name="M:Microsoft.VisualStudio.TestTools.UnitTesting.TestContext.AddResultFile(System.String)">
             <summary>
             Adds a file name to the list in TestResult.ResultFileNames.

@@ -1,4 +1,4 @@
-﻿using GestaoPedidos.Domain.Abstractions;
+using GestaoPedidos.Domain.Abstractions;
 using GestaoPedidos.Domain.Exceptions.Produtos;
 namespace GestaoPedidos.Application.UseCases.Produtos.Commands
 {
@@ -15,10 +15,14 @@ namespace GestaoPedidos.Application.UseCases.Produtos.Commands
         {
             var produto = await _repository.ObterPorId(id);
             if (produto == null)
-                throw new BadHttpRequestException(ProdutoExceptions.Produto_NaoEncontrado);
+            {
+                throw new GestaoPedidos.Domain.Exceptions.NotFoundException(ProdutoExceptions.Produto_NaoEncontrado);
+            }
 
             if (produto.Ativo == false)
-                throw new BadHttpRequestException(ProdutoExceptions.Produto_JaInativo);
+            {
+                throw new GestaoPedidos.Domain.Exceptions.BadRequestException(ProdutoExceptions.Produto_JaInativo);
+            }
 
             produto.Inativar();
             await _repository.Atualizar(produto);

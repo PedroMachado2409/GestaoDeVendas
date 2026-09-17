@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using GestaoPedidos.Application.DTO.Usuarios;
 using GestaoPedidos.Domain.Abstractions.Usuarios;
 

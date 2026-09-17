@@ -95,6 +95,69 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "GestaoPedidos.WebAPI.Controllers.MovimentacaoEstoqueController",
+    "Method": "ListarPorProduto",
+    "RelativePath": "api/MovimentacaoEstoque/produto/{produtoId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "produtoId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[GestaoPedidos.Application.DTO.MovimentacaoEstoque.MovimentacaoEstoqueResponseDTO, GestaoPedidos, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 401
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 403
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 404
+      }
+    ]
+  },
+  {
+    "ContainingType": "GestaoPedidos.WebAPI.Controllers.PedidoController",
+    "Method": "Listar",
+    "RelativePath": "api/Pedido",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "GestaoPedidos.WebAPI.Controllers.PedidoController",
     "Method": "CadastrarPedido",
     "RelativePath": "api/Pedido",
@@ -129,7 +192,7 @@
   {
     "ContainingType": "GestaoPedidos.WebAPI.Controllers.PedidoController",
     "Method": "CancelarPedido",
-    "RelativePath": "api/Pedido/cancelar/{id}",
+    "RelativePath": "api/Pedido/{id}/cancelar",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
@@ -145,7 +208,7 @@
   {
     "ContainingType": "GestaoPedidos.WebAPI.Controllers.PedidoController",
     "Method": "FinalizarPedido",
-    "RelativePath": "api/Pedido/finalizar/{id}",
+    "RelativePath": "api/Pedido/{id}/finalizar",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
@@ -204,7 +267,7 @@
     "ContainingType": "GestaoPedidos.WebAPI.Controllers.ProdutoController",
     "Method": "Atualizar",
     "RelativePath": "api/Produto/{id}",
-    "HttpMethod": "PATCH",
+    "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
     "Parameters": [
@@ -223,8 +286,29 @@
   },
   {
     "ContainingType": "GestaoPedidos.WebAPI.Controllers.ProdutoController",
+    "Method": "AjustarEstoque",
+    "RelativePath": "api/Produto/{id}/ajustarEstoque",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "dto",
+        "Type": "GestaoPedidos.Application.DTO.Produtos.AjusteEstoqueProdutoDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "GestaoPedidos.WebAPI.Controllers.ProdutoController",
     "Method": "Ativar",
-    "RelativePath": "api/Produto/{id}/Ativar",
+    "RelativePath": "api/Produto/{id}/ativar",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
@@ -240,7 +324,7 @@
   {
     "ContainingType": "GestaoPedidos.WebAPI.Controllers.ProdutoController",
     "Method": "Inativar",
-    "RelativePath": "api/Produto/{id}/Inativar",
+    "RelativePath": "api/Produto/{id}/inativar",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
@@ -266,7 +350,7 @@
   {
     "ContainingType": "GestaoPedidos.WebAPI.Controllers.UsuarioController",
     "Method": "Ativar",
-    "RelativePath": "api/Usuario/ativar/{id}",
+    "RelativePath": "api/Usuario/{id}/ativar",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
@@ -281,15 +365,15 @@
   },
   {
     "ContainingType": "GestaoPedidos.WebAPI.Controllers.UsuarioController",
-    "Method": "AtualizarSenha",
-    "RelativePath": "api/Usuario/AtualizarSenha",
+    "Method": "Inativar",
+    "RelativePath": "api/Usuario/{id}/inativar",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "dto",
-        "Type": "GestaoPedidos.Application.DTO.Usuarios.UsuarioUpdateSenhaDTO",
+        "Name": "id",
+        "Type": "System.Int32",
         "IsRequired": true
       }
     ],
@@ -297,15 +381,20 @@
   },
   {
     "ContainingType": "GestaoPedidos.WebAPI.Controllers.UsuarioController",
-    "Method": "AtualizarUsuario",
-    "RelativePath": "api/Usuario/AtualizarUsuario",
+    "Method": "AlterarRole",
+    "RelativePath": "api/Usuario/{id}/role",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
         "Name": "dto",
-        "Type": "GestaoPedidos.Application.DTO.Usuarios.UsuarioUpdateDTO",
+        "Type": "GestaoPedidos.Application.DTO.Usuarios.UsuarioRoleUpdateDTO",
         "IsRequired": true
       }
     ],
@@ -314,7 +403,7 @@
   {
     "ContainingType": "GestaoPedidos.WebAPI.Controllers.UsuarioController",
     "Method": "ObterAutenticado",
-    "RelativePath": "api/Usuario/Autenticado",
+    "RelativePath": "api/Usuario/autenticado",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -324,7 +413,7 @@
   {
     "ContainingType": "GestaoPedidos.WebAPI.Controllers.UsuarioController",
     "Method": "Autenticar",
-    "RelativePath": "api/Usuario/Autenticar",
+    "RelativePath": "api/Usuario/autenticar",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -339,15 +428,15 @@
   },
   {
     "ContainingType": "GestaoPedidos.WebAPI.Controllers.UsuarioController",
-    "Method": "Inativar",
-    "RelativePath": "api/Usuario/inativar/{id}",
+    "Method": "AtualizarUsuario",
+    "RelativePath": "api/Usuario/perfil",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "id",
-        "Type": "System.Int32",
+        "Name": "dto",
+        "Type": "GestaoPedidos.Application.DTO.Usuarios.UsuarioUpdateDTO",
         "IsRequired": true
       }
     ],
@@ -356,7 +445,7 @@
   {
     "ContainingType": "GestaoPedidos.WebAPI.Controllers.UsuarioController",
     "Method": "Registrar",
-    "RelativePath": "api/Usuario/Registrar",
+    "RelativePath": "api/Usuario/registrar",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -368,5 +457,77 @@
       }
     ],
     "ReturnTypes": []
+  },
+  {
+    "ContainingType": "GestaoPedidos.WebAPI.Controllers.UsuarioController",
+    "Method": "AtualizarSenha",
+    "RelativePath": "api/Usuario/senha",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "GestaoPedidos.Application.DTO.Usuarios.UsuarioUpdateSenhaDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "GestaoPedidos.WebAPI.Controllers.WhatsAppController",
+    "Method": "VerificarWebhook",
+    "RelativePath": "api/whatsapp/webhook",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "hub.mode",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "hub.challenge",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain"
+        ],
+        "StatusCode": 400
+      }
+    ]
+  },
+  {
+    "ContainingType": "GestaoPedidos.WebAPI.Controllers.WhatsAppController",
+    "Method": "ReceberWebhook",
+    "RelativePath": "api/whatsapp/webhook",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "webhook",
+        "Type": "GestaoPedidos.Application.DTO.WhatsApp.WebhookWhatsAppDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
   }
 ]

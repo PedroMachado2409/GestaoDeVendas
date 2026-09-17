@@ -1,4 +1,4 @@
-﻿
+
 
 using FluentAssertions;
 using GestaoPedidos.Application.UseCases.Clientes.Commands;
@@ -14,8 +14,8 @@ namespace GestaoPedidosTests.Application.UseCases.Clientes.Commands
     [TestClass]
     public class InativarClienteUseCaseTests
     {
-        private Mock<IClienteRepository> _repositoryMock;
-        private InativarClienteUseCase _useCase;
+        private Mock<IClienteRepository> _repositoryMock = null!;
+        private InativarClienteUseCase _useCase = null!;
 
         [TestInitialize]
         public void Setup()
@@ -35,7 +35,7 @@ namespace GestaoPedidosTests.Application.UseCases.Clientes.Commands
             );
 
             _repositoryMock.Setup(r => r.ObterPorId(It.IsAny<int>())).ReturnsAsync(cliente);
-            var result = await _useCase.Execute(1);
+            var result = await _useCase.Executar(1);
             result.Should().BeTrue();
             cliente.Ativo.Should().BeFalse();
 
@@ -55,7 +55,7 @@ namespace GestaoPedidosTests.Application.UseCases.Clientes.Commands
            );
             cliente.Inativar();
             _repositoryMock.Setup(r => r.ObterPorId(It.IsAny<int>())).ReturnsAsync(cliente);
-            Func<Task> act = () => _useCase.Execute(1);
+            Func<Task> act = () => _useCase.Executar(1);
             var exception = await act.Should().ThrowAsync<BadRequestException>();
             exception.Which.Message.Should().Be(ClientesExceptions.Cliente_JaInativo);
 
@@ -66,8 +66,8 @@ namespace GestaoPedidosTests.Application.UseCases.Clientes.Commands
         [TestMethod]
         public async Task Deve_Lancar_Excecao_Quando_Nao_Encontrar_O_Cliente()
         {
-            _repositoryMock.Setup(r => r.ObterPorId(It.IsAny<int>())).ReturnsAsync((Cliente?) null);
-            Func<Task> act = () => _useCase.Execute(1);
+            _repositoryMock.Setup(r => r.ObterPorId(It.IsAny<int>())).ReturnsAsync((Cliente?)null);
+            Func<Task> act = () => _useCase.Executar(1);
             var exception = await act.Should().ThrowAsync<NotFoundException>();
             exception.Which.Message.Should().Be(ClientesExceptions.Cliente_NaoEncontrado);
 
@@ -77,7 +77,7 @@ namespace GestaoPedidosTests.Application.UseCases.Clientes.Commands
         }
 
 
-    
+
 
     }
 }

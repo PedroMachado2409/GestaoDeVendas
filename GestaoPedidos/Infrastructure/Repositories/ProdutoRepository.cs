@@ -1,4 +1,4 @@
-﻿using GestaoPedidos.Domain.Abstractions;
+using GestaoPedidos.Domain.Abstractions;
 using GestaoPedidos.Domain.Entities;
 using GestaoPedidos.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -14,28 +14,39 @@ namespace GestaoPedidos.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<List<Produto>> Listar()
+        public Task<List<Produto>> Listar()
+            => _context.Produtos
+                .AsNoTracking()
+                .OrderBy(p => p.Id)
+                .ToListAsync();
+
+        public Task<Produto?> ObterPorId(int id)
+            => _context.Produtos.FirstOrDefaultAsync(p => p.Id == id);
+
+        public Task<List<Produto>> ObterPorIds(IEnumerable<int> ids)
         {
-            var produtos = await _context.Produtos.AsNoTracking().OrderBy(p => p.Id).ToListAsync();
-            return produtos;
-        }
-         
-        public async Task<Produto?> ObterPorId(int? id)
-        {
-            var produto = await _context.Produtos.FirstOrDefaultAsync(p => p.Id == id);
-            return produto;
+            var idsDistintos = ids.Distinct().ToArray();
+            return _context.Produtos
+                .Where(p => idsDistintos.Contains(p.Id))
+                .ToListAsync();
         }
 
         public async Task<Produto> Cadastrar(Produto produto)
         {
-             await _context.Produtos.AddAsync(produto);
+            await _context.Produtos.AddAsync(produto);
             await _context.SaveChangesAsync();
             return produto;
         }
 
         public async Task Atualizar(Produto produto)
         {
-             _context.Produtos.Update(produto);
+            _context.Produtos.Update(produto);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task Atualizar(IEnumerable<Produto> produtos)
+        {
+            _context.Produtos.UpdateRange(produtos);
             await _context.SaveChangesAsync();
         }
     }

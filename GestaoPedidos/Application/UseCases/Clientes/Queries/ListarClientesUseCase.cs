@@ -1,11 +1,10 @@
-﻿using AutoMapper;
+using AutoMapper;
 using GestaoPedidos.Application.DTO.Clientes;
 using GestaoPedidos.Domain.Abstractions;
 
 namespace GestaoPedidos.Application.UseCases.Clientes.Queries
 {
     public class ListarClientesUseCase
-       : IUseCase<List<ClienteResponseDTO>>
     {
         private readonly IClienteRepository _repository;
         private readonly IMapper _mapper;
@@ -16,7 +15,7 @@ namespace GestaoPedidos.Application.UseCases.Clientes.Queries
             _mapper = mapper;
         }
 
-        public async Task<List<ClienteResponseDTO>> Execute()
+        public async Task<List<ClienteResponseDTO>> Executar()
         {
             var clientes = await _repository.Listar();
             return _mapper.Map<List<ClienteResponseDTO>>(clientes);

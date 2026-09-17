@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using GestaoPedidos.Application.UseCases.Clientes.Commands;
 using GestaoPedidos.Domain.Abstractions;
 using GestaoPedidos.Domain.Entities;
@@ -13,15 +13,15 @@ namespace GestaoPedidosTests.Application.UseCases.Clientes.Commands
     public class AtivarClienteUseCaseTests
     {
 
-        private Mock<IClienteRepository> _repositoryMock;
-        private AtivarClienteUseCase _useCase;
+        private Mock<IClienteRepository> _repositoryMock = null!;
+        private AtivarClienteUseCase _useCase = null!;
 
         [TestInitialize]
         public void Setup()
         {
             _repositoryMock = new Mock<IClienteRepository>();
             _useCase = new AtivarClienteUseCase(_repositoryMock.Object);
-        }   
+        }
 
         [TestMethod]
         public async Task Deve_Ativar_Cliente_Quando_Esta_Inativo()
@@ -36,7 +36,7 @@ namespace GestaoPedidosTests.Application.UseCases.Clientes.Commands
             cliente.Inativar();
             _repositoryMock.Setup(r => r.ObterPorId(It.IsAny<int>())).ReturnsAsync(cliente);
 
-            var result = await _useCase.Execute(1);
+            var result = await _useCase.Executar(1);
             result.Should().BeTrue();
             cliente.Ativo.Should().BeTrue();
 
@@ -55,8 +55,8 @@ namespace GestaoPedidosTests.Application.UseCases.Clientes.Commands
              );
 
             _repositoryMock.Setup(r => r.ObterPorId(It.IsAny<int>())).ReturnsAsync(cliente);
-            Func<Task> act = () => _useCase.Execute(1);
-            var exception = await act .Should().ThrowAsync<BadRequestException>();
+            Func<Task> act = () => _useCase.Executar(1);
+            var exception = await act.Should().ThrowAsync<BadRequestException>();
             exception.Which.Message.Should().Be(ClientesExceptions.Cliente_JaAtivo);
 
             _repositoryMock.Verify(c => c.ObterPorId(1), Times.Once);
@@ -68,7 +68,7 @@ namespace GestaoPedidosTests.Application.UseCases.Clientes.Commands
         public async Task Deve_Lancar_Excecao_Quando_Nao_Achar_O_Cliente()
         {
             _repositoryMock.Setup(c => c.ObterPorId(It.IsAny<int>())).ReturnsAsync((Cliente?)null);
-            Func<Task> act = () => _useCase.Execute(1);
+            Func<Task> act = () => _useCase.Executar(1);
             var exception = await act.Should().ThrowAsync<NotFoundException>();
             exception.Which.Message.Should().Be(ClientesExceptions.Cliente_NaoEncontrado);
 

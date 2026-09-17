@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using GestaoPedidos.Application.DTO.Produtos;
 using GestaoPedidos.Domain.Abstractions;
 using GestaoPedidos.Domain.Entities;

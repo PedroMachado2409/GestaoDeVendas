@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using FluentAssertions;
 using GestaoPedidos.Application.DTO.Clientes;
 using GestaoPedidos.Application.UseCases.Clientes.Commands;
@@ -16,15 +16,15 @@ namespace GestaoPedidosTests.Application.UseCases.Clientes.Commands
     [TestClass]
     public class AtualizarClienteUseCaseTests
     {
-        private Mock<IClienteRepository> _repositoryMock;
-        private AtualizarClienteUseCase _useCase;
-        private IMapper _mapper;
+        private Mock<IClienteRepository> _repositoryMock = null!;
+        private AtualizarClienteUseCase _useCase = null!;
+        private IMapper _mapper = null!;
 
         [TestInitialize]
         public void Setup()
         {
             _repositoryMock = new Mock<IClienteRepository>();
-            var mapperConfig = new MapperConfiguration(cfg => 
+            var mapperConfig = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<Cliente, ClienteResponseDTO>();
             });
@@ -47,15 +47,15 @@ namespace GestaoPedidosTests.Application.UseCases.Clientes.Commands
             };
 
             _repositoryMock.Setup(r => r.ObterPorId(dto.Id)).ReturnsAsync(cliente);
-            _repositoryMock.Setup(r => r.ObterPorCpf(dto.Cpf)).ReturnsAsync((Cliente?) null);
+            _repositoryMock.Setup(r => r.ObterPorCpf(dto.Cpf)).ReturnsAsync((Cliente?)null);
             _repositoryMock.Setup(r => r.ObterPorEmail(dto.Email)).ReturnsAsync((Cliente?)null);
             _repositoryMock.Setup(r => r.Atualizar(cliente)).Returns(Task.CompletedTask);
 
-            var resultado = await _useCase.Execute(dto);
+            var resultado = await _useCase.Executar(dto);
             resultado.Should().NotBeNull();
 
             cliente.Nome.Should().Be(dto.Nome);
-            cliente.Email.Should().Be(dto.Email);
+            cliente.Email.Should().Be(dto.Email.ToLowerInvariant());
             cliente.Cpf.Should().Be(dto.Cpf);
 
             _repositoryMock.Verify(r => r.Atualizar(cliente), Times.Once());
@@ -84,7 +84,7 @@ namespace GestaoPedidosTests.Application.UseCases.Clientes.Commands
             _repositoryMock.Setup(r => r.ObterPorCpf(dto.Cpf))
                 .ReturnsAsync(clienteExistente);
 
-            Func<Task> act = () => _useCase.Execute(dto);
+            Func<Task> act = () => _useCase.Executar(dto);
 
             var exception = await act.Should().ThrowAsync<BadRequestException>();
             exception.Which.Message.Should().Be(ClientesExceptions.Cliente_CpfExistente);
@@ -115,7 +115,7 @@ namespace GestaoPedidosTests.Application.UseCases.Clientes.Commands
             _repositoryMock.Setup(r => r.ObterPorCpf(dto.Cpf)).ReturnsAsync(clienteEditado);
             _repositoryMock.Setup(r => r.ObterPorEmail(dto.Email)).ReturnsAsync(clienteExistente);
 
-            Func<Task> act = () => _useCase.Execute(dto);
+            Func<Task> act = () => _useCase.Executar(dto);
             var exception = await act.Should().ThrowAsync<BadRequestException>();
             exception.Which.Message.Should().Be(ClientesExceptions.Cliente_EmailExistente);
 

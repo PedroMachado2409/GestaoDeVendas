@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+          cache: true
+          cache-dependency-path: |
+            **/*.csproj
+            .config/dotnet-tools.json
+
+      - name: Restore tools
+        run: dotnet tool restore
+
+      - name: Restore dependencies
+        run: dotnet restore GestaoPedidos/GestaoPedidos.sln
+
+      - name: Verify formatting
+        run: dotnet format GestaoPedidos/GestaoPedidos.sln --verify-no-changes --no-restore
+
+      - name: Build
+        run: dotnet build GestaoPedidos/GestaoPedidos.sln --configuration Release --no-restore
+
+      - name: Test
+        run: >
+          dotnet test GestaoPedidos/GestaoPedidos.sln
+          --configuration Release
+          --no-build
+          --collect:"XPlat Code Coverage"
+          --results-directory TestResults
+
+      - name: Verify EF model
+        working-directory: GestaoPedidos
+        run: >
+          dotnet ef migrations has-pending-model-changes
+          --project GestaoPedidos.csproj
+          --startup-project GestaoPedidos.csproj
+          --no-build

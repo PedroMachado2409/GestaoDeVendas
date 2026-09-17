@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using GestaoPedidos.Application.DTO.Pedidos;
 using GestaoPedidos.Domain.Entities.Pedidos;
 
@@ -6,11 +6,8 @@ namespace GestaoPedidos.Application.Mapper
 {
     public class PedidoProfile : Profile
     {
-        public PedidoProfile ()
+        public PedidoProfile()
         {
-            CreateMap<Pedido, CriarPedidoRequestDTO>().ReverseMap();
-            CreateMap<PedidoItem, CriarPedidoItemRequestDTO>().ReverseMap();
-            CreateMap<Pedido, PedidoResponseDTO>().ReverseMap();
             CreateMap<PedidoItem, PedidoItemResponseDTO>()
                .ForMember(dest => dest.SubTotal,
                           opt => opt.MapFrom(src => src.SubTotal));
@@ -20,8 +17,11 @@ namespace GestaoPedidos.Application.Mapper
                            opt => opt.MapFrom(src => src.Status.ToString()))
                 .ForMember(dest => dest.ValorTotal,
                            opt => opt.MapFrom(src => src.ValorTotal))
-                .ForMember(dest => dest.Itens,
-                           opt => opt.MapFrom(src => src.Itens));
+                .ForMember(dest => dest.ClienteNome,
+                             opt => opt.MapFrom(src => src.Cliente != null ? src.Cliente.Nome : string.Empty))
+                    .ForMember(dest => dest.UsuarioNome,
+                        opt => opt.MapFrom(src => src.Usuario != null ? src.Usuario.Nome : string.Empty));
+
         }
     }
 }

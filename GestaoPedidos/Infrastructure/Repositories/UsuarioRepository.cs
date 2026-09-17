@@ -1,4 +1,4 @@
-﻿using GestaoPedidos.Domain.Abstractions.Usuarios;
+using GestaoPedidos.Domain.Abstractions.Usuarios;
 using GestaoPedidos.Domain.Entities;
 using GestaoPedidos.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -26,7 +26,7 @@ namespace GestaoPedidos.Infrastructure.Repositories
             return usuario;
         }
 
-        public async Task<Usuario?> ObterPorId (int id)
+        public async Task<Usuario?> ObterPorId(int id)
         {
             var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Id == id);
             return usuario;
@@ -40,7 +40,7 @@ namespace GestaoPedidos.Infrastructure.Repositories
 
         public async Task<Usuario> Cadastrar(Usuario usuario)
         {
-             await _context.Usuarios.AddAsync(usuario);
+            await _context.Usuarios.AddAsync(usuario);
             await _context.SaveChangesAsync();
             return usuario;
         }

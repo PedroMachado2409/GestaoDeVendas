@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using GestaoPedidos.Application.DTO.Produtos;
 using GestaoPedidos.Domain.Entities;
 
@@ -8,9 +8,7 @@ namespace GestaoPedidos.Application.Mapper
     {
         public ProdutoProfile()
         {
-            CreateMap<Produto, ProdutoCreateDTO>().ReverseMap();
-            CreateMap<Produto, ProdutoResponseDTO>().ReverseMap();
-            CreateMap<Produto, ProdutoUpdateDTO>().ReverseMap();
+            CreateMap<Produto, ProdutoResponseDTO>();
         }
     }
 }

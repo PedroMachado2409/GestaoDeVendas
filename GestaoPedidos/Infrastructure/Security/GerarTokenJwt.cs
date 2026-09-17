@@ -1,11 +1,10 @@
-﻿
-
-using GestaoPedidos.Domain.Abstractions.Usuarios;
-using GestaoPedidos.Domain.Entities;
-using Microsoft.IdentityModel.Tokens;
+using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using GestaoPedidos.Domain.Abstractions.Usuarios;
+using GestaoPedidos.Domain.Entities;
+using Microsoft.IdentityModel.Tokens;
 
 namespace GestaoPedidos.Infrastructure.Security
 {
@@ -13,8 +12,7 @@ namespace GestaoPedidos.Infrastructure.Security
     {
         private readonly JwtSettings _jwtSettings;
 
-
-        public GerarTokenJwt (JwtSettings jwtSettings)
+        public GerarTokenJwt(JwtSettings jwtSettings)
         {
             _jwtSettings = jwtSettings;
         }
@@ -26,9 +24,11 @@ namespace GestaoPedidos.Infrastructure.Security
 
             var claims = new[]
             {
-                new Claim(ClaimTypes.NameIdentifier, usuario.Email),
-                new Claim("nome", usuario.Nome),
+                new Claim(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
+                new Claim(ClaimTypes.Email, usuario.Email),
+                new Claim(ClaimTypes.Name, usuario.Nome),
                 new Claim(ClaimTypes.Role, usuario.Role.ToString()),
+                new Claim("token_version", usuario.VersaoToken.ToString()),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 
@@ -36,20 +36,25 @@ namespace GestaoPedidos.Infrastructure.Security
                 issuer: _jwtSettings.Issuer,
                 audience: _jwtSettings.Audience,
                 claims: claims,
-                expires: DateTime.UtcNow.AddHours(_jwtSettings.ExpiracaoHoras),
+                expires: DateTime.UtcNow.AddMinutes(_jwtSettings.ExpiracaoMinutos),
                 signingCredentials: credenciais);
 
-            return new JwtSecurityTokenHandler().WriteToken(token); 
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
-
     }
-
 
     public class JwtSettings
     {
+        [Required, MinLength(32)]
         public string Key { get; set; } = string.Empty;
+
+        [Required]
         public string Issuer { get; set; } = string.Empty;
+
+        [Required]
         public string Audience { get; set; } = string.Empty;
-        public int ExpiracaoHoras { get; set; } = 8;
+
+        [Range(1, 1440)]
+        public int ExpiracaoMinutos { get; set; } = 60;
     }
 }

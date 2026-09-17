@@ -1,4 +1,4 @@
-﻿using GestaoPedidos.Domain.Entities;
+using GestaoPedidos.Domain.Entities;
 
 namespace GestaoPedidos.Domain.Abstractions.Usuarios
 {

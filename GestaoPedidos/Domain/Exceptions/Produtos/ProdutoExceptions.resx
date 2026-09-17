@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -140,5 +140,23 @@
   </data>
   <data name="Produto_Inativo" xml:space="preserve">
     <value>O produto está inativo</value>
+  </data>
+  <data name="Produto_QuantidadeInvalida" xml:space="preserve">
+    <value>A quantidade deve ser maior que zero.</value>
+  </data>
+  <data name="Produto_EstoqueInsuficiente" xml:space="preserve">
+    <value>Estoque insuficiente.</value>
+  </data>
+  <data name="Produto_ReservaInsuficiente" xml:space="preserve">
+    <value>A reserva de venda do produto é insuficiente.</value>
+  </data>
+  <data name="Produto_CompraPendenteInsuficiente" xml:space="preserve">
+    <value>A compra pendente do produto é insuficiente.</value>
+  </data>
+  <data name="Produto_EstoqueNaoPodeSerNegativo" xml:space="preserve">
+    <value>A quantidade não pode ser negativa</value>
+  </data>
+  <data name="Produto_AjusteNaoPodeSerZero" xml:space="preserve">
+    <value>A quantidade do ajuste não pode ser igual à 0</value>
   </data>
 </root>

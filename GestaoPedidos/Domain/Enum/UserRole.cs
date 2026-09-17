@@ -1,4 +1,4 @@
-﻿namespace GestaoPedidos.Domain.Enum
+namespace GestaoPedidos.Domain.Enum
 {
     public enum UserRole
     {

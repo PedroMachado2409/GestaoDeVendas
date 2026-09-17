@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using FluentAssertions;
 using GestaoPedidos.Application.DTO.Produtos;
 using GestaoPedidos.Application.UseCases.Produtos.Commands;
@@ -14,9 +14,9 @@ namespace GestaoPedidosTests.Application.UseCases.Produtos.Commands
     [TestClass]
     public class CadastrarProdutoUseCaseTests
     {
-        private Mock<IProdutoRepository> _repositoryMock;
-        private IMapper _mapper;
-        private CadastrarProdutoUseCase _useCase;
+        private Mock<IProdutoRepository> _repositoryMock = null!;
+        private IMapper _mapper = null!;
+        private CadastrarProdutoUseCase _useCase = null!;
 
         [TestInitialize]
         public void Setup()

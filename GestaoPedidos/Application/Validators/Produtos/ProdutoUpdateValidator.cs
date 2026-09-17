@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 using GestaoPedidos.Application.DTO.Produtos;
 using GestaoPedidos.Domain.Exceptions.Produtos;
 

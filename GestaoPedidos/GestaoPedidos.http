@@ -1,6 +1,32 @@
-@GestaoPedidos_HostAddress = http://localhost:5143
+@host = http://localhost:5143
+@token = COLE_O_TOKEN_AQUI
 
-GET {{GestaoPedidos_HostAddress}}/weatherforecast/
-Accept: application/json
+### Health check
+GET {{host}}/health
 
-###
+### Registrar vendedor
+POST {{host}}/api/usuario/registrar
+Content-Type: application/json
+
+{
+  "nome": "Pedro",
+  "email": "pedro@empresa.com",
+  "senha": "SenhaForte123"
+}
+
+### Autenticar
+POST {{host}}/api/usuario/autenticar
+Content-Type: application/json
+
+{
+  "email": "pedro@empresa.com",
+  "senha": "SenhaForte123"
+}
+
+### Perfil autenticado
+GET {{host}}/api/usuario/autenticado
+Authorization: Bearer {{token}}
+
+### Listar produtos
+GET {{host}}/api/produto
+Authorization: Bearer {{token}}

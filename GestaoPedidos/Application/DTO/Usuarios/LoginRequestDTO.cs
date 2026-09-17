@@ -1,8 +1,8 @@
-﻿namespace GestaoPedidos.Application.DTO.Usuarios
+namespace GestaoPedidos.Application.DTO.Usuarios
 {
     public class LoginRequestDTO
     {
-        public string Email { get; set; }
-        public string senha { get; set; }
+        public string Email { get; set; } = string.Empty;
+        public string Senha { get; set; } = string.Empty;
     }
 }

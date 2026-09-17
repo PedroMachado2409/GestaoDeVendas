@@ -1,6 +1,7 @@
-﻿using AutoMapper;
+using AutoMapper;
 using GestaoPedidos.Application.DTO.Pedidos;
 using GestaoPedidos.Domain.Abstractions;
+using GestaoPedidos.Domain.Enum;
 using GestaoPedidos.Domain.Exceptions;
 using GestaoPedidos.Domain.Exceptions.Pedidos;
 using GestaoPedidos.Domain.Exceptions.Produtos;
@@ -10,34 +11,68 @@ namespace GestaoPedidos.Application.UseCases.Pedidos.Commands
     public class CancelarPedidoUseCase
     {
         private readonly IMapper _mapper;
-        private readonly IPedidoRepository _repository;
+        private readonly IPedidoRepository _pedidoRepository;
         private readonly IProdutoRepository _produtoRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public CancelarPedidoUseCase (IMapper mapper, IPedidoRepository repository, IProdutoRepository produtoRepository)
+        public CancelarPedidoUseCase(
+            IMapper mapper,
+            IPedidoRepository pedidoRepository,
+            IProdutoRepository produtoRepository,
+            IUnitOfWork unitOfWork)
         {
             _mapper = mapper;
-            _repository = repository;
+            _pedidoRepository = pedidoRepository;
             _produtoRepository = produtoRepository;
+            _unitOfWork = unitOfWork;
         }
 
-        public async Task<PedidoResponseDTO> Executar(int pedidoId)
-        {
-            var pedido = await _repository.ObterPorId(pedidoId);
-            if (pedido == null)
-                throw new BadRequestException(PedidosExceptions.Pedido_NaoEncontrado);
-
-            foreach (var item in pedido.Itens)
+        public Task<PedidoResponseDTO> Executar(int pedidoId)
+            => _unitOfWork.ExecutarEmTransacao(async () =>
             {
-                var produto = await _produtoRepository.ObterPorId(item.ProdutoId);
-                if (produto == null)
-                    throw new NotFoundException(ProdutoExceptions.Produto_NaoEncontrado);
-                produto.CancelarReservaDeQuantidade(item.Quantidade);
-                await _produtoRepository.Atualizar(produto);
-            }
-            pedido.Cancelar();
-            await _repository.Atualizar(pedido);
-            return _mapper.Map<PedidoResponseDTO>(pedido);
-        }
+                var pedido = await _pedidoRepository.ObterPorId(pedidoId)
+                    ?? throw new NotFoundException(PedidosExceptions.Pedido_NaoEncontrado);
 
+                if (pedido.Status == StatusPedido.Cancelado)
+                {
+                    return _mapper.Map<PedidoResponseDTO>(pedido);
+                }
+
+                if (pedido.Status != StatusPedido.Aberto)
+                {
+                    throw new ConflictException(PedidosExceptions.Pedido_NaoPodeCancelar);
+                }
+
+                var produtos = await _produtoRepository.ObterPorIds(
+                    pedido.Itens.Select(i => i.ProdutoId));
+                var produtosPorId = produtos.ToDictionary(p => p.Id);
+
+                foreach (var item in pedido.Itens)
+                {
+                    if (!produtosPorId.TryGetValue(item.ProdutoId, out var produto))
+                    {
+                        throw new NotFoundException(ProdutoExceptions.Produto_NaoEncontrado);
+                    }
+
+                    // Venda e compra reservam em campos diferentes do produto:
+                    // venda retira do estoque, compra apenas anota a pendência.
+                    // Desfazer sempre pela trilha de venda devolveria ao estoque
+                    // unidades que nunca saíram dele.
+                    if (pedido.TipoMovimentacao == TipoMovimentacao.Saida)
+                    {
+                        produto.LiberarReserva(item.Quantidade);
+                    }
+                    else
+                    {
+                        produto.CancelarCompraPendente(item.Quantidade);
+                    }
+                }
+
+                pedido.Cancelar();
+                await _pedidoRepository.Atualizar(pedido);
+                await _unitOfWork.SalvarAlteracoes();
+
+                return _mapper.Map<PedidoResponseDTO>(pedido);
+            });
     }
 }

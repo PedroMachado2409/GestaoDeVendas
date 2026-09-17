@@ -1,5 +1,3 @@
-﻿using GestaoPedidos.Domain.Entities.Pedidos;
-using GestaoPedidos.Domain.Enum;
 
 namespace GestaoPedidos.Application.DTO.Pedidos
 {
@@ -7,7 +5,10 @@ namespace GestaoPedidos.Application.DTO.Pedidos
     {
         public int Id { get; set; }
         public int ClienteId { get; set; }
-        public string Status { get; set; }
+        public string ClienteNome { get; set; } = string.Empty;
+        public int UsuarioId { get; set; }
+        public string UsuarioNome { get; set; } = string.Empty;
+        public string Status { get; set; } = string.Empty;
         public DateTime DataCadastro { get; set; }
         public decimal ValorTotal { get; set; }
 

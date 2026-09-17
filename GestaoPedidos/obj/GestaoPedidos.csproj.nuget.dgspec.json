@@ -1,20 +1,24 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidos\\GestaoPedidos.csproj": {}
+    "C:\\Vendas\\GestaoDeVendas\\GestaoPedidos\\GestaoPedidos.csproj": {}
   },
   "projects": {
-    "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidos\\GestaoPedidos.csproj": {
+    "C:\\Vendas\\GestaoDeVendas\\GestaoPedidos\\GestaoPedidos.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidos\\GestaoPedidos.csproj",
+        "projectUniqueName": "C:\\Vendas\\GestaoDeVendas\\GestaoPedidos\\GestaoPedidos.csproj",
         "projectName": "GestaoPedidos",
-        "projectPath": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidos\\GestaoPedidos.csproj",
-        "packagesPath": "C:\\Users\\celso\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\celso\\source\\repos\\Pedidos\\GestaoPedidos\\obj\\",
+        "projectPath": "C:\\Vendas\\GestaoDeVendas\\GestaoPedidos\\GestaoPedidos.csproj",
+        "packagesPath": "C:\\Users\\Pedro Machado\\.nuget\\packages\\",
+        "outputPath": "C:\\Vendas\\GestaoDeVendas\\GestaoPedidos\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\celso\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Pedro Machado\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -22,16 +26,20 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
+            "framework": "net8.0",
             "targetAlias": "net8.0",
             "projectReferences": {}
           }
         },
         "warningProperties": {
+          "allWarningsAsErrors": true,
+          "noWarn": [
+            "NU1903"
+          ],
           "warnAsError": [
             "NU1605"
           ]
@@ -44,63 +52,56 @@
       },
       "frameworks": {
         "net8.0": {
+          "framework": "net8.0",
           "targetAlias": "net8.0",
           "dependencies": {
-            "AutoMapper.Extensions.Microsoft.DependencyInjection": {
+            "AutoMapper": {
               "target": "Package",
-              "version": "[12.0.1, )"
+              "version": "[14.0.0, )"
             },
             "BCrypt.Net-Next": {
               "target": "Package",
               "version": "[4.0.3, )"
             },
-            "FluentAssertions": {
+            "FluentValidation.DependencyInjectionExtensions": {
               "target": "Package",
-              "version": "[8.8.0, )"
-            },
-            "FluentValidation.AspNetCore": {
-              "target": "Package",
-              "version": "[11.3.1, )"
+              "version": "[11.9.2, )"
             },
             "Microsoft.AspNetCore.Authentication.JwtBearer": {
               "target": "Package",
-              "version": "[8.0.5, )"
+              "version": "[8.0.14, )"
             },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
-              "version": "[8.0.8, )"
+              "version": "[8.0.14, )"
             },
             "Microsoft.EntityFrameworkCore.Design": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
               "target": "Package",
-              "version": "[8.0.8, )"
+              "version": "[8.0.14, )"
             },
             "Microsoft.EntityFrameworkCore.Tools": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
               "target": "Package",
-              "version": "[8.0.8, )"
-            },
-            "Moq": {
-              "target": "Package",
-              "version": "[4.20.72, )"
+              "version": "[8.0.14, )"
             },
             "Npgsql.EntityFrameworkCore.PostgreSQL": {
               "target": "Package",
-              "version": "[8.0.4, )"
+              "version": "[8.0.11, )"
             },
             "Scrutor": {
               "target": "Package",
-              "version": "[7.0.0, )"
+              "version": "[4.2.2, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
-              "version": "[6.4.0, )"
+              "version": "[6.9.0, )"
             },
             "System.IdentityModel.Tokens.Jwt": {
               "target": "Package",
-              "version": "[8.12.0, )"
+              "version": "[8.4.0, )"
             }
           },
           "imports": [
@@ -122,7 +123,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.400/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.414/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

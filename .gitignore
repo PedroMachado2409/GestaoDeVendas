@@ -1,0 +1,31 @@
+## .NET
+**/bin/
+**/obj/
+**/TestResults/
+artifacts/
+coverage/
+
+## Visual Studio / Rider / VS Code
+.vs/
+.idea/
+.vscode/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## Local configuration and secrets
+appsettings.Local.json
+appsettings.Production.json
+.env
+.env.*
+!.env.example
+
+## Operating system
+.DS_Store
+Thumbs.db
+
+## Logs and temporary files
+*.log
+*.tmp
+*.bak

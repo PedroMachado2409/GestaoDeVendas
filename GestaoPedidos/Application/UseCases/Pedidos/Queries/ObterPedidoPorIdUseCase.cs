@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using GestaoPedidos.Application.DTO.Pedidos;
 using GestaoPedidos.Domain.Abstractions;
 using GestaoPedidos.Domain.Exceptions;
@@ -11,22 +11,18 @@ namespace GestaoPedidos.Application.UseCases.Pedidos.Queries
         private readonly IMapper _mapper;
         private readonly IPedidoRepository _repository;
 
-        public ObterPedidoPorIdUseCase (IPedidoRepository repository, IMapper mapper)
+        public ObterPedidoPorIdUseCase(IPedidoRepository repository, IMapper mapper)
         {
             _mapper = mapper;
             _repository = repository;
         }
 
-        public async Task <PedidoResponseDTO> Executar(int id)
+        public async Task<PedidoResponseDTO> Executar(int id)
         {
-            var pedido = await _repository.ObterPorId(id);
-            if (pedido == null)
-                throw new BadRequestException(PedidosExceptions.Pedido_NaoEncontrado);
+            var pedido = await _repository.ObterPorId(id)
+                ?? throw new NotFoundException(PedidosExceptions.Pedido_NaoEncontrado);
 
-            return _mapper.Map<PedidoResponseDTO>(pedido);  
-
+            return _mapper.Map<PedidoResponseDTO>(pedido);
         }
-
-
     }
 }

@@ -17,12 +17,12 @@ namespace GestaoPedidos.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.8")
+                .HasAnnotation("ProductVersion", "8.0.14")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Cliente", b =>
+            modelBuilder.Entity("GestaoPedidos.Domain.Entities.Cliente", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -35,22 +35,132 @@ namespace GestaoPedidos.Migrations
 
                     b.Property<string>("Cpf")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(11)
+                        .HasColumnType("character(11)")
+                        .IsFixedLength();
 
                     b.Property<DateTime>("DataCadastro")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(254)
+                        .HasColumnType("character varying(254)");
 
                     b.Property<string>("Nome")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Cpf")
+                        .IsUnique();
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
                     b.ToTable("Clientes");
+                });
+
+            modelBuilder.Entity("GestaoPedidos.Domain.Entities.MensagemWhatsApp", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Conteudo")
+                        .IsRequired()
+                        .HasMaxLength(5000)
+                        .HasColumnType("character varying(5000)");
+
+                    b.Property<DateTime>("DataMensagem")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("IdMensagemWhatsApp")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<string>("NomeRemetente")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<string>("NumeroRemetente")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
+
+                    b.Property<string>("PhoneNumberId")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("TipoMensagem")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DataMensagem");
+
+                    b.HasIndex("IdMensagemWhatsApp")
+                        .IsUnique();
+
+                    b.HasIndex("NumeroRemetente");
+
+                    b.ToTable("MensagensWhatsApp");
+                });
+
+            modelBuilder.Entity("GestaoPedidos.Domain.Entities.MovimentacaoEstoque", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("DataMovimentacao")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int?>("IdOrigem")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Observacao")
+                        .IsRequired()
+                        .HasMaxLength(400)
+                        .HasColumnType("character varying(400)");
+
+                    b.Property<int>("OrigemMovimentacao")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ProdutoId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ProdutoNome")
+                        .IsRequired()
+                        .HasMaxLength(160)
+                        .HasColumnType("character varying(160)");
+
+                    b.Property<int>("Quantidade")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("TipoMovimentacao")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProdutoId", "DataMovimentacao")
+                        .IsDescending(false, true);
+
+                    b.ToTable("MovimentacoesEstoque", null, t =>
+                        {
+                            t.HasCheckConstraint("CK_MovimentacoesEstoque_Quantidade_Positiva", "\"Quantidade\" > 0");
+                        });
                 });
 
             modelBuilder.Entity("GestaoPedidos.Domain.Entities.Pedidos.Pedido", b =>
@@ -70,7 +180,20 @@ namespace GestaoPedidos.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("integer");
 
+                    b.Property<int>("TipoMovimentacao")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("ValorTotal")
+                        .HasColumnType("numeric");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("ClienteId");
+
+                    b.HasIndex("UsuarioId");
 
                     b.ToTable("Pedidos");
                 });
@@ -87,7 +210,8 @@ namespace GestaoPedidos.Migrations
                         .HasColumnType("integer");
 
                     b.Property<decimal>("Preco")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
 
                     b.Property<int>("ProdutoId")
                         .HasColumnType("integer");
@@ -97,9 +221,17 @@ namespace GestaoPedidos.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PedidoId");
+                    b.HasIndex("ProdutoId");
 
-                    b.ToTable("PedidoItens");
+                    b.HasIndex("PedidoId", "ProdutoId")
+                        .IsUnique();
+
+                    b.ToTable("PedidoItens", null, t =>
+                        {
+                            t.HasCheckConstraint("CK_PedidoItens_Preco_Positivo", "\"Preco\" > 0");
+
+                            t.HasCheckConstraint("CK_PedidoItens_Quantidade_Positiva", "\"Quantidade\" > 0");
+                        });
                 });
 
             modelBuilder.Entity("GestaoPedidos.Domain.Entities.Produto", b =>
@@ -121,21 +253,42 @@ namespace GestaoPedidos.Migrations
 
                     b.Property<string>("Marca")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)");
 
                     b.Property<string>("Nome")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(160)
+                        .HasColumnType("character varying(160)");
 
                     b.Property<decimal>("Preco")
-                        .HasColumnType("numeric");
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
+
+                    b.Property<int>("QuantidadeCompradaPendente")
+                        .HasColumnType("integer");
 
                     b.Property<int>("QuantidadeReservada")
                         .HasColumnType("integer");
 
+                    b.Property<Guid>("Versao")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("gen_random_uuid()");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Produtos");
+                    b.ToTable("Produtos", null, t =>
+                        {
+                            t.HasCheckConstraint("CK_Produtos_CompraPendente_NaoNegativa", "\"QuantidadeCompradaPendente\" >= 0");
+
+                            t.HasCheckConstraint("CK_Produtos_Estoque_NaoNegativo", "\"Estoque\" >= 0");
+
+                            t.HasCheckConstraint("CK_Produtos_Preco_Positivo", "\"Preco\" > 0");
+
+                            t.HasCheckConstraint("CK_Produtos_Reserva_NaoNegativa", "\"QuantidadeReservada\" >= 0");
+                        });
                 });
 
             modelBuilder.Entity("GestaoPedidos.Domain.Entities.Usuario", b =>
@@ -154,22 +307,63 @@ namespace GestaoPedidos.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(254)
+                        .HasColumnType("character varying(254)");
 
                     b.Property<string>("Nome")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)");
 
                     b.Property<int>("Role")
                         .HasColumnType("integer");
 
                     b.Property<string>("Senha")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<Guid>("VersaoToken")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("gen_random_uuid()");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Email")
+                        .IsUnique();
+
                     b.ToTable("Usuarios");
+                });
+
+            modelBuilder.Entity("GestaoPedidos.Domain.Entities.MovimentacaoEstoque", b =>
+                {
+                    b.HasOne("GestaoPedidos.Domain.Entities.Produto", "Produto")
+                        .WithMany()
+                        .HasForeignKey("ProdutoId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Produto");
+                });
+
+            modelBuilder.Entity("GestaoPedidos.Domain.Entities.Pedidos.Pedido", b =>
+                {
+                    b.HasOne("GestaoPedidos.Domain.Entities.Cliente", "Cliente")
+                        .WithMany()
+                        .HasForeignKey("ClienteId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("GestaoPedidos.Domain.Entities.Usuario", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cliente");
+
+                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("GestaoPedidos.Domain.Entities.Pedidos.PedidoItem", b =>
@@ -178,6 +372,12 @@ namespace GestaoPedidos.Migrations
                         .WithMany("Itens")
                         .HasForeignKey("PedidoId")
                         .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("GestaoPedidos.Domain.Entities.Produto", null)
+                        .WithMany()
+                        .HasForeignKey("ProdutoId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 

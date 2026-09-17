@@ -19,7 +19,7 @@ namespace GestaoPedidos.Domain.Exceptions.Produtos {
     // através de uma ferramenta como ResGen ou Visual Studio.
     // Para adicionar ou remover um associado, edite o arquivo .ResX e execute ResGen novamente
     // com a opção /str, ou recrie o projeto do VS.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "18.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class ProdutoExceptions {
@@ -57,6 +57,42 @@ namespace GestaoPedidos.Domain.Exceptions.Produtos {
             }
             set {
                 resourceCulture = value;
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a A quantidade do ajuste não pode ser igual à 0.
+        /// </summary>
+        public static string Produto_AjusteNaoPodeSerZero {
+            get {
+                return ResourceManager.GetString("Produto_AjusteNaoPodeSerZero", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a A compra pendente do produto é insuficiente..
+        /// </summary>
+        public static string Produto_CompraPendenteInsuficiente {
+            get {
+                return ResourceManager.GetString("Produto_CompraPendenteInsuficiente", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Estoque insuficiente..
+        /// </summary>
+        public static string Produto_EstoqueInsuficiente {
+            get {
+                return ResourceManager.GetString("Produto_EstoqueInsuficiente", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a A quantidade não pode ser negativa.
+        /// </summary>
+        public static string Produto_EstoqueNaoPodeSerNegativo {
+            get {
+                return ResourceManager.GetString("Produto_EstoqueNaoPodeSerNegativo", resourceCulture);
             }
         }
         
@@ -129,6 +165,24 @@ namespace GestaoPedidos.Domain.Exceptions.Produtos {
         public static string Produto_PrecoInvalido {
             get {
                 return ResourceManager.GetString("Produto_PrecoInvalido", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a A quantidade deve ser maior que zero..
+        /// </summary>
+        public static string Produto_QuantidadeInvalida {
+            get {
+                return ResourceManager.GetString("Produto_QuantidadeInvalida", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a A reserva de venda do produto é insuficiente..
+        /// </summary>
+        public static string Produto_ReservaInsuficiente {
+            get {
+                return ResourceManager.GetString("Produto_ReservaInsuficiente", resourceCulture);
             }
         }
     }

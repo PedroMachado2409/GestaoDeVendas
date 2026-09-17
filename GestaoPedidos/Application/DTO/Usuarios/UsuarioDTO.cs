@@ -1,14 +1,14 @@
-﻿using GestaoPedidos.Domain.Enum;
+using GestaoPedidos.Domain.Enum;
 
 namespace GestaoPedidos.Application.DTO.Usuarios
 {
     public class UsuarioDTO
     {
         public int Id { get; set; }
-        public string Nome { get; set; } 
-        public string Email { get; set; } 
+        public string Nome { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
         public UserRole Role { get; set; }
-        public DateTime DataCadastro { get; set; } 
-        public bool Ativo { get; set; } 
+        public DateTime DataCadastro { get; set; }
+        public bool Ativo { get; set; }
     }
 }

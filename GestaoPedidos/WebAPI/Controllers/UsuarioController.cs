@@ -1,103 +1,102 @@
-﻿using GestaoPedidos.Application.DTO.Usuarios;
+using GestaoPedidos.Application.DTO.Usuarios;
 using GestaoPedidos.Application.UseCases.Usuarios.Commands;
 using GestaoPedidos.Application.UseCases.Usuarios.Queries;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace GestaoPedidos.WebAPI.Controllers
 {
     [ApiController]
-    [Route("/api/[controller]")]
+    [Route("api/[controller]")]
     public class UsuarioController : ControllerBase
     {
-        private readonly RegistrarUsuarioUseCase _registrarUsuarioUseCase;
-        private readonly AutenticarUseCase _autenticarUseCase;
-        private readonly ListarUsuariosUseCase _listarUsuariosUseCase;
-        private readonly AtivarUsuarioUseCase _ativarUsuarioUseCase;
-        private readonly InativarUsuarioUseCase _inativarUsuarioUseCase;
-        private readonly AtualizarSenhaUseCase _atualizarSenhaUseCase;
-        private readonly ObterUsuarioAutenticadoUseCase _obterUsuarioAutenticadoUseCase;
-        private readonly AtualizarUsuarioUseCase _atualizarUsuarioUseCase;
+        private readonly RegistrarUsuarioUseCase _registrarUsuario;
+        private readonly AutenticarUseCase _autenticar;
+        private readonly ListarUsuariosUseCase _listarUsuarios;
+        private readonly AtivarUsuarioUseCase _ativarUsuario;
+        private readonly InativarUsuarioUseCase _inativarUsuario;
+        private readonly AtualizarSenhaUseCase _atualizarSenha;
+        private readonly ObterUsuarioAutenticadoUseCase _obterUsuarioAutenticado;
+        private readonly AtualizarUsuarioUseCase _atualizarUsuario;
+        private readonly AlterarRoleUsuarioUseCase _alterarRole;
 
-        public UsuarioController (
-            RegistrarUsuarioUseCase registrarUsuarioUseCase,
-            AutenticarUseCase autenticarUseCase,
-            ListarUsuariosUseCase listarUsuarioUseCase,
-            AtivarUsuarioUseCase ativarUsuarioUseCase,
-            InativarUsuarioUseCase inativarUsuarioUseCase,
-            AtualizarSenhaUseCase atualizarSenhaUseCase,
-            ObterUsuarioAutenticadoUseCase obterUsuarioAutenticadoUseCase,
-            AtualizarUsuarioUseCase atualizarUsuarioUseCase)
+        public UsuarioController(
+            RegistrarUsuarioUseCase registrarUsuario,
+            AutenticarUseCase autenticar,
+            ListarUsuariosUseCase listarUsuarios,
+            AtivarUsuarioUseCase ativarUsuario,
+            InativarUsuarioUseCase inativarUsuario,
+            AtualizarSenhaUseCase atualizarSenha,
+            ObterUsuarioAutenticadoUseCase obterUsuarioAutenticado,
+            AtualizarUsuarioUseCase atualizarUsuario,
+            AlterarRoleUsuarioUseCase alterarRole)
         {
-            _registrarUsuarioUseCase = registrarUsuarioUseCase;
-            _autenticarUseCase = autenticarUseCase;
-            _listarUsuariosUseCase = listarUsuarioUseCase;
-            _ativarUsuarioUseCase = ativarUsuarioUseCase;
-            _inativarUsuarioUseCase = inativarUsuarioUseCase;
-            _atualizarSenhaUseCase = atualizarSenhaUseCase;
-            _obterUsuarioAutenticadoUseCase = obterUsuarioAutenticadoUseCase;
-            _atualizarUsuarioUseCase = atualizarUsuarioUseCase;
+            _registrarUsuario = registrarUsuario;
+            _autenticar = autenticar;
+            _listarUsuarios = listarUsuarios;
+            _ativarUsuario = ativarUsuario;
+            _inativarUsuario = inativarUsuario;
+            _atualizarSenha = atualizarSenha;
+            _obterUsuarioAutenticado = obterUsuarioAutenticado;
+            _atualizarUsuario = atualizarUsuario;
+            _alterarRole = alterarRole;
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> Listar()
-        {
-            var usuarios = await _listarUsuariosUseCase.Executar();
-            return Ok(usuarios);
-        }
+            => Ok(await _listarUsuarios.Executar());
 
         [Authorize]
-        [HttpGet("Autenticado")]
+        [HttpGet("autenticado")]
         public async Task<IActionResult> ObterAutenticado()
-        {
-            var usuario = await _obterUsuarioAutenticadoUseCase.Executar();
-            return Ok(usuario);
-        }
+            => Ok(await _obterUsuarioAutenticado.Executar());
 
-        [HttpPost("Registrar")]
+        [AllowAnonymous]
+        [EnableRateLimiting("login")]
+        [HttpPost("registrar")]
         public async Task<IActionResult> Registrar([FromBody] UsuarioCreateDTO dto)
         {
-            var usuario = await _registrarUsuarioUseCase.Executar(dto);
-            return Ok(usuario);
+            var usuario = await _registrarUsuario.Executar(dto);
+            return StatusCode(StatusCodes.Status201Created, usuario);
         }
 
-        [HttpPost("Autenticar")]
+        [AllowAnonymous]
+        [EnableRateLimiting("login")]
+        [HttpPost("autenticar")]
         public async Task<IActionResult> Autenticar([FromBody] LoginRequestDTO dto)
-        {
-            var usuario = await _autenticarUseCase.Executar(dto);
-            return Ok(usuario);
-        }
+            => Ok(await _autenticar.Executar(dto));
 
         [Authorize]
-        [HttpPut("AtualizarSenha")]
+        [HttpPut("senha")]
         public async Task<IActionResult> AtualizarSenha([FromBody] UsuarioUpdateSenhaDTO dto)
-        {
-            var usuario = await _atualizarSenhaUseCase.Executar(dto);
-            return Ok(usuario);
-        }
+            => Ok(await _atualizarSenha.Executar(dto));
 
         [Authorize]
-        [HttpPut("AtualizarUsuario")]
+        [HttpPut("perfil")]
         public async Task<IActionResult> AtualizarUsuario([FromBody] UsuarioUpdateDTO dto)
-        {
-            var usuario = await _atualizarUsuarioUseCase.Executar(dto);
-            return Ok(usuario);
-        }
+            => Ok(await _atualizarUsuario.Executar(dto));
 
-        [HttpPut("inativar/{id}")]
+        [Authorize(Roles = "Admin")]
+        [HttpPut("{id:int}/role")]
+        public async Task<IActionResult> AlterarRole(int id, [FromBody] UsuarioRoleUpdateDTO dto)
+            => Ok(await _alterarRole.Executar(id, dto.Role));
+
+        [Authorize(Roles = "Admin")]
+        [HttpPut("{id:int}/inativar")]
         public async Task<IActionResult> Inativar(int id)
         {
-            var usuario = await _inativarUsuarioUseCase.Executar(id);
+            await _inativarUsuario.Executar(id);
             return NoContent();
         }
 
-
-        [HttpPut("ativar/{id}")]
+        [Authorize(Roles = "Admin")]
+        [HttpPut("{id:int}/ativar")]
         public async Task<IActionResult> Ativar(int id)
         {
-            var usuario = await _ativarUsuarioUseCase.Executar(id);
+            await _ativarUsuario.Executar(id);
             return NoContent();
         }
-
     }
 }

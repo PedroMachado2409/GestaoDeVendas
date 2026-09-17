@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using GestaoPedidos.Application.DTO.Clientes;
 using GestaoPedidos.Domain.Abstractions;
 using GestaoPedidos.Domain.Exceptions.Clientes;
@@ -6,7 +6,6 @@ using GestaoPedidos.Domain.Exceptions.Clientes;
 namespace GestaoPedidos.Application.UseCases.Clientes.Queries
 {
     public class ObterClientePorIdUseCase
-       : IUseCase<int, ClienteResponseDTO>
     {
         private readonly IClienteRepository _repository;
         private readonly IMapper _mapper;
@@ -17,7 +16,7 @@ namespace GestaoPedidos.Application.UseCases.Clientes.Queries
             _mapper = mapper;
         }
 
-        public async Task<ClienteResponseDTO> Execute(int id)
+        public async Task<ClienteResponseDTO> Executar(int id)
         {
             var cliente = await _repository.ObterPorId(id)
                 ?? throw new(ClientesExceptions.Cliente_NaoEncontrado);

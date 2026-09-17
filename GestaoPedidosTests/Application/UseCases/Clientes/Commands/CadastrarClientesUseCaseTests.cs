@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using FluentAssertions;
 using GestaoPedidos.Application.DTO.Clientes;
 using GestaoPedidos.Application.UseCases.Clientes.Commands;
@@ -15,9 +15,9 @@ namespace GestaoPedidosTests.Application.UseCases.Clientes.Commands
     [TestClass]
     public class CadastrarClientesUseCaseTests
     {
-        private Mock<IClienteRepository> _repositoryMock;
-        private IMapper _mapper;
-        private CadastrarClienteUseCase _useCase;
+        private Mock<IClienteRepository> _repositoryMock = null!;
+        private IMapper _mapper = null!;
+        private CadastrarClienteUseCase _useCase = null!;
 
         [TestInitialize]
         public void Setup()
@@ -42,8 +42,8 @@ namespace GestaoPedidosTests.Application.UseCases.Clientes.Commands
                 Email = "pedro@gmail.com"
             };
 
-             _repositoryMock.Setup(c => c.ObterPorCpf(dto.Cpf))
-                .ReturnsAsync((Cliente?)null);
+            _repositoryMock.Setup(c => c.ObterPorCpf(dto.Cpf))
+               .ReturnsAsync((Cliente?)null);
 
             _repositoryMock.Setup(c => c.ObterPorEmail(dto.Email))
                 .ReturnsAsync((Cliente?)null);
@@ -51,7 +51,7 @@ namespace GestaoPedidosTests.Application.UseCases.Clientes.Commands
             _repositoryMock.Setup(c => c.Cadastrar(It.IsAny<Cliente>()))
                 .Returns(Task.CompletedTask);
 
-            var result = await _useCase.Execute(dto);
+            var result = await _useCase.Executar(dto);
 
             result.Should().NotBeNull();
             result.Nome.Should().Be(dto.Nome);
@@ -87,14 +87,14 @@ namespace GestaoPedidosTests.Application.UseCases.Clientes.Commands
                     "12345678910"
                  ));
 
-            Func<Task> act = () => _useCase.Execute(dto);
+            Func<Task> act = () => _useCase.Executar(dto);
 
             var exception = await act.Should().ThrowAsync<BadRequestException>();
             exception.Which.Message.Should().Be(ClientesExceptions.Cliente_CpfExistente);
 
             _repositoryMock.Verify(r => r.ObterPorEmail(dto.Email), Times.Never);
             _repositoryMock.Verify(r => r.Cadastrar(It.IsAny<Cliente>()), Times.Never);
-            
+
 
         }
 
@@ -118,7 +118,7 @@ namespace GestaoPedidosTests.Application.UseCases.Clientes.Commands
                     "pedro@gmail.com"
                  ));
 
-            Func<Task> act = () => _useCase.Execute(dto);
+            Func<Task> act = () => _useCase.Executar(dto);
             var exception = await act.Should().ThrowAsync<BadRequestException>();
             exception.Which.Message.Should().Be(ClientesExceptions.Cliente_EmailExistente);
 

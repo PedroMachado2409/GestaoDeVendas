@@ -1,4 +1,4 @@
-﻿namespace GestaoPedidos.Application.DTO.Pedidos
+namespace GestaoPedidos.Application.DTO.Pedidos
 {
     public class PedidoItemResponseDTO
     {

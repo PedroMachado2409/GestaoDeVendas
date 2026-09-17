@@ -1,0 +1,1474 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Anatomia do GestaoPedidos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;600&family=Public+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+
+<style>
+  /* Tema escuro fixo, por decisão de design: a página é feita para leitura
+     longa de código, e o fundo escuro é o ambiente em que esse conteúdo é
+     lido no dia a dia. Toda cor sai de um token abaixo — nenhuma literal
+     espalhada — então a página se sustenta em qualquer host. */
+  :root {
+    color-scheme: dark;
+
+    --paper:      #10191E;
+    --paper-2:    #16232B;
+    --ink:        #E8EDEB;
+    --ink-soft:   #A9B6BB;
+    --ink-faint:  #8C9BA1;
+    --rule:       #2A3941;
+    --accent:     #4FB3AE;
+    --accent-dim: #16302F;
+    --amber:      #D9A441;
+    --amber-dim:  #2C2415;
+    --clay:       #D98570;
+    --clay-dim:   #2E1B16;
+    --code-bg:    #16232B;
+
+    --sans: "Public Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    --serif: "Instrument Serif", Georgia, "Times New Roman", serif;
+    --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 17px;
+    line-height: 1.65;
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .shell {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 24px 120px;
+    gap: 0;
+  }
+
+  @media (min-width: 1000px) {
+    .shell {
+      grid-template-columns: 232px minmax(0, 1fr);
+      gap: 56px;
+      padding-left: 32px;
+      padding-right: 32px;
+    }
+  }
+
+  /* ---------- sumário ---------- */
+
+  nav.toc { display: none; }
+
+  @media (min-width: 1000px) {
+    nav.toc {
+      display: block;
+      position: sticky;
+      top: 0;
+      align-self: start;
+      max-height: 100vh;
+      overflow-y: auto;
+      padding: 48px 0 48px;
+      font-size: 13.5px;
+      line-height: 1.5;
+    }
+  }
+
+  nav.toc h2 {
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin: 0 0 14px;
+  }
+
+  nav.toc ol { list-style: none; margin: 0 0 22px; padding: 0; display: flex; flex-direction: column; gap: 3px; }
+  nav.toc .grp {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 18px 0 7px;
+  }
+  nav.toc a {
+    color: var(--ink-soft);
+    text-decoration: none;
+    display: block;
+    padding: 2px 0 2px 11px;
+    border-left: 2px solid var(--rule);
+  }
+  nav.toc a:hover, nav.toc a:focus-visible { color: var(--accent); border-left-color: var(--accent); }
+
+  /* ---------- conteúdo ---------- */
+
+  main { min-width: 0; padding-top: 48px; }
+  .col { max-width: 68ch; }
+
+  header.top { max-width: 68ch; margin-bottom: 56px; }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 18px;
+  }
+
+  h1 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(42px, 7vw, 68px);
+    line-height: 1.02;
+    letter-spacing: -0.015em;
+    margin: 0 0 20px;
+    text-wrap: balance;
+  }
+
+  .standfirst {
+    font-size: 20px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    margin: 0 0 28px;
+  }
+
+  .meta {
+    font-family: var(--mono);
+    font-size: 12.5px;
+    color: var(--ink-faint);
+    border-top: 1px solid var(--rule);
+    padding-top: 14px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 20px;
+  }
+
+  h2 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(30px, 4.2vw, 40px);
+    line-height: 1.12;
+    letter-spacing: -0.01em;
+    margin: 0 0 8px;
+    text-wrap: balance;
+  }
+
+  h3 {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 19px;
+    line-height: 1.35;
+    letter-spacing: -0.005em;
+    margin: 42px 0 10px;
+    text-wrap: balance;
+  }
+
+  h4 {
+    font-family: var(--mono);
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin: 30px 0 8px;
+  }
+
+  section.part { margin-top: 78px; }
+
+  .part-head {
+    border-top: 2px solid var(--ink);
+    padding-top: 16px;
+    margin-bottom: 34px;
+    max-width: 68ch;
+  }
+  .part-num {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 12px;
+  }
+  .part-head p { color: var(--ink-soft); margin: 10px 0 0; font-size: 17.5px; }
+
+  p, ul, ol { margin: 0 0 16px; }
+  main .col ul, main .col ol { padding-left: 22px; }
+  li { margin-bottom: 6px; }
+
+  a { color: var(--accent); text-underline-offset: 2px; }
+
+  code {
+    font-family: var(--mono);
+    font-size: 0.86em;
+    background: var(--code-bg);
+    padding: 1px 5px;
+    border-radius: 2px;
+  }
+
+  pre {
+    font-family: var(--mono);
+    background: var(--code-bg);
+    border: 1px solid var(--rule);
+    border-left: 3px solid var(--accent);
+    padding: 16px 18px;
+    overflow-x: auto;
+    font-size: 13.5px;
+    line-height: 1.6;
+    margin: 0 0 18px;
+    max-width: 74ch;
+  }
+  pre code { background: none; padding: 0; font-size: inherit; }
+
+  .filepath {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    color: var(--ink-faint);
+    margin: 0 0 6px;
+    word-break: break-all;
+  }
+
+  /* ---------- destaques ---------- */
+
+  .note {
+    border-top: 2px solid var(--accent);
+    background: var(--accent-dim);
+    padding: 16px 18px;
+    margin: 0 0 20px;
+    max-width: 74ch;
+  }
+  .note.pratica { border-top-color: var(--amber); background: var(--amber-dim); }
+  .note.armadilha { border-top-color: var(--clay); background: var(--clay-dim); }
+
+  .note .label {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 7px;
+  }
+  .note.pratica .label { color: var(--amber); }
+  .note.armadilha .label { color: var(--clay); }
+  .note p:last-child, .note ul:last-child { margin-bottom: 0; }
+
+  /* ---------- diagrama de camadas ---------- */
+
+  .camadas {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    max-width: 460px;
+    margin: 0 0 12px;
+    font-family: var(--mono);
+    font-size: 13px;
+  }
+  .camada {
+    border: 1px solid var(--rule);
+    border-bottom: none;
+    padding: 13px 16px;
+    background: var(--paper-2);
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+  }
+  .camada:last-child { border-bottom: 1px solid var(--rule); }
+  .camada.nucleo { background: var(--accent-dim); border-left: 3px solid var(--accent); }
+  .camada .qual { color: var(--ink); }
+  .camada .oque { color: var(--ink-faint); font-size: 11.5px; text-align: right; }
+  .seta {
+    text-align: center;
+    color: var(--accent);
+    font-family: var(--mono);
+    font-size: 12px;
+    margin: 0 0 20px;
+    max-width: 460px;
+  }
+
+  /* ---------- tabelas ---------- */
+
+  .tw { overflow-x: auto; margin: 0 0 20px; max-width: 74ch; }
+  table { border-collapse: collapse; width: 100%; font-size: 14.5px; }
+  th, td { text-align: left; padding: 9px 14px 9px 0; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  th {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    font-weight: 600;
+    border-bottom-color: var(--ink-soft);
+    white-space: nowrap;
+  }
+  td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+  /* ---------- fluxo numerado ---------- */
+
+  ol.fluxo { list-style: none; padding: 0; counter-reset: passo; max-width: 74ch; }
+  ol.fluxo li {
+    counter-increment: passo;
+    position: relative;
+    padding-left: 40px;
+    margin-bottom: 16px;
+  }
+  ol.fluxo li::before {
+    content: counter(passo);
+    position: absolute;
+    left: 0;
+    top: 1px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent);
+    border: 1px solid var(--rule);
+    width: 26px;
+    height: 26px;
+    display: grid;
+    place-items: center;
+  }
+
+  /* ---------- princípios SOLID ---------- */
+
+  .principio {
+    display: grid;
+    grid-template-columns: 46px minmax(0, 1fr);
+    gap: 0 18px;
+    margin: 44px 0 0;
+    max-width: 74ch;
+  }
+  .principio .letra {
+    font-family: var(--serif);
+    font-size: 46px;
+    line-height: 0.9;
+    color: var(--accent);
+    border-top: 2px solid var(--accent);
+    padding-top: 10px;
+    grid-row: span 2;
+  }
+  .principio .nome {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 19px;
+    border-top: 1px solid var(--rule);
+    padding-top: 14px;
+    margin: 0 0 4px;
+  }
+  .principio .frase {
+    color: var(--ink-soft);
+    font-size: 16px;
+    margin: 0 0 14px;
+  }
+  .principio .corpo { grid-column: 2; }
+  .principio .corpo > *:last-child { margin-bottom: 0; }
+
+  @media (max-width: 620px) {
+    .principio { grid-template-columns: minmax(0, 1fr); }
+    .principio .letra { grid-row: auto; font-size: 34px; }
+    .principio .corpo { grid-column: 1; }
+  }
+
+  hr.fim {
+    border: none;
+    border-top: 1px solid var(--rule);
+    margin: 60px 0 28px;
+    max-width: 68ch;
+  }
+
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+
+<nav class="toc">
+  <h2>Sumário</h2>
+  <p class="grp">Abertura</p>
+  <ol>
+    <li><a href="#mapa">O mapa</a></li>
+  </ol>
+  <p class="grp">Parte 1 · Domínio</p>
+  <ol>
+    <li><a href="#regra-comum">A regra comum</a></li>
+    <li><a href="#cliente">Cliente</a></li>
+    <li><a href="#usuario">Usuario</a></li>
+    <li><a href="#produto">Produto</a></li>
+    <li><a href="#pedido">Pedido e PedidoItem</a></li>
+    <li><a href="#movimentacao">MovimentacaoEstoque</a></li>
+  </ol>
+  <p class="grp">Parte 2 · Aplicação</p>
+  <ol>
+    <li><a href="#caso-de-uso">O que é um caso de uso</a></li>
+    <li><a href="#cadastrar-pedido">Cadastrar pedido</a></li>
+    <li><a href="#transicoes">Finalizar e cancelar</a></li>
+    <li><a href="#validacao">Validação</a></li>
+  </ol>
+  <p class="grp">Parte 3 · Infraestrutura</p>
+  <ol>
+    <li><a href="#repositorios">Repositórios</a></li>
+    <li><a href="#unitofwork">UnitOfWork</a></li>
+    <li><a href="#erros">Erros</a></li>
+    <li><a href="#dbcontext">AppDbContext</a></li>
+    <li><a href="#migracoes">Migrações</a></li>
+  </ol>
+  <p class="grp">Parte 4 · Borda</p>
+  <ol>
+    <li><a href="#controllers">Controllers</a></li>
+    <li><a href="#jwt">Autenticação</a></li>
+    <li><a href="#pipeline">O pipeline</a></li>
+  </ol>
+  <p class="grp">Parte 5 · SOLID e KISS</p>
+  <ol>
+    <li><a href="#solid">O que é SOLID</a></li>
+    <li><a href="#srp">S · Responsabilidade única</a></li>
+    <li><a href="#ocp">O · Aberto/fechado</a></li>
+    <li><a href="#lsp">L · Substituição</a></li>
+    <li><a href="#isp">I · Segregação</a></li>
+    <li><a href="#dip">D · Inversão</a></li>
+    <li><a href="#kiss">KISS</a></li>
+  </ol>
+  <p class="grp">Parte 6 · Fechamento</p>
+  <ol>
+    <li><a href="#padroes">Os cinco padrões</a></li>
+    <li><a href="#roteiro">Roteiro de leitura</a></li>
+  </ol>
+</nav>
+
+<main>
+
+<header class="top">
+  <p class="eyebrow">Aula · Leitura guiada do fonte</p>
+  <h1>Anatomia do GestaoPedidos</h1>
+  <p class="standfirst">Um passeio por cada entidade e cada funcionalidade da API — o que o código faz, por que foi feito assim, e o que aconteceria se fosse feito de outro jeito.</p>
+  <p class="meta">
+    <span>.NET 8 · ASP.NET Core</span>
+    <span>EF Core · PostgreSQL</span>
+    <span>Clean Architecture</span>
+  </p>
+</header>
+
+<div class="col">
+
+<section id="mapa">
+  <h2>O mapa</h2>
+  <p>Antes de olhar arquivo nenhum, entenda o desenho. O sistema tem quatro camadas, e a regra que governa tudo é uma só: <strong>a dependência sempre aponta para dentro</strong>.</p>
+
+  <div class="camadas">
+    <div class="camada"><span class="qual">WebAPI</span> <span class="oque">recebe HTTP, devolve HTTP</span></div>
+    <div class="camada"><span class="qual">Application</span> <span class="oque">orquestra o caso de uso</span></div>
+    <div class="camada"><span class="qual">Infrastructure</span> <span class="oque">fala com o banco</span></div>
+    <div class="camada nucleo"><span class="qual">Domain</span> <span class="oque">a regra do negócio</span></div>
+  </div>
+  <p class="seta">↑ cada camada conhece a de baixo &nbsp;·&nbsp; o Domain não conhece ninguém</p>
+
+  <p>O <code>Domain</code> é o centro. Ele não importa Entity Framework, não importa ASP.NET, não sabe que existe HTTP nem banco de dados. É C# puro descrevendo o que é um pedido, o que é um produto e o que pode acontecer com eles.</p>
+
+  <div class="note">
+    <span class="label">Por que isso importa</span>
+    <p>Se um dia você trocar PostgreSQL por SQL Server, ou a API REST por gRPC, o <code>Domain</code> não muda uma linha. A regra de que "não se cancela pedido já finalizado" não tem nada a ver com banco nem com HTTP — e o código reflete isso.</p>
+  </div>
+
+  <p>Teste rápido para conferir se a camada está limpa: abra qualquer arquivo em <code>Domain/</code> e olhe os <code>using</code>. Se aparecer <code>Microsoft.EntityFrameworkCore</code> ou <code>Microsoft.AspNetCore</code>, a camada furou.</p>
+</section>
+
+</div>
+
+<section class="part" id="parte1">
+  <div class="part-head">
+    <p class="part-num">Parte 1</p>
+    <h2>O domínio</h2>
+    <p>As entidades. É aqui que vive a regra, e é o que você deve ler primeiro.</p>
+  </div>
+
+  <div class="col">
+
+  <h3 id="regra-comum">A regra comum a todas as entidades</h3>
+  <p>Antes de entrar em cada uma, repare em três padrões que se repetem em todas. Eles não são estilo — cada um resolve um problema.</p>
+
+  <h4>1. Setter privado</h4>
+<pre><code>public int Estoque { get; private set; }</code></pre>
+  <p>Qualquer código pode <em>ler</em> o estoque. Só a própria entidade pode <em>mudar</em>. Isso significa que ninguém escreve <code>produto.Estoque = -5</code> em algum canto do sistema — a única forma de alterar é chamando um método que valida.</p>
+
+  <h4>2. Construtor protegido, vazio</h4>
+<pre><code>protected Produto() { }
+
+public Produto(string nome, string marca, int estoque, decimal preco)
+{
+    Nome = nome.Trim();
+    // ...
+}</code></pre>
+  <p>O vazio existe só para o Entity Framework conseguir montar o objeto ao ler do banco. O <code>protected</code> impede que o seu código o use. Assim, todo produto criado <em>pelo seu código</em> passa obrigatoriamente pelo construtor de verdade.</p>
+
+  <h4>3. Método com nome de negócio</h4>
+<pre><code>produto.ReservarQuantidadeVenda(3);   // e não produto.Estoque -= 3;</code></pre>
+  <p>O nome diz o que aconteceu no mundo real, não o que aconteceu na memória. Quem lê o caso de uso entende a operação sem abrir a entidade.</p>
+
+  <div class="note pratica">
+    <span class="label">Prática</span>
+    <p>Isso se chama <strong>entidade rica</strong>. O contrário é a <strong>entidade anêmica</strong>: uma classe só com <code>get; set;</code> públicos, onde a regra fica espalhada pelos serviços. O problema da anêmica é que a mesma regra acaba escrita em três lugares — e um dia divergem.</p>
+  </div>
+
+  <h3 id="cliente">Cliente</h3>
+  <p class="filepath">Domain/Entities/Cliente.cs</p>
+  <p>A entidade mais simples do sistema. Vale como aquecimento, porque mostra um padrão importante: <strong>normalizar na entrada</strong>.</p>
+
+<pre><code>public Cliente(string nome, string email, string cpf)
+{
+    Nome = nome.Trim();
+    Email = NormalizarEmail(email);
+    Cpf = NormalizarCpf(cpf);
+    Ativo = true;
+    DataCadastro = DateTime.UtcNow;
+}
+
+private static string NormalizarEmail(string email)
+    =&gt; email.Trim().ToLowerInvariant();
+
+private static string NormalizarCpf(string cpf)
+    =&gt; new(cpf.Where(char.IsDigit).ToArray());</code></pre>
+
+  <p>O CPF entra como <code>123.456.789-01</code> e é guardado como <code>12345678901</code>. O e-mail entra como <code>Joao@Gmail.com</code> e vira <code>joao@gmail.com</code>.</p>
+
+  <div class="note">
+    <span class="label">Por que isso importa</span>
+    <p>Existe um índice único de CPF e de e-mail no banco. Sem normalizar, <code>Joao@Gmail.com</code> e <code>joao@gmail.com</code> passariam como dois clientes diferentes — e o índice único não serviria para nada. A normalização é o que faz a restrição do banco significar o que você quer que ela signifique.</p>
+  </div>
+
+  <p>Repare também que <code>Ativo</code> e <code>DataCadastro</code> não são parâmetros. Cliente nasce ativo e nasce agora — não faz sentido quem chama decidir isso.</p>
+
+  <p>E não existe método <code>Excluir</code>. O sistema inteiro trabalha com <code>Ativar()</code> e <code>Inativar()</code>. Cliente inativo continua existindo, porque os pedidos dele precisam continuar apontando para alguém.</p>
+
+  <h3 id="usuario">Usuario</h3>
+  <p class="filepath">Domain/Entities/Usuario.cs</p>
+  <p>Aqui aparece o primeiro pedaço de segurança de verdade. Olhe este campo:</p>
+
+<pre><code>public Guid VersaoToken { get; private set; } = Guid.NewGuid();
+
+private void RevogarTokens() =&gt; VersaoToken = Guid.NewGuid();</code></pre>
+
+  <p>E agora olhe quem chama:</p>
+
+<pre><code>public void AlterarSenha(string senhaHash)
+{
+    Senha = senhaHash;
+    RevogarTokens();      // ←
+}
+
+public void AlterarRole(UserRole role) { Role = role; RevogarTokens(); }
+public void Ativar()   { Ativo = true;  RevogarTokens(); }
+public void Inativar() { Ativo = false; RevogarTokens(); }</code></pre>
+
+  <p>O <code>VersaoToken</code> é copiado para dentro do JWT quando o usuário faz login. A cada requisição, a API compara o valor que veio no token com o que está no banco. Se forem diferentes, o token é recusado.</p>
+
+  <div class="note">
+    <span class="label">O que isso resolve</span>
+    <p>JWT é, por natureza, impossível de cancelar: uma vez assinado, ele vale até expirar. Se alguém roubasse seu token e você trocasse a senha, o token roubado continuaria funcionando por mais uma hora.</p>
+    <p>Com o <code>VersaoToken</code>, trocar a senha muda o valor no banco, e <strong>todos</strong> os tokens emitidos antes deixam de valer no mesmo instante. É o "desconectar de todos os aparelhos" que os aplicativos grandes oferecem.</p>
+  </div>
+
+  <div class="note pratica">
+    <span class="label">Prática</span>
+    <p>Repare que <code>RevogarTokens()</code> é <strong>privado</strong> e chamado por dentro. Quem troca a senha não precisa lembrar de revogar — é impossível esquecer, porque não há como fazer uma coisa sem a outra. Isso é o que se quer dizer com "a entidade protege o próprio invariante".</p>
+  </div>
+
+  <h3 id="produto">Produto</h3>
+  <p class="filepath">Domain/Entities/Produto.cs</p>
+  <p>A entidade mais rica do sistema, e a que mais tem para ensinar. Ela controla <strong>três</strong> quantidades ao mesmo tempo:</p>
+
+  <div class="tw">
+  <table>
+    <thead><tr><th>Campo</th><th>Significa</th></tr></thead>
+    <tbody>
+      <tr><td><code>Estoque</code></td><td>Está na prateleira, livre para vender</td></tr>
+      <tr><td><code>QuantidadeReservada</code></td><td>Saiu da prateleira, separado para um pedido de venda ainda aberto</td></tr>
+      <tr><td><code>QuantidadeCompradaPendente</code></td><td>Foi comprado do fornecedor, ainda não chegou</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <p>E existem duas trilhas independentes ligando esses campos:</p>
+
+<pre><code>Venda:  Estoque → ReservarQuantidadeVenda → QuantidadeReservada
+                → ConfirmarReserva  → (sai do produto, foi vendido)
+                → LiberarReserva    → volta para o Estoque
+
+Compra: (fora) → ReservarQuantidadeCompra → QuantidadeCompradaPendente
+                → EfetivarCompra          → entra no Estoque
+                → CancelarCompraPendente  → some, nunca chegou</code></pre>
+
+  <p>A trilha da venda começa tirando do estoque. A trilha da compra <strong>não toca no estoque</strong> até a mercadoria chegar — porque ela ainda não existe fisicamente.</p>
+
+  <div class="note armadilha">
+    <span class="label">Armadilha real</span>
+    <p>Durante o desenvolvimento, o cancelamento de pedido chamava sempre <code>LiberarReserva</code>, sem olhar se era compra ou venda. Cancelar uma compra de 5 unidades <em>adicionava</em> 5 ao estoque — mercadoria que nunca chegou — e ainda consumia reserva de vendas de outros clientes.</p>
+    <p><strong>A lição:</strong> ao criar uma operação nova, procure o par dela. Criou <code>ReservarQuantidadeCompra</code>? Então existe um "desfazer" correspondente. Se você não escreveu, alguém vai desfazer pelo caminho errado.</p>
+  </div>
+
+  <h4>A validação simétrica</h4>
+  <p>Toda operação passa por uma verificação antes de mexer nos números:</p>
+
+<pre><code>private void ValidarReservaDeVenda(int quantidade)
+{
+    ValidarQuantidadePositiva(quantidade);
+
+    if (QuantidadeReservada &lt; quantidade)
+    {
+        throw new ConflictException(ProdutoExceptions.Produto_ReservaInsuficiente);
+    }
+}</code></pre>
+
+  <p>Cada trilha tem a sua validação, com a mesma estrutura. Quando duas coisas fazem o mesmo papel, elas devem se parecer — se uma valida e a outra não, a que não valida é um bug esperando.</p>
+
+  <h4>O campo Versao</h4>
+
+<pre><code>public Guid Versao { get; private set; } = Guid.NewGuid();
+
+private void AtualizarVersao() =&gt; Versao = Guid.NewGuid();</code></pre>
+
+  <p>Esse campo é chamado de <strong>token de concorrência otimista</strong>. Ele resolve um problema que só aparece quando duas pessoas usam o sistema ao mesmo tempo.</p>
+
+  <p>Imagine a última camiseta em estoque. Dois vendedores abrem a tela ao mesmo tempo, os dois veem "1 disponível", os dois clicam em vender:</p>
+
+  <ol class="fluxo">
+    <li>Vendedor A lê o produto. Estoque 1, Versao <code>abc</code>.</li>
+    <li>Vendedor B lê o mesmo produto. Estoque 1, Versao <code>abc</code>.</li>
+    <li>A grava: <code>UPDATE ... SET Estoque = 0, Versao = 'xyz' WHERE Id = 7 AND Versao = 'abc'</code> — encontra a linha, grava.</li>
+    <li>B grava o mesmo comando, também com <code>WHERE Versao = 'abc'</code>. Mas a versão agora é <code>xyz</code>. <strong>Nenhuma linha é afetada.</strong></li>
+    <li>O EF percebe que zero linhas mudaram e lança <code>DbUpdateConcurrencyException</code>, que a API traduz em <strong>409</strong>.</li>
+  </ol>
+
+  <p>Sem esse campo, o passo 4 gravaria por cima e você teria vendido a mesma camiseta duas vezes — sem erro nenhum na tela.</p>
+
+  <div class="note pratica">
+    <span class="label">Prática</span>
+    <p>O <code>AtualizarVersao()</code> é chamado em <strong>todos</strong> os nove métodos que alteram estado. Não em oito. Um método que esquece de atualizar a versão abre um buraco silencioso — e ninguém descobre em teste, porque só aparece com dois usuários simultâneos.</p>
+  </div>
+
+  <h3 id="pedido">Pedido e PedidoItem</h3>
+  <p class="filepath">Domain/Entities/Pedidos/Pedido.cs</p>
+  <p>Esses dois formam o que se chama de <strong>agregado</strong>: um conjunto de objetos que só faz sentido junto, com uma porta de entrada única.</p>
+
+<pre><code>private readonly List&lt;PedidoItem&gt; _itens = new();
+public IReadOnlyCollection&lt;PedidoItem&gt; Itens =&gt; _itens.AsReadOnly();</code></pre>
+
+  <p>Repare no truque: a lista de verdade é privada. O que sai para fora é uma versão <em>somente leitura</em>. Ninguém de fora consegue fazer <code>pedido.Itens.Add(...)</code> ou <code>.Clear()</code> — porque isso furaria as regras do pedido.</p>
+
+  <p>Para mexer nos itens existe um método, e ele começa checando o estado:</p>
+
+<pre><code>public void AtualizarItem(int produtoId, int novaQuantidade)
+{
+    if (Status != StatusPedido.Aberto)
+    {
+        throw new BadRequestException(PedidosExceptions.Pedido_NaoPodeSerAlterado);
+    }
+    // ...
+    if (!_itens.Any())
+    {
+        throw new BadRequestException(PedidosExceptions.Pedido_ItemObrigatório);
+    }
+}</code></pre>
+
+  <p>Duas regras que a entidade garante sozinha: <strong>pedido fechado não muda</strong>, e <strong>pedido nunca fica sem itens</strong>.</p>
+
+  <h4>Os três estados</h4>
+<pre><code>public enum StatusPedido { Aberto = 0, Finalizado = 1, Cancelado = 2 }</code></pre>
+  <p>De <code>Aberto</code> se vai para <code>Finalizado</code> ou <code>Cancelado</code>. Desses dois não se sai. Isso se chama <strong>estado terminal</strong>, e é o que os métodos <code>Finalizar()</code> e <code>Cancelar()</code> protegem.</p>
+
+  <h4>PedidoItem guarda o preço</h4>
+<pre><code>public PedidoItem(int produtoId, decimal preco, int quantidade)
+public decimal SubTotal =&gt; Preco * Quantidade;</code></pre>
+
+  <div class="note">
+    <span class="label">Por que copiar o preço</span>
+    <p>O item guarda o preço praticado <em>no momento da venda</em>, não uma referência ao preço atual do produto. Se o produto subir de R$ 10 para R$ 12 amanhã, o pedido de hoje continua valendo R$ 10.</p>
+    <p>Sem essa cópia, todo histórico de vendas mudaria retroativamente a cada reajuste — e o faturamento do mês passado mudaria sozinho.</p>
+  </div>
+
+  <h3 id="movimentacao">MovimentacaoEstoque</h3>
+  <p class="filepath">Domain/Entities/MovimentacaoEstoque.cs</p>
+  <p>Uma entidade com um propósito diferente das outras: ela é <strong>trilha de auditoria</strong>. Não existe para o sistema funcionar — existe para responder "por que o estoque desse produto está em 3?".</p>
+
+<pre><code>public MovimentacaoEstoque(
+    int produtoId,
+    string produtoNome,        // ← cópia, não referência
+    int quantidade,
+    int idOrigem,
+    OrigemMovimentacao origemMovimentacao,
+    TipoMovimentacao tipoMovimentacao,
+    string observacao)</code></pre>
+
+  <p>Três decisões para observar:</p>
+
+  <p><strong>O nome do produto é copiado.</strong> Mesma lógica do preço no item: a trilha precisa dizer como o produto se chamava naquele dia. Se ele for renomeado, o histórico não pode mudar junto.</p>
+
+  <p><strong>A origem é um enum, não texto.</strong></p>
+<pre><code>public enum OrigemMovimentacao { PedidoDeVenda = 0, PedidoDeCompra = 1 }</code></pre>
+  <p>Com texto livre, um dia entra <code>"PedidoVenda"</code>, outro dia <code>"pedido de venda"</code> — e o relatório que agrupa por origem passa a mentir. Com enum, só existem dois valores possíveis.</p>
+
+  <p><strong>Não existe alteração nem exclusão.</strong> A interface do repositório tem só duas operações:</p>
+<pre><code>public interface IMovimentacaoEstoqueRepository
+{
+    Task Cadastrar(MovimentacaoEstoque movimentacaoEstoque);
+    Task&lt;List&lt;MovimentacaoEstoque&gt;&gt; ListarPorProduto(int produtoId);
+}</code></pre>
+
+  <div class="note pratica">
+    <span class="label">Prática</span>
+    <p>Histórico que pode ser apagado deixa de ser histórico. Se um lançamento saiu errado, a correção é uma <strong>movimentação nova em sentido contrário</strong> — igual a estorno em contabilidade. O erro fica visível, e é isso que se quer.</p>
+  </div>
+
+  </div>
+</section>
+
+<section class="part" id="parte2">
+  <div class="part-head">
+    <p class="part-num">Parte 2</p>
+    <h2>A aplicação</h2>
+    <p>Os casos de uso. Aqui a regra do domínio é orquestrada em uma operação completa.</p>
+  </div>
+
+  <div class="col">
+
+  <h3 id="caso-de-uso">O que é um caso de uso aqui</h3>
+  <p>Uma classe, uma operação, um método <code>Executar</code>. O nome é uma frase do negócio: <code>CadastrarPedidoUseCase</code>, <code>FinalizarPedidoUseCase</code>, <code>AlterarRoleUsuarioUseCase</code>.</p>
+
+  <p>O caso de uso <strong>não contém regra</strong>. Ele busca as coisas, chama os métodos das entidades na ordem certa e manda gravar. A regra de "não pode reservar mais do que tem" está no <code>Produto</code>, não aqui.</p>
+
+  <div class="note">
+    <span class="label">Detalhe do projeto</span>
+    <p>Você nunca precisa registrar um caso de uso novo. O <code>Program.cs</code> usa a biblioteca Scrutor para varrer o assembly e registrar automaticamente toda classe terminada em <code>UseCase</code>. Repositórios, ao contrário, são registrados um a um na mão — é a única coisa que exige mexer no <code>Program.cs</code>.</p>
+  </div>
+
+  <h3 id="cadastrar-pedido">Cadastrar pedido, passo a passo</h3>
+  <p class="filepath">Application/UseCases/Pedidos/Commands/CadastrarPedidoUseCase.cs</p>
+  <p>É o caso de uso mais rico do sistema. Vale ler linha por linha.</p>
+
+  <ol class="fluxo">
+    <li><strong>Abre a transação.</strong> Todo o corpo roda dentro de <code>_unitOfWork.ExecutarEmTransacao</code>. Ou tudo acontece, ou nada acontece.</li>
+    <li><strong>Busca o cliente</strong> e recusa se não existir (404) ou se estiver inativo (409).</li>
+    <li><strong>Descobre quem está vendendo</strong>, pelo token — não pelo corpo da requisição.</li>
+    <li><strong>Busca todos os produtos de uma vez</strong> com <code>ObterPorIds</code>, e monta um dicionário.</li>
+    <li><strong>Para cada item:</strong> confere se o produto existe, se está ativo, e reserva a quantidade pela trilha certa (venda ou compra).</li>
+    <li><strong>Cria o pedido</strong> e manda gravar tudo com um único <code>SalvarAlteracoes()</code>.</li>
+  </ol>
+
+  <h4>O passo 3 é uma decisão de segurança</h4>
+<pre><code>var usuario = await _obterUsuarioAutenticado.Executar();
+// ...
+var pedido = new Pedido(dto.ClienteId, itens, usuario.Id, totalPedido, dto.tipoMovimentacao);</code></pre>
+
+  <p>Repare que o <code>CriarPedidoRequestDTO</code> tem apenas <code>ClienteId</code>, <code>Itens</code> e o tipo. <strong>Não tem campo de usuário.</strong> Isso é proposital.</p>
+
+  <div class="note">
+    <span class="label">O que isso evita</span>
+    <p>Se o identificador do vendedor viesse no corpo do JSON, qualquer vendedor poderia lançar vendas no nome de outro — basta editar a requisição. Como o campo não existe no DTO, mandá-lo simplesmente não tem efeito: o desserializador ignora, e o autor vem sempre da <em>claim</em> do token.</p>
+  </div>
+
+  <h4>O passo 4 evita o problema N+1</h4>
+<pre><code>var produtos = await _produtoRepository.ObterPorIds(dto.Itens.Select(i =&gt; i.ProdutoId));
+var produtosPorId = produtos.ToDictionary(p =&gt; p.Id);</code></pre>
+
+  <p>Um pedido com 10 itens faz <strong>uma</strong> consulta ao banco, não dez. Buscar dentro do laço seria o erro clássico chamado N+1: funciona no teste com 2 itens, engasga com 200.</p>
+
+  <h4>O passo 6 é o coração da transação</h4>
+  <p>Repare que nenhum repositório é mandado salvar durante o laço. As reservas de estoque só mexem nos objetos em memória; o EF anota que mudaram. Só no final:</p>
+
+<pre><code>await _pedidoRepository.Cadastrar(pedido);   // AddAsync, sem salvar
+await _unitOfWork.SalvarAlteracoes();        // aqui vai tudo de uma vez</code></pre>
+
+  <p>Um pedido com 3 produtos gera 3 <code>UPDATE</code> em Produtos, 1 <code>INSERT</code> em Pedidos e 3 <code>INSERT</code> em PedidoItens — sete escritas, todas juntas. Se a terceira reserva falhar por estoque insuficiente, <strong>nenhuma</strong> das anteriores é gravada.</p>
+
+  <div class="note armadilha">
+    <span class="label">O que aconteceria sem isso</span>
+    <p>Sem transação, os dois primeiros produtos já teriam o estoque baixado quando o terceiro falhasse. Você ficaria com unidades reservadas para um pedido que não existe — estoque sumido, sem nenhum registro explicando para onde foi. E ninguém percebe até a contagem física não bater.</p>
+  </div>
+
+  <h3 id="transicoes">Finalizar e cancelar</h3>
+  <p class="filepath">Application/UseCases/Pedidos/Commands/</p>
+  <p>Os dois têm a mesma estrutura, e ensinam um conceito importante: <strong>idempotência</strong>.</p>
+
+<pre><code>if (pedido.Status == StatusPedido.Cancelado)
+{
+    return _mapper.Map&lt;PedidoResponseDTO&gt;(pedido);   // sai sem fazer nada
+}
+
+if (pedido.Status != StatusPedido.Aberto)
+{
+    throw new ConflictException(PedidosExceptions.Pedido_NaoPodeCancelar);
+}</code></pre>
+
+  <p>Cancelar um pedido já cancelado devolve <strong>200, sem erro</strong> — e sem mexer no estoque de novo.</p>
+
+  <div class="note">
+    <span class="label">Por que isso é desejável</span>
+    <p>O usuário clica em "cancelar", a internet oscila, ele clica de novo. Sem essa proteção, o segundo clique devolveria o estoque uma segunda vez — criando mercadoria do nada.</p>
+    <p>Idempotente quer dizer: chamar uma vez ou cinco vezes dá o mesmo resultado final. É uma propriedade que toda operação exposta na rede deveria ter, porque a rede repete requisições sozinha.</p>
+  </div>
+
+  <p>Repare que o retorno antecipado vem <strong>antes</strong> de qualquer alteração de estoque. A ordem das verificações não é detalhe — é o que faz a idempotência funcionar.</p>
+
+  <h4>A diferença entre os dois</h4>
+  <div class="tw">
+  <table>
+    <thead><tr><th>Operação</th><th>Venda</th><th>Compra</th></tr></thead>
+    <tbody>
+      <tr><td>Finalizar</td><td><code>ConfirmarReserva</code> — a reserva some, saiu de vez</td><td><code>EfetivarCompra</code> — a pendência vira estoque</td></tr>
+      <tr><td>Cancelar</td><td><code>LiberarReserva</code> — volta para o estoque</td><td><code>CancelarCompraPendente</code> — some, nunca chegou</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <p>O <code>FinalizarPedidoUseCase</code> ainda grava uma <code>MovimentacaoEstoque</code> por item — a trilha só é escrita quando o movimento de fato acontece.</p>
+
+  <h3 id="validacao">Validação: onde cada coisa mora</h3>
+  <p>O sistema valida em três lugares diferentes, de propósito.</p>
+
+  <div class="tw">
+  <table>
+    <thead><tr><th>Onde</th><th>Valida o quê</th><th>Exemplo</th></tr></thead>
+    <tbody>
+      <tr><td>FluentValidation</td><td>Formato da requisição</td><td>Quantidade &gt; 0, e-mail parece e-mail</td></tr>
+      <tr><td>Entidade</td><td>Regra do negócio</td><td>Não reservar mais do que tem</td></tr>
+      <tr><td>Banco</td><td>Última linha de defesa</td><td><code>CHECK (Estoque &gt;= 0)</code></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <p>Parece redundante. Não é: cada camada protege contra uma coisa diferente. O validador protege contra requisição malformada. A entidade protege contra código errado. O <code>CHECK</code> protege contra <em>qualquer</em> caminho — inclusive um <code>UPDATE</code> manual que alguém rode no banco às três da manhã.</p>
+
+  <h4>O filtro que amarra tudo</h4>
+  <p class="filepath">Infrastructure/Filters/FluentValidationFilter.cs</p>
+  <p>Este arquivo é um dos melhores do projeto. Ele roda antes de cada action, olha cada argumento recebido, procura no contêiner se existe um validador para aquele tipo, e aplica.</p>
+
+<pre><code>var validatorType = typeof(IValidator&lt;&gt;).MakeGenericType(argument.GetType());
+if (context.HttpContext.RequestServices.GetService(validatorType)
+    is not IValidator validator)
+{
+    continue;
+}</code></pre>
+
+  <p>O efeito prático: para validar um DTO novo, você <strong>só cria a classe do validador</strong>. Não registra, não chama, não altera o controller. O filtro acha sozinho.</p>
+
+  <div class="note pratica">
+    <span class="label">Prática</span>
+    <p>Isso é o que se chama de mecanismo <em>por convenção</em>: em vez de cada desenvolvedor lembrar de chamar a validação, a infraestrutura garante que ela sempre aconteça. Regra que depende de alguém lembrar é regra que um dia falha.</p>
+  </div>
+
+  </div>
+</section>
+
+<section class="part" id="parte3">
+  <div class="part-head">
+    <p class="part-num">Parte 3</p>
+    <h2>A infraestrutura</h2>
+    <p>O que conversa com o banco e o que trata erro. Chato de escrever, e é o que segura o sistema em pé.</p>
+  </div>
+
+  <div class="col">
+
+  <h3 id="repositorios">Repositórios</h3>
+  <p class="filepath">Infrastructure/Repositories/</p>
+  <p>A regra é simples: repositório <strong>lê e escreve, e nada mais</strong>. Zero regra de negócio.</p>
+
+<pre><code>public Task&lt;List&lt;Produto&gt;&gt; ObterPorIds(IEnumerable&lt;int&gt; ids)
+{
+    var idsDistintos = ids.Distinct().ToArray();
+    return _context.Produtos
+        .Where(p =&gt; idsDistintos.Contains(p.Id))
+        .ToListAsync();
+}</code></pre>
+
+  <p>A interface fica no <code>Domain</code>; a implementação, na <code>Infrastructure</code>. É isso que permite ao domínio "pedir" dados sem conhecer Entity Framework — ele conhece só a interface.</p>
+
+  <h4>AsNoTracking: quando usar</h4>
+<pre><code>_context.Produtos.AsNoTracking().OrderBy(p =&gt; p.Id).ToListAsync();</code></pre>
+
+  <p>Por padrão o EF <em>rastreia</em> tudo que você lê, para saber o que mudou na hora de salvar. Isso custa memória e tempo. Em consulta que só vai virar JSON e ir embora, <code>AsNoTracking()</code> pula esse trabalho.</p>
+
+  <div class="note armadilha">
+    <span class="label">Cuidado</span>
+    <p>Não use <code>AsNoTracking()</code> em leitura que vai ser seguida de alteração — sem rastreamento, o EF não sabe o que mudou e o <code>SaveChanges</code> não grava nada. É um bug silencioso: nenhum erro, e o dado simplesmente não muda.</p>
+  </div>
+
+  <h3 id="unitofwork">UnitOfWork</h3>
+  <p class="filepath">Infrastructure/Data/UnitOfWork.cs</p>
+  <p>O arquivo mais sofisticado do projeto. São 30 linhas com três ideias dentro.</p>
+
+<pre><code>public async Task&lt;T&gt; ExecutarEmTransacao&lt;T&gt;(Func&lt;Task&lt;T&gt;&gt; operacao)
+{
+    if (_context.Database.CurrentTransaction is not null)
+    {
+        return await operacao();                    // ① já existe transação
+    }
+
+    var strategy = _context.Database.CreateExecutionStrategy();   // ②
+
+    return await strategy.ExecuteAsync(async () =&gt;
+    {
+        await using var transacao = await _context.Database.BeginTransactionAsync();
+        try
+        {
+            var resultado = await operacao();
+            await transacao.CommitAsync();
+            return resultado;
+        }
+        catch
+        {
+            await transacao.RollbackAsync();          // ③
+            throw;
+        }
+    });
+}</code></pre>
+
+  <p><strong>① A guarda de reentrância.</strong> Se já existe transação aberta, ele só executa e devolve, sem abrir outra. PostgreSQL não aninha transações desse jeito — sem essa linha, um caso de uso chamando outro estouraria.</p>
+
+  <p><strong>② A estratégia de execução.</strong> Existe por causa de uma linha lá no <code>Program.cs</code>: <code>EnableRetryOnFailure(3)</code>. Com repetição automática ligada, o EF <em>proíbe</em> transação manual — a não ser que você a embrulhe na estratégia. Quem escreve isso já tomou a exceção e foi entender o motivo.</p>
+
+  <p><strong>③ O rollback e o <code>throw</code>.</strong> Desfaz e <strong>relança</strong>. Engolir a exceção aqui esconderia a falha de quem precisa saber dela — o middleware de erro, que vai traduzir em resposta HTTP.</p>
+
+  <div class="note">
+    <span class="label">Atomicidade não é concorrência</span>
+    <p>Confusão comum, então vale separar:</p>
+    <ul>
+      <li><strong>Transação</strong> resolve "tudo ou nada" — as sete escritas do pedido acontecem juntas ou nenhuma acontece.</li>
+      <li><strong>Token de concorrência</strong> (<code>Produto.Versao</code>) resolve "duas pessoas ao mesmo tempo" — impede que uma escrita sobreponha a outra.</li>
+    </ul>
+    <p>São problemas diferentes, com soluções diferentes. Transação sozinha não impede dois vendedores de venderem a última camiseta.</p>
+  </div>
+
+  <h3 id="erros">Erros como tipo, não como texto</h3>
+  <p class="filepath">Domain/Exceptions/ · Infrastructure/Middlewares/ExceptionMiddleware.cs</p>
+  <p>O domínio não sabe o que é HTTP. Mas ele sabe que "não encontrado" é diferente de "conflito". Isso é expresso com tipos:</p>
+
+<pre><code>AppException
+ ├── BadRequestException     → 400
+ ├── UnauthorizedException   → 401
+ ├── ForbiddenException      → 403
+ ├── NotFoundException       → 404
+ └── ConflictException       → 409</code></pre>
+
+  <p>O caso de uso lança o tipo certo. O <code>ExceptionMiddleware</code>, na borda, traduz em resposta:</p>
+
+<pre><code>var problem = new ProblemDetails
+{
+    Status = statusCode,
+    Title = titulo,
+    Detail = detalhe,
+    Instance = context.Request.Path
+};
+problem.Extensions["traceId"] = context.TraceIdentifier;</code></pre>
+
+  <p>O formato é o <code>application/problem+json</code>, padronizado na RFC 9457. E o <code>traceId</code> é o detalhe que faz diferença no suporte: o usuário manda o print, você acha exatamente aquela requisição no log.</p>
+
+  <h4>O middleware também pega o que você não previu</h4>
+<pre><code>catch (DbUpdateConcurrencyException) { ... 409 ... }
+catch (DbUpdateException)            { ... 409 ... }
+catch (Exception exception)
+{
+    var detalhe = _environment.IsDevelopment()
+        ? exception.Message
+        : "Ocorreu um erro inesperado.";
+}</code></pre>
+
+  <div class="note pratica">
+    <span class="label">Prática</span>
+    <p>Em desenvolvimento a mensagem real aparece; em produção, não. Detalhe de exceção conta ao atacante o nome das tabelas, o banco usado, às vezes trechos de consulta. É informação de graça para quem está sondando.</p>
+  </div>
+
+  <h3 id="dbcontext">AppDbContext: onde o modelo vira tabela</h3>
+  <p class="filepath">Infrastructure/Data/AppDbContext.cs</p>
+  <p>Aqui se declara como cada entidade vira tabela. Três tipos de configuração merecem atenção.</p>
+
+  <h4>Limites de tamanho</h4>
+<pre><code>entity.Property(c =&gt; c.Nome).HasMaxLength(120);
+entity.Property(c =&gt; c.Cpf).HasMaxLength(11).IsFixedLength();
+entity.Property(p =&gt; p.Preco).HasPrecision(18, 2);</code></pre>
+  <p>Sem <code>HasMaxLength</code>, o texto vira <code>text</code> ilimitado no PostgreSQL. Sem <code>HasPrecision</code>, dinheiro vira um <code>numeric</code> sem escala definida — e dois campos de dinheiro com regras diferentes acabam divergindo no arredondamento.</p>
+
+  <h4>Índices únicos</h4>
+<pre><code>entity.HasIndex(c =&gt; c.Email).IsUnique();
+entity.HasIndex(c =&gt; c.Cpf).IsUnique();
+entity.HasIndex(i =&gt; new { i.PedidoId, i.ProdutoId }).IsUnique();</code></pre>
+  <p>O último é interessante: garante que o mesmo produto não apareça duas vezes no mesmo pedido. É a mesma regra que o validador do DTO já verifica — só que aqui o banco também garante.</p>
+
+  <h4>Restrições de verificação</h4>
+<pre><code>table.HasCheckConstraint("CK_Produtos_Estoque_NaoNegativo", "\"Estoque\" &gt;= 0");
+table.HasCheckConstraint("CK_Produtos_Preco_Positivo", "\"Preco\" &gt; 0");</code></pre>
+
+  <div class="note">
+    <span class="label">A ideia por trás</span>
+    <p>A entidade já impede estoque negativo. Então por que o banco também? Porque a entidade só protege o caminho que passa <em>pela aplicação</em>. O <code>CHECK</code> protege contra script de migração, importação de planilha, ajuste manual — qualquer coisa que escreva direto na tabela.</p>
+    <p>É o princípio de <strong>defesa em profundidade</strong>: nenhuma camada confia que a de cima fez o trabalho dela.</p>
+  </div>
+
+  <h3 id="migracoes">Migrações</h3>
+  <p class="filepath">Migrations/</p>
+  <p>Cada migração é a diferença entre o modelo de ontem e o de hoje, em SQL. O comando <code>dotnet ef migrations add</code> gera o arquivo automaticamente.</p>
+
+  <div class="note armadilha">
+    <span class="label">O maior aprendizado deste projeto</span>
+    <p>O arquivo gerado <strong>é um rascunho</strong>. Quando você adiciona uma coluna obrigatória, o EF gera:</p>
+<pre style="margin:10px 0 0"><code>nullable: false,
+defaultValue: 0</code></pre>
+    <p style="margin-top:10px">Todo registro que já existia passa a valer zero. Se a coluna for um valor financeiro, o faturamento histórico inteiro vira zero — sem erro, sem aviso, em silêncio.</p>
+    <p>E quando você remove uma propriedade da entidade, o EF gera <code>DropColumn</code>. Se a propriedade removida era o token de concorrência, você acabou de desligar a proteção contra venda duplicada — e o único sinal foi uma linha no terminal.</p>
+  </div>
+
+  <h4>Como uma migração madura se parece</h4>
+  <p>A migração <code>HardeningSegurancaIntegridade</code>, deste projeto, mostra o padrão certo: antes de criar qualquer restrição, ela <strong>verifica os dados e se recusa a rodar</strong> se algo estiver inconsistente.</p>
+
+<pre><code>IF EXISTS (
+    SELECT 1 FROM "Produtos"
+    WHERE "Estoque" &lt; 0 OR "QuantidadeReservada" &lt; 0 OR "Preco" &lt;= 0
+) THEN
+    RAISE EXCEPTION 'Existem produtos com estoque, reserva ou preço inválidos.';
+END IF;</code></pre>
+
+  <p>A diferença entre uma migração que quebra no meio, deixando o banco pela metade, e uma que para antes de começar e diz o que corrigir.</p>
+
+  <div class="note pratica">
+    <span class="label">Rotina que vale adotar</span>
+    <ol style="margin-bottom:0">
+      <li>Rodar <code>dotnet ef migrations add</code></li>
+      <li><strong>Abrir o arquivo e ler</strong></li>
+      <li>Procurar por <code>DropColumn</code> e <code>defaultValue</code></li>
+      <li>Se houver, escrever o <code>UPDATE</code> que preserva o dado, <em>antes</em> da operação destrutiva</li>
+      <li>Conferir se o <code>Down</code> realmente desfaz</li>
+      <li>Só então aplicar</li>
+    </ol>
+  </div>
+
+  </div>
+</section>
+
+<section class="part" id="parte4">
+  <div class="part-head">
+    <p class="part-num">Parte 4</p>
+    <h2>A borda</h2>
+    <p>Onde o HTTP entra e sai. A camada mais fina do sistema, e é assim que deve ser.</p>
+  </div>
+
+  <div class="col">
+
+  <h3 id="controllers">Controllers finos</h3>
+  <p class="filepath">WebAPI/Controllers/</p>
+  <p>Olhe o tamanho de uma action:</p>
+
+<pre><code>[HttpPost]
+public async Task&lt;IActionResult&gt; CadastrarPedido([FromBody] CriarPedidoRequestDTO dto)
+{
+    var pedido = await _cadastrarPedidoUseCase.Executar(dto);
+    return CreatedAtAction(nameof(ObterPorId), new { id = pedido.Id }, pedido);
+}</code></pre>
+
+  <p>Duas linhas. Sem <code>if</code>, sem <code>try/catch</code>, sem regra. O controller traduz HTTP em chamada e chamada em HTTP — só isso.</p>
+
+  <p>O <code>CreatedAtAction</code> é um detalhe correto: devolve <strong>201</strong> com o cabeçalho <code>Location</code> apontando para onde o recurso criado pode ser lido.</p>
+
+  <div class="note pratica">
+    <span class="label">Por que manter fino</span>
+    <p>Regra dentro de controller não pode ser testada sem subir a aplicação inteira. Regra dentro do caso de uso é testável com um objeto e dois <em>mocks</em>. Quanto mais fino o controller, mais do sistema fica testável de forma barata.</p>
+  </div>
+
+  <h3 id="jwt">Autenticação e autorização</h3>
+  <p class="filepath">Program.cs · Infrastructure/Security/GerarTokenJwt.cs</p>
+
+  <h4>O que vai dentro do token</h4>
+<pre><code>new Claim(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
+new Claim(ClaimTypes.Email, usuario.Email),
+new Claim(ClaimTypes.Name, usuario.Nome),
+new Claim(ClaimTypes.Role, usuario.Role.ToString()),
+new Claim("token_version", usuario.VersaoToken.ToString()),
+new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())</code></pre>
+
+  <p>Note o que <strong>não</strong> vai: a senha, nem o hash dela. O JWT é assinado, não criptografado — qualquer pessoa lê o conteúdo com um decodificador de base64. Ele garante que ninguém <em>alterou</em>, não que ninguém <em>leu</em>.</p>
+
+  <h4>A verificação a cada requisição</h4>
+<pre><code>options.Events = new JwtBearerEvents
+{
+    OnTokenValidated = async context =&gt;
+    {
+        var usuario = await repository.ObterPorId(usuarioId);
+
+        if (usuario is null
+            || !usuario.Ativo
+            || usuario.VersaoToken != versaoToken
+            || usuario.Role.ToString() != roleClaim)
+        {
+            context.Fail("Token revogado.");
+        }
+    }
+};</code></pre>
+
+  <p>Depois de conferir a assinatura, o sistema ainda vai ao banco e confere quatro coisas: o usuário existe, está ativo, a versão do token bate, e o papel não mudou.</p>
+
+  <div class="note">
+    <span class="label">O custo e o benefício</span>
+    <p>Isso é uma consulta ao banco por requisição — o oposto do "JWT é sem estado". A troca é consciente: você perde um pouco de desempenho e ganha a capacidade de <strong>desligar um acesso na hora</strong>. Para um sistema com papéis administrativos, vale.</p>
+  </div>
+
+  <h4>Fechado por padrão</h4>
+<pre><code>options.FallbackPolicy = new AuthorizationPolicyBuilder()
+    .RequireAuthenticatedUser()
+    .Build();</code></pre>
+
+  <p>Isso inverte o padrão do ASP.NET: sem essa linha, um endpoint sem <code>[Authorize]</code> fica <strong>aberto</strong>. Com ela, tudo exige autenticação, e liberar é que precisa ser explícito, com <code>[AllowAnonymous]</code>.</p>
+
+  <div class="note pratica">
+    <span class="label">Prática</span>
+    <p>Segurança deve falhar para o lado seguro. Se alguém criar um controller novo e esquecer o <code>[Authorize]</code>, o pior que acontece é o endpoint exigir login sem necessidade. Sem o <code>FallbackPolicy</code>, o mesmo esquecimento expõe dado para a internet inteira.</p>
+  </div>
+
+  <h3 id="pipeline">O pipeline, e por que a ordem importa</h3>
+  <p class="filepath">Program.cs</p>
+
+<pre><code>app.UseMiddleware&lt;ExceptionMiddleware&gt;();   // ① primeiro de todos
+app.UseHttpsRedirection();
+app.UseCors("Frontend");
+app.UseRateLimiter();                       // ② antes de autenticar
+app.UseAuthentication();                    // ③ quem é você
+app.UseAuthorization();                     // ④ pode fazer isso
+app.MapControllers();</code></pre>
+
+  <p>Cada requisição atravessa essa fila na ordem. Três decisões dentro dela:</p>
+
+  <p><strong>① O tratamento de erro é o primeiro</strong> porque ele precisa envolver todos os outros. Exceção que aconteça em qualquer ponto abaixo sobe até ele.</p>
+
+  <p><strong>② O rate limit vem antes da autenticação</strong> — de propósito. Se viesse depois, um atacante forçaria o servidor a validar milhares de tokens antes de ser barrado.</p>
+
+  <p><strong>③ e ④ são coisas diferentes.</strong> Autenticação responde "quem é você"; autorização responde "você pode fazer isso". Nessa ordem, sempre — não dá para checar permissão de alguém que você ainda não identificou.</p>
+
+  </div>
+</section>
+
+<section class="part" id="parte5solid">
+  <div class="part-head">
+    <p class="part-num">Parte 5</p>
+    <h2>SOLID e KISS, no seu código</h2>
+    <p>Cinco princípios e uma regra de bom senso — cada um com um acerto e uma violação tirados deste repositório.</p>
+  </div>
+
+  <div class="col">
+
+  <h3 id="solid">Antes de tudo: o que isso é</h3>
+  <p><strong>SOLID</strong> é uma sigla com cinco princípios de projeto orientado a objetos. Não são leis — são cinco perguntas que valem a pena fazer antes de escrever uma classe.</p>
+  <p><strong>KISS</strong> é <em>Keep It Simple, Stupid</em>: prefira a solução simples enquanto ela resolver o problema.</p>
+
+  <div class="note">
+    <span class="label">Como ler esta parte</span>
+    <p>Não vou te dar exemplos de livro. Cada princípio abaixo tem um trecho <strong>do seu código</strong> que o respeita e um que o viola. Os dois são úteis — o segundo mais que o primeiro, porque é onde está o aprendizado.</p>
+  </div>
+
+  <div class="principio" id="srp">
+    <div class="letra">S</div>
+    <div class="corpo">
+      <p class="nome">Responsabilidade única</p>
+      <p class="frase">Uma classe deve ter um motivo, e só um, para mudar.</p>
+
+      <h4>Onde você acertou</h4>
+      <p class="filepath">Application/Validators/Clientes/CpfValidator.cs</p>
+<pre><code>public static class CpfValidator
+{
+    public static bool EhValido(string cpf) { ... }
+    private static int CalcularDigito(string numeros, int pesoInicial) { ... }
+}</code></pre>
+      <p>Essa classe valida CPF. Só isso. Se a regra do dígito verificador mudar, ela muda. Nada mais no sistema tem motivo para tocá-la.</p>
+      <p>Os casos de uso seguem a mesma ideia: <code>CadastrarPedidoUseCase</code> cadastra pedido. Não lista, não cancela. Uma classe, uma operação.</p>
+
+      <h4>Onde o seu código viola</h4>
+      <p class="filepath">Infrastructure/Repositories/ProdutoRepository.cs</p>
+<pre><code>public async Task Atualizar(Produto produto)
+{
+    _context.Produtos.Update(produto);
+    await _context.SaveChangesAsync();   // ← segunda responsabilidade
+}</code></pre>
+      <p>Esse método faz duas coisas: <strong>marca</strong> a entidade como alterada — que é trabalho de repositório — e <strong>decide gravar no banco</strong> — que é trabalho da unidade de trabalho.</p>
+      <p>Dois motivos para mudar: se o mapeamento mudar, e se a política de transação mudar. Por isso o mesmo projeto tem um <code>UnitOfWork</code> caprichado e três repositórios que o contornam.</p>
+
+      <div class="note pratica">
+        <span class="label">Teste prático</span>
+        <p>Descreva a classe em uma frase. Se você precisar de um "e" no meio — "grava o produto <em>e</em> confirma a transação" —, provavelmente são duas classes.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="principio" id="ocp">
+    <div class="letra">O</div>
+    <div class="corpo">
+      <p class="nome">Aberto para extensão, fechado para modificação</p>
+      <p class="frase">Dá para acrescentar comportamento sem editar o que já funciona.</p>
+
+      <h4>Onde você acertou</h4>
+      <p class="filepath">Infrastructure/Filters/FluentValidationFilter.cs</p>
+<pre><code>var validatorType = typeof(IValidator&lt;&gt;).MakeGenericType(argument.GetType());
+if (context.HttpContext.RequestServices.GetService(validatorType)
+    is not IValidator validator)
+{
+    continue;
+}</code></pre>
+      <p>Este é o melhor exemplo do repositório. Para validar um DTO novo você <strong>cria uma classe</strong> e pronto. Não edita o filtro, não edita o controller, não registra nada.</p>
+      <p>O filtro está fechado — ninguém precisa abri-lo de novo. E aberto — o comportamento cresce sozinho.</p>
+      <p>O mesmo vale para os casos de uso: o <code>Program.cs</code> varre o assembly e registra tudo que termina em <code>UseCase</code>. Classe nova entra sem tocar na configuração.</p>
+
+      <h4>Onde fica pela metade</h4>
+      <p class="filepath">Infrastructure/Middlewares/ExceptionMiddleware.cs</p>
+<pre><code>private static string TituloParaStatus(int statusCode)
+    =&gt; statusCode switch
+    {
+        StatusCodes.Status400BadRequest =&gt; "Requisição inválida",
+        StatusCodes.Status404NotFound   =&gt; "Recurso não encontrado",
+        _ =&gt; "Erro na aplicação"
+    };</code></pre>
+      <p>Criar uma exceção nova derivada de <code>AppException</code> funciona sem tocar no middleware — isso é aberto. Mas se ela usar um status que não está no <code>switch</code>, o título vira o genérico, e aí você <em>precisa</em> editar o método. Fechado pela metade.</p>
+
+      <div class="note">
+        <span class="label">Não exagere</span>
+        <p>Deixar tudo extensível cria abstração demais. A pergunta certa é: <em>"isto vai crescer?"</em> Validadores crescem a cada DTO — vale. Status HTTP são oito e não mudam — o <code>switch</code> está bom.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="principio" id="lsp">
+    <div class="letra">L</div>
+    <div class="corpo">
+      <p class="nome">Substituição de Liskov</p>
+      <p class="frase">Onde cabe a classe base, qualquer filha tem que caber, sem surpresa.</p>
+
+      <h4>Onde você acertou</h4>
+      <p class="filepath">Domain/Exceptions/ · ExceptionMiddleware.cs</p>
+<pre><code>catch (AppException exception)
+{
+    await EscreverProblema(
+        context,
+        exception.StatusCode,                    // vem da filha
+        TituloParaStatus(exception.StatusCode),
+        exception.Message);
+}</code></pre>
+      <p>O middleware captura <code>AppException</code> e nunca pergunta qual é a filha. Não existe <code>if (exception is NotFoundException)</code> em lugar nenhum.</p>
+      <p><code>NotFoundException</code>, <code>ConflictException</code> e as outras são intercambiáveis: cada uma entrega o seu <code>StatusCode</code> e a sua mensagem, e o middleware trata todas igual. Isso é Liskov funcionando.</p>
+
+      <h4>Como seria uma violação</h4>
+<pre><code>// Se alguém criasse isto:
+public class ErroDeIntegracaoException : AppException
+{
+    public override string Message =&gt; throw new NotSupportedException();
+}</code></pre>
+      <p>A classe herda de <code>AppException</code>, então o <code>catch</code> a pega — e o middleware quebra ao ler a mensagem. A filha prometeu ser uma <code>AppException</code> e não cumpriu.</p>
+
+      <div class="note pratica">
+        <span class="label">Teste prático</span>
+        <p>Se o seu código precisa perguntar <em>qual</em> subclasse é para decidir o que fazer, a herança provavelmente está errada. Herança boa é aquela em que você não precisa perguntar.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="principio" id="isp">
+    <div class="letra">I</div>
+    <div class="corpo">
+      <p class="nome">Segregação de interface</p>
+      <p class="frase">Ninguém deve ser obrigado a depender de método que não usa.</p>
+
+      <h4>Onde você acertou</h4>
+      <p>Repare que este projeto <strong>não tem</strong> um <code>IRepository&lt;T&gt;</code> genérico. Cada repositório declara só o que os seus consumidores precisam:</p>
+
+      <div class="tw">
+      <table>
+        <thead><tr><th>Interface</th><th class="num">Métodos</th><th>Tem</th></tr></thead>
+        <tbody>
+          <tr><td><code>IPedidoRepository</code></td><td class="num">3</td><td>Cadastrar, ObterPorId, Atualizar</td></tr>
+          <tr><td><code>IProdutoRepository</code></td><td class="num">6</td><td>inclui ObterPorIds e Atualizar em lote</td></tr>
+          <tr><td><code>IMovimentacaoEstoqueRepository</code></td><td class="num">2</td><td>só Cadastrar e ListarPorProduto</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <p>O da movimentação é o mais interessante. Ele tem <strong>dois</strong> métodos, porque trilha de auditoria só escreve e lê:</p>
+<pre><code>public interface IMovimentacaoEstoqueRepository
+{
+    Task Cadastrar(MovimentacaoEstoque movimentacaoEstoque);
+    Task&lt;List&lt;MovimentacaoEstoque&gt;&gt; ListarPorProduto(int produtoId);
+}</code></pre>
+
+      <div class="note">
+        <span class="label">O que um genérico teria custado</span>
+        <p>Com um <code>IRepository&lt;T&gt;</code> trazendo <code>Atualizar</code> e <code>Deletar</code> para todo mundo, a trilha de auditoria <strong>ganharia um método de excluir</strong> — e a regra de "histórico não se apaga" viraria convenção verbal em vez de garantia do código.</p>
+        <p>A interface menor não é preguiça. É a regra sendo expressa no tipo.</p>
+      </div>
+
+      <h4>Onde houve deslize</h4>
+      <p>O <code>IMovimentacaoEstoqueRepository</code> nasceu com um terceiro método, <code>Deletar(int id)</code>, que ninguém chamava — e que contradizia o propósito da entidade. Foi removido.</p>
+    </div>
+  </div>
+
+  <div class="principio" id="dip">
+    <div class="letra">D</div>
+    <div class="corpo">
+      <p class="nome">Inversão de dependência</p>
+      <p class="frase">Dependa de abstração, não de implementação. E quem manda é a camada de dentro.</p>
+
+      <h4>Onde você acertou</h4>
+      <p>Repare <em>onde cada arquivo mora</em> — é aí que está o princípio:</p>
+<pre><code>Domain/Abstractions/IPedidoRepository.cs          ← o contrato
+Infrastructure/Repositories/PedidoRepository.cs   ← a implementação</code></pre>
+      <p>A interface fica no <strong>Domain</strong>. Quem define o que um repositório de pedido precisa saber fazer é o domínio, não o Entity Framework. A infraestrutura é que se adapta.</p>
+      <p>Isso é a "inversão": normalmente o de cima depende do de baixo. Aqui o de baixo depende do contrato que o de cima escreveu.</p>
+      <p>O mesmo padrão em <code>IPasswordHasher</code> → <code>BCryptPasswordHasher</code> e <code>IToken</code> → <code>GerarTokenJwt</code>. Trocar BCrypt por Argon2 é criar uma classe nova e mudar uma linha do <code>Program.cs</code>.</p>
+
+      <h4>Onde o seu código viola</h4>
+      <p class="filepath">Application/UseCases/Pedidos/Commands/CadastrarPedidoUseCase.cs</p>
+<pre><code>public CadastrarPedidoUseCase(
+    IPedidoRepository pedidoRepository,          // interface ✓
+    IProdutoRepository produtoRepository,        // interface ✓
+    IClienteRepository clienteRepository,        // interface ✓
+    IUnitOfWork unitOfWork,                      // interface ✓
+    ObterUsuarioAutenticadoUseCase obterUsuario, // ← classe concreta ✗
+    IMapper mapper)</code></pre>
+      <p>Quatro dependências são interfaces. Uma é classe concreta.</p>
+      <p>A consequência é bem concreta: <strong>não dá para escrever teste desse caso de uso</strong>. O Moq só substitui interface ou método virtual, e <code>ObterUsuarioAutenticadoUseCase.Executar()</code> não é nenhum dos dois. É por isso que o caso de uso mais complexo do sistema é justamente o que não tem teste.</p>
+
+      <div class="note pratica">
+        <span class="label">O conserto</span>
+        <p>Extrair uma interface pequena — <code>IUsuarioAutenticado</code> com um método — e injetar ela. Duas linhas de mudança, e o caso de uso vira testável.</p>
+        <p>Repare como os princípios se cruzam: o teste que falta não é preguiça de testar, é <em>consequência</em> de uma dependência concreta. Violar DIP cobra o preço em testabilidade.</p>
+      </div>
+    </div>
+  </div>
+
+  <h3 id="kiss">KISS — mantenha simples</h3>
+  <p>Não é "faça código burro". É: <strong>não adicione complexidade que o problema não pediu</strong>.</p>
+
+  <h4>O melhor exemplo é uma coisa que foi apagada</h4>
+  <p class="filepath">Domain/Abstractions/IUseCase.cs — removido</p>
+<pre><code>public interface IUseCase { }
+public interface IUseCase&lt;TResponse&gt; : IUseCase
+{
+    Task&lt;TResponse&gt; Execute();
+}
+public interface IUseCase&lt;TRequest, TResponse&gt; : IUseCase
+{
+    Task&lt;TResponse&gt; Execute(TRequest request);
+}</code></pre>
+
+  <p>Três interfaces, com genéricos aninhados. Implementadas por seis classes — todas do módulo Cliente. Os módulos de Produto, Usuário e Pedido ignoravam.</p>
+  <p>E o que essa abstração comprava? <strong>Nada.</strong> Ninguém recebia um <code>IUseCase</code> como parâmetro. Ninguém iterava sobre casos de uso. O Scrutor registra por nome de classe, não por interface. Ela foi removida e <em>nada quebrou</em> — a prova de que não fazia falta.</p>
+
+  <div class="note">
+    <span class="label">A pergunta que economiza tempo</span>
+    <p>Antes de criar uma interface, uma classe base ou um genérico: <em>"que código eu consigo escrever com isso que eu não conseguia antes?"</em></p>
+    <p>Se a resposta for "nenhum, mas fica mais organizado", provavelmente é complexidade sem retorno.</p>
+  </div>
+
+  <h4>Outro: capacidade que ninguém pediu</h4>
+<pre><code>CreateMap&lt;MovimentacaoEstoque, MovimentacaoEstoqueResponseDTO&gt;().ReverseMap();</code></pre>
+  <p>O <code>.ReverseMap()</code> cria também o caminho DTO → entidade. Ninguém usava. E ele permitia montar uma movimentação a partir de dados de fora, <strong>desviando do construtor que valida</strong>. Uma capacidade extra que só servia para enfraquecer a entidade.</p>
+
+  <h4>E o contrário: quando complexidade é necessária</h4>
+  <p class="filepath">Infrastructure/Data/UnitOfWork.cs</p>
+<pre><code>var strategy = _context.Database.CreateExecutionStrategy();
+return await strategy.ExecuteAsync(async () =&gt; { ... });</code></pre>
+
+  <p>Isso <em>não</em> é simples. E está certo assim.</p>
+  <p>A diferença é que essa complexidade veio do problema, não da sua imaginação: o <code>EnableRetryOnFailure(3)</code> no <code>Program.cs</code> faz o EF <strong>proibir</strong> transação manual sem a estratégia. Tirar essa linha não simplifica — quebra.</p>
+
+  <div class="note pratica">
+    <span class="label">A distinção que importa</span>
+    <p>Existe complexidade <strong>essencial</strong> — a que o problema traz — e complexidade <strong>acidental</strong> — a que você adiciona. KISS ataca a segunda.</p>
+    <p>O <code>UnitOfWork</code> é essencial: sem ele, transação parcial. O <code>IUseCase</code> era acidental: sem ele, nada muda. Saber separar as duas é mais útil do que decorar a sigla.</p>
+  </div>
+
+  <h4>Resumo dos seis</h4>
+  <div class="tw">
+  <table>
+    <thead><tr><th>Princípio</th><th>Acerto no repositório</th><th>Violação no repositório</th></tr></thead>
+    <tbody>
+      <tr><td><strong>S</strong> · Única</td><td><code>CpfValidator</code></td><td>Repositórios que chamam <code>SaveChanges</code></td></tr>
+      <tr><td><strong>O</strong> · Aberto/fechado</td><td><code>FluentValidationFilter</code></td><td><code>switch</code> de títulos no middleware</td></tr>
+      <tr><td><strong>L</strong> · Substituição</td><td>Hierarquia de <code>AppException</code></td><td>—</td></tr>
+      <tr><td><strong>I</strong> · Segregação</td><td>Interfaces pequenas, sem genérico</td><td><code>Deletar</code> na trilha de auditoria</td></tr>
+      <tr><td><strong>D</strong> · Inversão</td><td>Contratos no <code>Domain</code></td><td>Caso de uso concreto injetado</td></tr>
+      <tr><td><strong>KISS</strong></td><td><code>ObterPedidoPorIdUseCase</code>, 6 linhas</td><td><code>IUseCase</code>, <code>.ReverseMap()</code></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <p>Cinco dos seis têm violação. Isso é normal — nenhum sistema real cumpre os seis o tempo todo. O valor não está em pontuar dez, está em <strong>reconhecer qual você está quebrando e por quê</strong>.</p>
+
+  </div>
+</section>
+
+<section class="part" id="parte5">
+  <div class="part-head">
+    <p class="part-num">Parte 6</p>
+    <h2>Os padrões que atravessam tudo</h2>
+    <p>Se você guardar só cinco coisas desta leitura, que sejam estas.</p>
+  </div>
+
+  <div class="col">
+
+  <h3 id="padroes">Os cinco</h3>
+
+  <h4>1 · A dependência aponta para dentro</h4>
+  <p>O <code>Domain</code> não conhece ninguém. A <code>Application</code> conhece o <code>Domain</code>. A <code>Infrastructure</code> implementa interfaces que o <code>Domain</code> declarou. Isso é o que permite testar a regra sem banco, sem HTTP, sem nada.</p>
+
+  <h4>2 · Regra na entidade, orquestração no caso de uso</h4>
+  <p>Pergunta para se fazer sempre: <em>"isso continuaria verdade se o sistema fosse de papel?"</em> Se sim, é regra de negócio e vai na entidade. Se é sobre buscar, salvar ou coordenar, é orquestração e vai no caso de uso.</p>
+  <p>"Não se reserva mais do que tem" seria verdade num caderno. Vai no <code>Produto</code>.</p>
+
+  <h4>3 · Erro é tipo, não texto</h4>
+  <p>Lançar <code>NotFoundException</code> em vez de <code>Exception("não achei")</code> permite que a borda traduza em 404 automaticamente. E permite ao chamador tratar cada caso de forma diferente, sem comparar texto de mensagem.</p>
+
+  <h4>4 · Defesa em profundidade</h4>
+  <p>Validador, entidade e banco checam coisas parecidas. Não é desperdício — é cada camada não confiando que a de cima fez o trabalho. Quando uma falha, a outra segura.</p>
+
+  <h4>5 · O que é gerado precisa ser lido</h4>
+  <p>Migração, código de andaime, sugestão de ferramenta. O gerador acerta o caso comum e erra o seu caso específico — e o erro dele costuma ser silencioso. Dois minutos de leitura evitam perda de dado que não tem volta.</p>
+
+  <h3 id="roteiro">Roteiro de leitura</h3>
+  <p>Se você for reler o fonte com calma, esta é uma ordem que funciona — de dentro para fora, do simples para o complexo:</p>
+
+  <div class="tw">
+  <table>
+    <thead><tr><th class="num">#</th><th>Arquivo</th><th>O que observar</th></tr></thead>
+    <tbody>
+      <tr><td class="num">1</td><td><code>Domain/Entities/Cliente.cs</code></td><td>O formato básico de uma entidade</td></tr>
+      <tr><td class="num">2</td><td><code>Domain/Entities/Produto.cs</code></td><td>As três quantidades e as duas trilhas</td></tr>
+      <tr><td class="num">3</td><td><code>Domain/Entities/Pedidos/Pedido.cs</code></td><td>Agregado e lista somente leitura</td></tr>
+      <tr><td class="num">4</td><td><code>Domain/Abstractions/</code></td><td>Interfaces que o domínio declara e não implementa</td></tr>
+      <tr><td class="num">5</td><td><code>CadastrarPedidoUseCase.cs</code></td><td>Um caso de uso completo, do início ao fim</td></tr>
+      <tr><td class="num">6</td><td><code>Infrastructure/Data/UnitOfWork.cs</code></td><td>Transação, reentrância, estratégia de repetição</td></tr>
+      <tr><td class="num">7</td><td><code>ExceptionMiddleware.cs</code></td><td>Como exceção vira resposta HTTP</td></tr>
+      <tr><td class="num">8</td><td><code>Infrastructure/Data/AppDbContext.cs</code></td><td>Modelo virando tabela; restrições</td></tr>
+      <tr><td class="num">9</td><td><code>Program.cs</code></td><td>A montagem toda: DI, JWT, pipeline</td></tr>
+      <tr><td class="num">10</td><td><code>HardeningSegurancaIntegridade.cs</code></td><td>Como uma migração madura se parece</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <hr class="fim">
+
+  <p style="color:var(--ink-soft)">Um fechamento honesto: este código tem partes que passariam numa revisão sênior — o <code>UnitOfWork</code>, a revogação de token, a migração defensiva, o filtro de validação — e tem pontas soltas. As duas coisas convivendo é o normal em software real. Saber distinguir uma da outra, no próprio código, já é boa parte do caminho.</p>
+
+  </div>
+</section>
+
+</main>
+</div>
+</body>
+</html>

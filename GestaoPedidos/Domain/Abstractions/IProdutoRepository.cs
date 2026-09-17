@@ -1,12 +1,14 @@
-﻿using GestaoPedidos.Domain.Entities;
+using GestaoPedidos.Domain.Entities;
 
 namespace GestaoPedidos.Domain.Abstractions
 {
     public interface IProdutoRepository
     {
-        public Task<List<Produto>> Listar();
-        public Task<Produto> Cadastrar(Produto produto);
-        public Task<Produto> ObterPorId(int? id);
-        public Task Atualizar(Produto produto);
+        Task<List<Produto>> Listar();
+        Task<Produto> Cadastrar(Produto produto);
+        Task<Produto?> ObterPorId(int id);
+        Task<List<Produto>> ObterPorIds(IEnumerable<int> ids);
+        Task Atualizar(Produto produto);
+        Task Atualizar(IEnumerable<Produto> produtos);
     }
 }

@@ -1,100 +1,229 @@
-using FluentValidation;
-using FluentValidation.AspNetCore;
-using Microsoft.EntityFrameworkCore;
-using System.Reflection;
+using System.Security.Claims;
+using System.Text;
 using System.Text.Json.Serialization;
-using GestaoPedidos.Application.Mapper;
+using System.Threading.RateLimiting;
+using FluentValidation;
+using GestaoPedidos.Application.Validators.Clientes;
 using GestaoPedidos.Domain.Abstractions;
 using GestaoPedidos.Domain.Abstractions.Usuarios;
 using GestaoPedidos.Infrastructure.Data;
+using GestaoPedidos.Infrastructure.Filters;
 using GestaoPedidos.Infrastructure.Middlewares;
 using GestaoPedidos.Infrastructure.Repositories;
-using GestaoPedidos.Application.Validators.Clientes;
 using GestaoPedidos.Infrastructure.Security;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
+using Microsoft.OpenApi;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// ================= JWT SETTINGS =================
-builder.Services.Configure<JwtSettings>(
-    builder.Configuration.GetSection("Jwt"));
+builder.Logging.ClearProviders();
+builder.Logging.AddSimpleConsole(options =>
+{
+    options.SingleLine = true;
+    options.TimestampFormat = "yyyy-MM-dd HH:mm:ss ";
+});
+builder.Logging.AddDebug();
 
-// ================= AUTHENTICATION =================
+// A API usa somente JWT Bearer e não depende de cookies entre reinicializações.
+// Isso evita gravações implícitas no perfil do usuário em ambientes restritos.
+builder.Services
+    .AddDataProtection()
+    .SetApplicationName("GestaoPedidos")
+    .UseEphemeralDataProtectionProvider();
+
+builder.Services
+    .AddOptions<JwtSettings>()
+    .Bind(builder.Configuration.GetSection("Jwt"))
+    .ValidateDataAnnotations()
+    .ValidateOnStart();
+
+var jwtSettings = builder.Configuration
+    .GetSection("Jwt")
+    .Get<JwtSettings>()
+    ?? throw new InvalidOperationException("A configuração JWT não foi encontrada.");
+
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
-        var jwtSettings = builder.Configuration.GetSection("Jwt");
-
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
             ValidateAudience = true,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-
-            ValidIssuer = jwtSettings["Issuer"],
-            ValidAudience = jwtSettings["Audience"],
+            ValidIssuer = jwtSettings.Issuer,
+            ValidAudience = jwtSettings.Audience,
             IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(jwtSettings["Key"]!)),
+                Encoding.UTF8.GetBytes(jwtSettings.Key)),
             ClockSkew = TimeSpan.Zero
+        };
+
+        options.Events = new JwtBearerEvents
+        {
+            OnTokenValidated = async context =>
+            {
+                var idClaim = context.Principal?.FindFirstValue(ClaimTypes.NameIdentifier);
+                var versaoClaim = context.Principal?.FindFirstValue("token_version");
+                var roleClaim = context.Principal?.FindFirstValue(ClaimTypes.Role);
+
+                if (!int.TryParse(idClaim, out var usuarioId)
+                    || !Guid.TryParse(versaoClaim, out var versaoToken))
+                {
+                    context.Fail("Token inválido.");
+                    return;
+                }
+
+                var repository = context.HttpContext.RequestServices
+                    .GetRequiredService<IUsuarioRepository>();
+                var usuario = await repository.ObterPorId(usuarioId);
+
+                if (usuario is null
+                    || !usuario.Ativo
+                    || usuario.VersaoToken != versaoToken
+                    || usuario.Role.ToString() != roleClaim)
+                {
+                    context.Fail("Token revogado.");
+                }
+            }
         };
     });
 
-builder.Services.AddAuthorization();
-
-// ================= TOKEN SERVICE =================
-builder.Services.AddScoped<IToken>(sp =>
+builder.Services.AddAuthorization(options =>
 {
-    var jwtSettings = sp.GetRequiredService<
-        Microsoft.Extensions.Options.IOptions<JwtSettings>>().Value;
-
-    return new GerarTokenJwt(jwtSettings);
+    options.FallbackPolicy = new AuthorizationPolicyBuilder()
+        .RequireAuthenticatedUser()
+        .Build();
 });
 
-// ================= CORS =================
+builder.Services.AddScoped<IToken>(serviceProvider =>
+{
+    var settings = serviceProvider
+        .GetRequiredService<Microsoft.Extensions.Options.IOptions<JwtSettings>>()
+        .Value;
+
+    return new GerarTokenJwt(settings);
+});
+builder.Services.AddSingleton<IPasswordHasher, BCryptPasswordHasher>();
+builder.Services.AddHostedService<AdminBootstrapService>();
+
+var allowedOrigins = builder.Configuration
+    .GetSection("Cors:AllowedOrigins")
+    .Get<string[]>()
+    ?? [];
+
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll", policy =>
+    options.AddPolicy("Frontend", policy =>
     {
-        policy.AllowAnyOrigin()
-              .AllowAnyHeader()
-              .AllowAnyMethod();
+        if (allowedOrigins.Length == 0)
+        {
+            throw new InvalidOperationException("Configure ao menos uma origem em Cors:AllowedOrigins.");
+        }
+
+        policy.WithOrigins(allowedOrigins)
+            .AllowAnyHeader()
+            .AllowAnyMethod();
     });
 });
 
-// ================= CONTROLLERS =================
-builder.Services.AddControllers()
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    options.AddPolicy("login", context =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 10,
+                Window = TimeSpan.FromMinutes(1),
+                QueueLimit = 0
+            }));
+});
+
+builder.Services
+    .AddControllers(options => options.Filters.AddService<FluentValidationFilter>())
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    })
+    .ConfigureApiBehaviorOptions(options =>
+    {
+        options.InvalidModelStateResponseFactory = context =>
+        {
+            var problem = new ValidationProblemDetails(context.ModelState)
+            {
+                Status = StatusCodes.Status400BadRequest,
+                Title = "Falha de validação",
+                Instance = context.HttpContext.Request.Path
+            };
+            problem.Extensions["traceId"] = context.HttpContext.TraceIdentifier;
+
+            return new BadRequestObjectResult(problem)
+            {
+                ContentTypes = { "application/problem+json" }
+            };
+        };
     });
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "Gestão de Pedidos API",
+        Version = "v1"
+    });
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Informe o token JWT."
+    });
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        [new OpenApiSecurityScheme
+        {
+            Reference = new OpenApiReference
+            {
+                Type = ReferenceType.SecurityScheme,
+                Id = "Bearer"
+            }
+        }] = []
+    });
+});
 
-// ================= DB CONTEXT =================
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(
+        builder.Configuration.GetConnectionString("DefaultConnection"),
+        npgsql => npgsql.EnableRetryOnFailure(3)));
 
-// ================= REPOSITORIES =================
 builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
 builder.Services.AddScoped<IProdutoRepository, ProdutoRepository>();
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<IPedidoRepository, PedidoRepository>();
+builder.Services.AddScoped<IMovimentacaoEstoqueRepository, MovimentacaoEstoqueRepository>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IMensagemWhatsAppRepository, MensagemWhatsAppRepository>();
 
-// ================= AUTOMAPPER =================
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
-// ================= VALIDATORS =================
+builder.Services.AddAutoMapper(
+    _ => { },
+    AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddValidatorsFromAssemblyContaining<ClienteCreateValidator>();
-builder.Services.AddFluentValidationAutoValidation();
-
+builder.Services.AddScoped<FluentValidationFilter>();
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddHealthChecks();
 
-// ================= USE CASES =================
 builder.Services.Scan(scan => scan
     .FromApplicationDependencies()
     .AddClasses(classes => classes.Where(type => type.Name.EndsWith("UseCase")))
@@ -103,21 +232,27 @@ builder.Services.Scan(scan => scan
 
 var app = builder.Build();
 
-// ================= PIPELINE =================
+app.UseMiddleware<ExceptionMiddleware>();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+else
+{
+    app.UseHsts();
+}
 
 app.UseHttpsRedirection();
-app.UseCors("AllowAll");
-
-app.UseMiddleware<ExceptionMiddleware>();
-
-app.UseAuthentication();   
+app.UseCors("Frontend");
+app.UseRateLimiter();
+app.UseAuthentication();
 app.UseAuthorization();
 
+app.MapHealthChecks("/health").AllowAnonymous();
 app.MapControllers();
 
 app.Run();
+
+public partial class Program;

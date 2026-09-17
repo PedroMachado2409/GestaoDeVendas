@@ -1,4 +1,4 @@
-﻿using GestaoPedidos.Domain.Enum;
+using GestaoPedidos.Domain.Enum;
 using GestaoPedidos.Domain.Exceptions;
 using GestaoPedidos.Domain.Exceptions.Pedidos;
 
@@ -8,51 +8,74 @@ namespace GestaoPedidos.Domain.Entities.Pedidos
     {
         public int Id { get; private set; }
         public int ClienteId { get; private set; }
-        public StatusPedido Status {  get; private set; }
+        public Cliente? Cliente { get; private set; }
+        public StatusPedido Status { get; private set; }
+        public TipoMovimentacao TipoMovimentacao { get; private set; }
         public DateTime DataCadastro { get; private set; } = DateTime.UtcNow;
-        public decimal ValorTotal => _itens.Sum(i => i.SubTotal);
+        public decimal ValorTotal { get; private set; }
+        public int UsuarioId { get; private set; }
+        public Usuario? Usuario { get; private set; }
 
         private readonly List<PedidoItem> _itens = new();
         public IReadOnlyCollection<PedidoItem> Itens => _itens.AsReadOnly();
 
-        protected Pedido () { }
-        
-        public Pedido (int clienteId, List<PedidoItem> itens)
+        protected Pedido() { }
+
+        public Pedido(int clienteId, List<PedidoItem> itens, int usuarioId, decimal valorTotal, TipoMovimentacao tipoMovimentacao)
         {
             if (itens is null || !itens.Any())
+            {
                 throw new BadRequestException(PedidosExceptions.Pedido_ItemObrigatório);
+            }
 
             ClienteId = clienteId;
+            UsuarioId = usuarioId;
+            ValorTotal = valorTotal;
+            TipoMovimentacao = tipoMovimentacao;
             Status = StatusPedido.Aberto;
-            _itens = itens;
+            _itens = new List<PedidoItem>(itens);
         }
 
         public void AtualizarItem(int produtoId, int novaQuantidade)
         {
             if (Status != StatusPedido.Aberto)
+            {
                 throw new BadRequestException(PedidosExceptions.Pedido_NaoPodeSerAlterado);
+            }
 
             var item = _itens.FirstOrDefault(i => i.ProdutoId == produtoId);
 
+            if (item is null)
+            {
+                throw new NotFoundException(PedidosExceptions.Pedido_NaoEncontrado);
+            }
 
             if (novaQuantidade <= 0)
             {
                 _itens.Remove(item);
 
                 if (!_itens.Any())
+                {
                     throw new BadRequestException(PedidosExceptions.Pedido_ItemObrigatório);
+                }
 
                 return;
             }
 
             item.AlterarQuantidade(novaQuantidade);
         }
+
         public void Finalizar()
         {
             if (Status == StatusPedido.Cancelado)
+            {
                 throw new BadRequestException(PedidosExceptions.Pedido_Cancelado);
+            }
+
             if (Status == StatusPedido.Finalizado)
+            {
                 throw new BadRequestException(PedidosExceptions.Pedido_Finalizado);
+            }
 
             Status = StatusPedido.Finalizado;
         }
@@ -60,11 +83,12 @@ namespace GestaoPedidos.Domain.Entities.Pedidos
         public void Cancelar()
         {
             if (Status != StatusPedido.Aberto)
-                throw new BadRequestException(PedidosExceptions.Pedido_NaoPodeCancelar); ;
+            {
+                throw new ConflictException(PedidosExceptions.Pedido_NaoPodeCancelar);
+            }
 
             Status = StatusPedido.Cancelado;
         }
-
 
     }
 }

@@ -1,4 +1,4 @@
-﻿using GestaoPedidos.Domain.Abstractions.Usuarios;
+using GestaoPedidos.Domain.Abstractions.Usuarios;
 using GestaoPedidos.Domain.Exceptions.Usuarios;
 
 namespace GestaoPedidos.Application.UseCases.Usuarios.Commands
@@ -16,10 +16,14 @@ namespace GestaoPedidos.Application.UseCases.Usuarios.Commands
         {
             var usuario = await _repository.ObterPorId(id);
             if (usuario == null)
-                throw new BadHttpRequestException(UsuariosExceptions.Usuario_NaoEncontrado);
+            {
+                throw new GestaoPedidos.Domain.Exceptions.NotFoundException(UsuariosExceptions.Usuario_NaoEncontrado);
+            }
 
             if (usuario.Ativo == false)
-                throw new BadHttpRequestException(UsuariosExceptions.Usuario_JaInativo);
+            {
+                throw new GestaoPedidos.Domain.Exceptions.BadRequestException(UsuariosExceptions.Usuario_JaInativo);
+            }
 
             usuario.Inativar();
             await _repository.Atualizar(usuario);

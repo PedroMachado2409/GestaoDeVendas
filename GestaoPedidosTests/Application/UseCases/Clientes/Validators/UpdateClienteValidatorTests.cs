@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using FluentAssertions;
 using GestaoPedidos.Application.DTO.Clientes;
 using GestaoPedidos.Application.Validators.Clientes;
@@ -13,8 +13,8 @@ namespace GestaoPedidosTests.Application.UseCases.Clientes.Validators
     [TestClass]
     public class UpdateClienteValidatorTests
     {
-        private Mock<IClienteRepository> _repositoryMock;
-        private IMapper _mapper;
+        private Mock<IClienteRepository> _repositoryMock = null!;
+        private IMapper _mapper = null!;
 
         [TestInitialize]
         public void Setup()
@@ -36,13 +36,13 @@ namespace GestaoPedidosTests.Application.UseCases.Clientes.Validators
                 Id = 1,
                 Nome = "Pedro Machado",
                 Email = "Pedro@gmail.com",
-                Cpf = "12345678910"
+                Cpf = "52998224725"
             };
 
             var validator = new ClienteUpdateValidator();
             var resultado = validator.Validate(dto);
             resultado.IsValid.Should().BeTrue();
-            resultado.Errors.Should().BeEmpty();    
+            resultado.Errors.Should().BeEmpty();
 
         }
 
@@ -54,7 +54,7 @@ namespace GestaoPedidosTests.Application.UseCases.Clientes.Validators
                 Id = 1,
                 Nome = "",
                 Email = "Pedro@gmail.com",
-                Cpf = "12345678910"
+                Cpf = "52998224725"
             };
 
             var validator = new ClienteUpdateValidator();
@@ -105,7 +105,7 @@ namespace GestaoPedidosTests.Application.UseCases.Clientes.Validators
                 Id = 1,
                 Nome = "Pedro",
                 Email = "Pedro",
-                Cpf = "12345678910"
+                Cpf = "52998224725"
             };
 
             var validator = new ClienteUpdateValidator();
@@ -123,7 +123,7 @@ namespace GestaoPedidosTests.Application.UseCases.Clientes.Validators
                 Id = 1,
                 Nome = "Pedro",
                 Email = "",
-                Cpf = "12345678910"
+                Cpf = "52998224725"
             };
 
             var validator = new ClienteUpdateValidator();

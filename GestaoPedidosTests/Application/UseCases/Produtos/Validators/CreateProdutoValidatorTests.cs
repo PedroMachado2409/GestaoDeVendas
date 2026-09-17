@@ -1,18 +1,18 @@
-﻿using AutoMapper;
+using AutoMapper;
+using FluentAssertions;
 using GestaoPedidos.Application.DTO.Produtos;
+using GestaoPedidos.Application.Validators.Produtos;
 using GestaoPedidos.Domain.Abstractions;
 using GestaoPedidos.Domain.Entities;
-using Moq;
-using FluentAssertions;
-using GestaoPedidos.Application.Validators.Produtos;
 using GestaoPedidos.Domain.Exceptions.Produtos;
+using Moq;
 namespace GestaoPedidosTests.Application.UseCases.Produtos.Validators
 {
     [TestClass]
     public class CreateProdutoValidatorTests
     {
-        private Mock<IProdutoRepository> _repositoryMock;
-        private IMapper _mapper;
+        private Mock<IProdutoRepository> _repositoryMock = null!;
+        private IMapper _mapper = null!;
 
         [TestInitialize]
         public void Setup()
@@ -57,7 +57,7 @@ namespace GestaoPedidosTests.Application.UseCases.Produtos.Validators
             var validator = new ProdutoCreateValidator();
             var resultado = validator.Validate(dto);
             resultado.IsValid.Should().BeFalse();
-            resultado.Errors.Should().ContainSingle(e => e.PropertyName == "Nome" 
+            resultado.Errors.Should().ContainSingle(e => e.PropertyName == "Nome"
             && e.ErrorMessage == ProdutoExceptions.Produto_NomeObrigatorio);
         }
 

@@ -1,4 +1,4 @@
-﻿
+
 
 using FluentAssertions;
 using GestaoPedidos.Application.UseCases.Produtos.Commands;
@@ -13,8 +13,8 @@ namespace GestaoPedidosTests.Application.UseCases.Produtos.Commands
     [TestClass]
     public class InativarProdutoUseCaseTests
     {
-        private Mock<IProdutoRepository> _repositoryMock;
-        private InativarProdutoUseCase _useCase;
+        private Mock<IProdutoRepository> _repositoryMock = null!;
+        private InativarProdutoUseCase _useCase = null!;
 
         [TestInitialize]
         public void Setup()
@@ -43,7 +43,7 @@ namespace GestaoPedidosTests.Application.UseCases.Produtos.Commands
             produto.Inativar();
             _repositoryMock.Setup(r => r.ObterPorId(It.IsAny<int>())).ReturnsAsync(produto);
             Func<Task> act = () => _useCase.Executar(1);
-            var exception = await act.Should().ThrowAsync<BadHttpRequestException>();
+            var exception = await act.Should().ThrowAsync<GestaoPedidos.Domain.Exceptions.BadRequestException>();
             exception.Which.Message.Should().Be(ProdutoExceptions.Produto_JaInativo);
 
             _repositoryMock.Verify(r => r.ObterPorId(1), Times.Once());
@@ -55,9 +55,9 @@ namespace GestaoPedidosTests.Application.UseCases.Produtos.Commands
         {
             var produto = new Produto("Produto Teste", "Marca Teste", 10, 15);
             produto.Inativar();
-            _repositoryMock.Setup(r => r.ObterPorId(It.IsAny<int>())).ReturnsAsync((Produto?) null);
+            _repositoryMock.Setup(r => r.ObterPorId(It.IsAny<int>())).ReturnsAsync((Produto?)null);
             Func<Task> act = () => _useCase.Executar(1);
-            var exception = await act.Should().ThrowAsync<BadHttpRequestException>();
+            var exception = await act.Should().ThrowAsync<GestaoPedidos.Domain.Exceptions.NotFoundException>();
             exception.Which.Message.Should().Be(ProdutoExceptions.Produto_NaoEncontrado);
 
             _repositoryMock.Verify(r => r.ObterPorId(1), Times.Once());

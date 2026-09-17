@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using GestaoPedidos.Application.DTO.Produtos;
 using GestaoPedidos.Domain.Abstractions;
 
@@ -10,7 +10,7 @@ namespace GestaoPedidos.Application.UseCases.Produtos.Queries
         private readonly IProdutoRepository _repository;
 
 
-        public ListarProdutoUseCase (IMapper mapper, IProdutoRepository repository)
+        public ListarProdutoUseCase(IMapper mapper, IProdutoRepository repository)
         {
             _mapper = mapper;
             _repository = repository;

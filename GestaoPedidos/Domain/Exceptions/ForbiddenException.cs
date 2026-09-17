@@ -1,4 +1,4 @@
-﻿namespace GestaoPedidos.Domain.Exceptions
+namespace GestaoPedidos.Domain.Exceptions
 {
     public class ForbiddenException : AppException
     {

@@ -13,7 +13,7 @@ namespace GestaoPedidos.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     [Migration("20260214194504_produtos")]
-    partial class produtos
+    partial class Produtos
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

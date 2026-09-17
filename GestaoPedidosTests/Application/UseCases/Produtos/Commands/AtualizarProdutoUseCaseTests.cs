@@ -1,4 +1,4 @@
-﻿
+
 using AutoMapper;
 using FluentAssertions;
 using GestaoPedidos.Application.DTO.Produtos;
@@ -14,9 +14,9 @@ namespace GestaoPedidosTests.Application.UseCases.Produtos.Commands
     [TestClass]
     public class AtualizarProdutoUseCaseTests
     {
-        private Mock<IProdutoRepository> _repositoryMock;
-        private AtualizarProdutoUseCase _useCase;
-        private IMapper _mapper;
+        private Mock<IProdutoRepository> _repositoryMock = null!;
+        private AtualizarProdutoUseCase _useCase = null!;
+        private IMapper _mapper = null!;
 
         [TestInitialize]
         public void Setup()
@@ -72,9 +72,9 @@ namespace GestaoPedidosTests.Application.UseCases.Produtos.Commands
                 Marca = "Marca Teste"
             };
 
-            _repositoryMock.Setup(r => r.ObterPorId(dto.Id)).ReturnsAsync((Produto?) null);
+            _repositoryMock.Setup(r => r.ObterPorId(dto.Id)).ReturnsAsync((Produto?)null);
             Func<Task> act = () => _useCase.Executar(dto);
-            var exception = await act.Should().ThrowAsync<BadHttpRequestException>();
+            var exception = await act.Should().ThrowAsync<GestaoPedidos.Domain.Exceptions.NotFoundException>();
             exception.Which.Message.Should().Be(ProdutoExceptions.Produto_NaoEncontrado);
 
             _repositoryMock.Verify(r => r.ObterPorId(dto.Id), Times.Once());

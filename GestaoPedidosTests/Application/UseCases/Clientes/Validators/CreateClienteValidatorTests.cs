@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using FluentAssertions;
 using GestaoPedidos.Application.DTO.Clientes;
 using GestaoPedidos.Application.Validators.Clientes;
@@ -13,8 +13,8 @@ namespace GestaoPedidosTests.Application.UseCases.Clientes.Validators
     [TestClass]
     public class CreateClienteValidatorTests
     {
-        private Mock<IClienteRepository> _repositoryMock;
-        private IMapper _mapper;
+        private Mock<IClienteRepository> _repositoryMock = null!;
+        private IMapper _mapper = null!;
 
 
 
@@ -28,7 +28,7 @@ namespace GestaoPedidosTests.Application.UseCases.Clientes.Validators
             });
 
             _mapper = MapperConfig.CreateMapper();
-          
+
         }
 
         [TestMethod]
@@ -38,7 +38,7 @@ namespace GestaoPedidosTests.Application.UseCases.Clientes.Validators
             {
                 Nome = "Pedro Machado",
                 Email = "Pedro@gmail.com",
-                Cpf = "12345678910"
+                Cpf = "52998224725"
             };
 
             var validator = new ClienteCreateValidator();
@@ -55,7 +55,7 @@ namespace GestaoPedidosTests.Application.UseCases.Clientes.Validators
             {
                 Nome = "Pedro Machado",
                 Email = "",
-                Cpf = "12345678910"
+                Cpf = "52998224725"
             };
 
             var validator = new ClienteCreateValidator();
@@ -73,7 +73,7 @@ namespace GestaoPedidosTests.Application.UseCases.Clientes.Validators
             {
                 Nome = "Pedro Machado",
                 Email = "Pedro",
-                Cpf = "12345678910"
+                Cpf = "52998224725"
             };
 
             var validator = new ClienteCreateValidator();
@@ -122,7 +122,7 @@ namespace GestaoPedidosTests.Application.UseCases.Clientes.Validators
             {
                 Nome = "",
                 Email = "Pedro@gmail.com",
-                Cpf = "12345678910"
+                Cpf = "52998224725"
             };
 
             var validator = new ClienteCreateValidator();

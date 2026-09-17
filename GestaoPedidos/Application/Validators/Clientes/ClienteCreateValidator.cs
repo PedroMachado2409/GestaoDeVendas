@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 using GestaoPedidos.Application.DTO.Clientes;
 using GestaoPedidos.Domain.Exceptions.Clientes;
 
@@ -17,7 +17,7 @@ namespace GestaoPedidos.Application.Validators.Clientes
             RuleFor(c => c.Cpf)
                  .Cascade(CascadeMode.Stop)
                  .NotEmpty().WithMessage(ClientesExceptions.Cliente_CpfObrigatorio)
-                 .Length(11).WithMessage(ClientesExceptions.Cliente_CpfInvalido);
+                 .Must(CpfValidator.EhValido).WithMessage(ClientesExceptions.Cliente_CpfInvalido);
 
         }
     }

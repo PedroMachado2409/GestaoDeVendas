@@ -1,9 +1,8 @@
-﻿namespace GestaoPedidos.Application.DTO.Usuarios
+namespace GestaoPedidos.Application.DTO.Usuarios
 {
     public class UsuarioUpdateSenhaDTO
     {
-        public int Id { get; set; }
-        public string SenhaAntiga { get; set; }
-        public string NovaSenha { get; set; }
+        public string SenhaAntiga { get; set; } = string.Empty;
+        public string NovaSenha { get; set; } = string.Empty;
     }
 }

@@ -1,5 +1,6 @@
-﻿using System.Text.Json;
 using GestaoPedidos.Domain.Exceptions;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace GestaoPedidos.Infrastructure.Middlewares
 {
@@ -7,16 +8,16 @@ namespace GestaoPedidos.Infrastructure.Middlewares
     {
         private readonly RequestDelegate _next;
         private readonly ILogger<ExceptionMiddleware> _logger;
-        private readonly IWebHostEnvironment _env;
+        private readonly IWebHostEnvironment _environment;
 
         public ExceptionMiddleware(
             RequestDelegate next,
             ILogger<ExceptionMiddleware> logger,
-            IWebHostEnvironment env)
+            IWebHostEnvironment environment)
         {
             _next = next;
             _logger = logger;
-            _env = env;
+            _environment = environment;
         }
 
         public async Task InvokeAsync(HttpContext context)
@@ -25,65 +26,96 @@ namespace GestaoPedidos.Infrastructure.Middlewares
             {
                 await _next(context);
             }
-            catch (AppException ex)
+            catch (AppException exception)
             {
-                _logger.LogWarning(ex, "Erro de aplicação");
+                _logger.LogWarning(
+                    exception,
+                    "Falha de negócio em {Method} {Path}",
+                    context.Request.Method,
+                    context.Request.Path);
 
-                await HandleAppException(context, ex);
+                await EscreverProblema(
+                    context,
+                    exception.StatusCode,
+                    TituloParaStatus(exception.StatusCode),
+                    exception.Message);
             }
-            catch (UnauthorizedAccessException ex)
+            catch (DbUpdateConcurrencyException exception)
             {
-                _logger.LogWarning(ex, "Acesso não autorizado");
+                _logger.LogWarning(exception, "Conflito de concorrência ao persistir dados");
 
-                context.Response.ContentType = "application/json";
-                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-
-                var problem = ProblemDetailsFactory.Unauthorized(ex.Message);
-
-                await context.Response.WriteAsync(
-                    JsonSerializer.Serialize(problem));
+                await EscreverProblema(
+                    context,
+                    StatusCodes.Status409Conflict,
+                    "Conflito de concorrência",
+                    "Os dados foram alterados por outra operação. Atualize a consulta e tente novamente.");
             }
-            catch (Exception ex)
+            catch (DbUpdateException exception)
             {
-                _logger.LogError(ex, "Erro interno");
+                _logger.LogError(exception, "Falha de integridade ao persistir dados");
 
-                context.Response.ContentType = "application/json";
-                context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+                await EscreverProblema(
+                    context,
+                    StatusCodes.Status409Conflict,
+                    "Conflito de dados",
+                    "A operação viola uma regra de integridade dos dados.");
+            }
+            catch (Exception exception)
+            {
+                _logger.LogError(
+                    exception,
+                    "Erro não tratado em {Method} {Path}",
+                    context.Request.Method,
+                    context.Request.Path);
 
-                var detail = _env.IsDevelopment()
-                    ? ex.Message
+                var detalhe = _environment.IsDevelopment()
+                    ? exception.Message
                     : "Ocorreu um erro inesperado.";
 
-                var problem = ProblemDetailsFactory.InternalServerError(detail);
-
-                await context.Response.WriteAsync(
-                    JsonSerializer.Serialize(problem));
+                await EscreverProblema(
+                    context,
+                    StatusCodes.Status500InternalServerError,
+                    "Erro interno no servidor",
+                    detalhe);
             }
         }
 
-        private static async Task HandleAppException(
+        private static async Task EscreverProblema(
             HttpContext context,
-            AppException ex)
+            int statusCode,
+            string titulo,
+            string detalhe)
         {
-            context.Response.ContentType = "application/json";
-            context.Response.StatusCode = ex.StatusCode;
-
-            var problem = ex.StatusCode switch
+            if (context.Response.HasStarted)
             {
-                StatusCodes.Status400BadRequest
-                    => ProblemDetailsFactory.BadRequest(ex.Message),
+                return;
+            }
 
-                StatusCodes.Status404NotFound
-                    => ProblemDetailsFactory.NotFound(ex.Message),
+            context.Response.Clear();
+            context.Response.StatusCode = statusCode;
+            context.Response.ContentType = "application/problem+json";
 
-                StatusCodes.Status403Forbidden
-                    => ProblemDetailsFactory.Forbidden(ex.Message),
-
-                _ => ProblemDetailsFactory.InternalServerError(ex.Message)
+            var problem = new ProblemDetails
+            {
+                Status = statusCode,
+                Title = titulo,
+                Detail = detalhe,
+                Instance = context.Request.Path
             };
+            problem.Extensions["traceId"] = context.TraceIdentifier;
 
-            await context.Response.WriteAsync(
-                JsonSerializer.Serialize(problem));
+            await context.Response.WriteAsJsonAsync(problem);
         }
+
+        private static string TituloParaStatus(int statusCode)
+            => statusCode switch
+            {
+                StatusCodes.Status400BadRequest => "Requisição inválida",
+                StatusCodes.Status401Unauthorized => "Não autorizado",
+                StatusCodes.Status403Forbidden => "Acesso negado",
+                StatusCodes.Status404NotFound => "Recurso não encontrado",
+                StatusCodes.Status409Conflict => "Conflito de dados",
+                _ => "Erro na aplicação"
+            };
     }
 }
