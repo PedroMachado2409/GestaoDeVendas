@@ -1,0 +1,893 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Quadro Kanban das melhorias da API Gestão de Pedidos, com prioridades, critérios de aceite e progresso.">
+    <title>Quadro de melhorias · Gestão de Pedidos</title>
+    <style>
+        :root {
+            color-scheme: light;
+            --ink: #242339;
+            --muted: #54546b;
+            --line: #dedee9;
+            --canvas: #f7f7fb;
+            --paper: #fff;
+            --purple: #5239a1;
+            --purple-soft: #ede8fa;
+            --radius: 14px;
+            font-family: Inter, "Segoe UI", system-ui, sans-serif;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; }
+        body { margin: 0; color: var(--ink); background: var(--canvas); }
+        button, input, select { font: inherit; color: inherit; }
+        button, select { cursor: pointer; }
+        a { color: var(--purple); }
+        :focus-visible { outline: 3px solid #7153c6; outline-offset: 3px; }
+        [hidden] { display: none !important; }
+
+        .wrap { max-width: 1520px; margin: 0 auto; padding-inline: 48px; }
+        .app-bar { background: var(--paper); border-bottom: 1px solid var(--line); }
+        .app-nav { min-height: 64px; display: flex; align-items: center; gap: 11px; }
+        .brand-icon {
+            width: 31px;
+            height: 31px;
+            display: grid;
+            place-content: center;
+            grid-auto-flow: column;
+            align-items: start;
+            gap: 3px;
+            border-radius: 8px;
+            background: var(--purple);
+        }
+        .brand-icon i { width: 3px; height: 13px; border-radius: 2px; background: #fff; }
+        .brand-icon i:nth-child(2) { height: 9px; }
+        .brand-icon i:nth-child(3) { height: 11px; }
+        .project { font-weight: 700; font-size: .91rem; }
+        .breadcrumb { color: var(--muted); font-size: .86rem; }
+        .breadcrumb::before { content: "/"; padding-right: 11px; color: #8a869c; }
+        main.wrap { padding-block: 37px 28px; }
+
+        .overview {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(280px, 354px);
+            align-items: center;
+            gap: 25px;
+            margin-bottom: 31px;
+        }
+        h1 { margin: 0; font-size: clamp(2rem, 4vw, 3.25rem); line-height: 1.05; letter-spacing: -.058em; }
+        .lede { margin: 12px 0 0; color: var(--muted); line-height: 1.55; }
+        .progress-panel {
+            padding: 17px 20px 15px;
+            border-radius: var(--radius);
+            background: #f0ecfb;
+            border: 1px solid #e3dbf5;
+        }
+        .progress-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+        .progress-title { font-weight: 700; font-size: .9rem; }
+        .progress-rate { font-weight: 750; font-size: 1.2rem; color: var(--purple); font-variant-numeric: tabular-nums; }
+        progress {
+            display: block;
+            appearance: none;
+            width: 100%;
+            height: 7px;
+            margin: 9px 0 10px;
+            border: 0;
+            overflow: hidden;
+            border-radius: 999px;
+            color: var(--purple);
+            background: #dcd3f2;
+        }
+        progress::-webkit-progress-bar { background: #dcd3f2; }
+        progress::-webkit-progress-value { background: var(--purple); border-radius: 999px; }
+        progress::-moz-progress-bar { background: var(--purple); border-radius: 999px; }
+        .progress-caption { color: #514975; font-size: .78rem; }
+
+        .toolbar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 17px; }
+        .view-switch {
+            display: inline-flex;
+            gap: 3px;
+            background: #eeedf4;
+            border: 1px solid #e4e2ed;
+            border-radius: 10px;
+            padding: 3px;
+        }
+        .view-switch button {
+            border: 1px solid transparent;
+            border-radius: 7px;
+            background: transparent;
+            color: var(--muted);
+            padding: 7px 11px;
+            font-size: .84rem;
+            font-weight: 650;
+        }
+        .view-switch button[aria-pressed="true"] {
+            background: var(--paper);
+            color: var(--purple);
+            border-color: #e6e1f1;
+            box-shadow: 0 1px 2px #2a194212;
+        }
+        .filters { display: flex; gap: 8px; }
+        .search { position: relative; display: flex; align-items: center; }
+        .search::before {
+            content: "";
+            position: absolute;
+            left: 12px;
+            top: 12px;
+            width: 12px;
+            height: 12px;
+            border: 1.6px solid #68647b;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        .search::after {
+            content: "";
+            position: absolute;
+            width: 6px;
+            height: 1.6px;
+            left: 21px;
+            top: 23px;
+            transform: rotate(45deg);
+            background: #68647b;
+            pointer-events: none;
+        }
+        .search input, .filters select {
+            min-height: 39px;
+            border: 1px solid var(--line);
+            background: var(--paper);
+            border-radius: 9px;
+            font-size: .84rem;
+        }
+        .search input { width: clamp(190px, 21vw, 290px); padding: 7px 10px 7px 34px; }
+        .search input::placeholder { color: var(--muted); }
+        .filters select { min-width: 140px; padding: 7px 8px 7px 10px; }
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip-path: inset(50%);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        .board { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; align-items: start; }
+        .board[data-view="status"] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        .critical { --accent: #ae324a; --tint: #fae6ea; --surface: #f8f0f2; }
+        .high { --accent: #925118; --tint: #f9ebd7; --surface: #f8f3eb; }
+        .medium, .doing { --accent: #4937a2; --tint: #eee8ff; --surface: #f1eef8; }
+        .low, .todo { --accent: #525a70; --tint: #eaeaf3; --surface: #efeff5; }
+        .done { --accent: #1c6c51; --tint: #ddf2e8; --surface: #edf6f1; }
+        .lane {
+            min-width: 0;
+            min-height: 278px;
+            padding: 11px;
+            border: 1px solid #e4e1eb;
+            border-radius: var(--radius);
+            background: var(--surface);
+        }
+        .lane.drag-over { outline: 2px dashed var(--accent); outline-offset: -5px; }
+        .lane-header { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 4px 3px 11px; }
+        .lane-title { display: flex; align-items: center; gap: 7px; margin: 0; font-weight: 750; font-size: .92rem; }
+        .lane-title::before { content: ""; width: 8px; height: 8px; flex: none; border-radius: 50%; background: var(--accent); }
+        .lane-count { padding: 3px 8px; border-radius: 100px; color: var(--accent); background: var(--tint); font-size: .75rem; font-weight: 750; }
+        .cards { list-style: none; margin: 0; padding: 0; display: grid; gap: 9px; }
+        .card {
+            cursor: pointer;
+            padding: 13px 13px 11px;
+            border: 1px solid #e7e4ed;
+            border-radius: 10px;
+            background: var(--paper);
+            box-shadow: 0 1px 2px #29213f0b;
+        }
+        .card:hover { border-color: #c9bfdc; box-shadow: 0 3px 8px #29213f0c; }
+        .card[draggable="true"] { cursor: grab; }
+        .card.dragging { opacity: .55; }
+        .card-meta { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+        .card-id { color: var(--accent); font-size: .72rem; font-weight: 800; letter-spacing: .035em; font-variant-numeric: tabular-nums; }
+        .category { color: var(--muted); font-size: .7rem; text-align: right; }
+        .card h3 { margin: 0; font-size: .96rem; letter-spacing: -.018em; line-height: 1.29; }
+        .open-card { display: flex; width: 100%; justify-content: space-between; gap: 6px; padding: 0; border: 0; background: none; text-align: left; font: inherit; font-weight: 750; }
+        .open-card:hover { color: var(--purple); }
+        .open-card span { color: var(--purple); font-weight: 500; }
+        .card-desc { color: var(--muted); margin: 7px 0 11px; font-size: .79rem; line-height: 1.46; }
+        .card-footer { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 7px; padding-top: 9px; border-top: 1px solid #efedf4; }
+        .effort { color: var(--muted); font-size: .71rem; }
+        .status-input { max-width: 100%; min-height: 27px; padding: 3px 2px 3px 5px; border: 1px solid transparent; border-radius: 6px; color: var(--accent); background: var(--tint); font-size: .72rem; font-weight: 650; }
+        .empty-lane { margin: 0; padding: 14px 7px; color: var(--muted); font-size: .82rem; }
+        .board-note { margin: 18px 0 0; color: var(--muted); font-size: .8rem; }
+
+        dialog {
+            max-height: calc(100dvh - 36px);
+            width: min(700px, calc(100% - 32px));
+            padding: 0;
+            border: 1px solid var(--line);
+            border-radius: 17px;
+            color: var(--ink);
+            background: var(--paper);
+            box-shadow: 0 22px 64px #26203d38;
+        }
+        dialog::backdrop { background: #25203991; }
+        .details { padding: 0 27px 28px; }
+        .details-head {
+            position: sticky;
+            top: 0;
+            z-index: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin: 0 -27px;
+            padding: 14px 27px 10px;
+            border-bottom: 1px solid #efedf4;
+            background: var(--paper);
+        }
+        .detail-badge { padding: 4px 8px; border-radius: 6px; color: var(--accent); background: var(--tint); font-size: .75rem; font-weight: 750; }
+        .close-dialog { width: 34px; height: 34px; padding: 0; border: 1px solid var(--line); border-radius: 7px; background: var(--paper); font-size: 1.4rem; line-height: 1; }
+        .details h2 { margin: 18px 0 8px; font-size: clamp(1.5rem, 4vw, 1.9rem); letter-spacing: -.04em; line-height: 1.18; }
+        .details h3 { margin: 20px 0 7px; font-size: .94rem; }
+        .details p, .details ol, .details a { font-size: .91rem; line-height: 1.53; }
+        .details p { margin: 0; }
+        .details .detail-context { color: var(--muted); }
+        .details ol { margin: 0; padding-left: 24px; }
+        .details li { padding-left: 3px; }
+        .details li::marker { color: var(--purple); font-weight: 700; }
+        .details li + li { margin-top: 10px; }
+        .details li strong { display: block; }
+        .details li p { color: var(--muted); }
+        .start-file { display: inline-block; overflow-wrap: anywhere; text-underline-offset: 3px; }
+        .example {
+            margin: 0;
+            padding: 12px 14px;
+            overflow-x: auto;
+            border-radius: 9px;
+            color: #f6f1ff;
+            background: #262039;
+        }
+        .example code { font: .81rem/1.55 "IBM Plex Mono", Consolas, monospace; }
+        .exercise { padding: 12px 14px; border: 1px solid #e3deef; border-radius: 9px; background: #f8f6fc; }
+        .acceptance { padding: 11px 13px; border-radius: 8px; color: #3d2c6f; background: var(--purple-soft); }
+        .detail-link { display: inline-block; margin-top: 15px; text-underline-offset: 3px; }
+
+        @media (max-width: 1110px) { .wrap { padding-inline: 27px; } .board { gap: 9px; } .lane { padding: 8px; } }
+        @media (max-width: 880px) {
+            .board { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+            .board[data-view="status"] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        }
+        @media (max-width: 650px) {
+            .wrap { padding-inline: 16px; }
+            .app-nav { min-height: 54px; }
+            main.wrap { padding-top: 24px; }
+            .overview { grid-template-columns: 1fr; gap: 18px; margin-bottom: 20px; }
+            .filters, .toolbar { width: 100%; }
+            .search { flex: 1 1 auto; min-width: 0; }
+            .search input { width: 100%; min-width: 0; }
+            .filters select { min-width: 0; }
+            .board, .board[data-view="status"] { grid-template-columns: 1fr; }
+            .lane { min-height: 0; padding: 10px; }
+            .details { padding: 0 18px 22px; }
+            .details-head { margin-inline: -18px; padding-inline: 18px; }
+        }
+        @media (max-width: 345px) { .breadcrumb { display: none; } }
+    </style>
+</head>
+<body>
+    <header class="app-bar">
+        <div class="wrap app-nav">
+            <span class="brand-icon" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="project">Gestão de Pedidos</span>
+            <span class="breadcrumb">Revisão técnica</span>
+        </div>
+    </header>
+
+    <main class="wrap">
+        <div class="overview">
+            <div>
+                <h1>Quadro de melhorias</h1>
+                <p class="lede">Acompanhe as tarefas da revisão técnica da API.</p>
+            </div>
+            <section class="progress-panel" aria-labelledby="progress-title">
+                <div class="progress-head">
+                    <span class="progress-title" id="progress-title">Progresso do quadro</span>
+                    <strong class="progress-rate" id="progress-rate">0%</strong>
+                </div>
+                <progress id="progress-bar" value="0" max="14" aria-labelledby="progress-title"></progress>
+                <div class="progress-caption" id="progress-caption"></div>
+            </section>
+        </div>
+
+        <div class="toolbar">
+            <div class="view-switch" role="group" aria-label="Agrupar tarefas">
+                <button type="button" data-view="priority" aria-pressed="true">Por prioridade</button>
+                <button type="button" data-view="status" aria-pressed="false">Por status</button>
+            </div>
+            <div class="filters">
+                <label class="search">
+                    <span class="visually-hidden">Buscar tarefas</span>
+                    <input id="search" type="search" placeholder="Buscar tarefa ou ID" autocomplete="off">
+                </label>
+                <label>
+                    <span class="visually-hidden">Filtrar por status</span>
+                    <select id="status-filter">
+                        <option value="all">Todos os status</option>
+                        <option value="todo">A fazer</option>
+                        <option value="doing">Em andamento</option>
+                        <option value="done">Concluída</option>
+                    </select>
+                </label>
+            </div>
+        </div>
+
+        <div id="board" class="board" data-view="priority" aria-label="Quadro de tarefas"></div>
+        <p class="board-note" id="board-note">O progresso fica salvo neste navegador.</p>
+        <p class="visually-hidden" id="announcement" role="status"></p>
+        <noscript><p>Ative o JavaScript do navegador para abrir o quadro e acompanhar as tarefas.</p></noscript>
+    </main>
+
+    <dialog id="task-dialog" aria-labelledby="detail-title" aria-describedby="detail-context">
+        <div class="details">
+            <div class="details-head">
+                <span id="detail-badge" class="detail-badge"></span>
+                <form method="dialog">
+                    <button class="close-dialog" type="submit" aria-label="Fechar tutorial" autofocus>&times;</button>
+                </form>
+            </div>
+            <h2 id="detail-title"></h2>
+            <p id="detail-context" class="detail-context"></p>
+            <h3>O que você vai aprender</h3>
+            <p id="detail-learn"></p>
+            <h3>Por onde começar</h3>
+            <a id="detail-start" class="start-file"></a>
+            <h3>Passo a passo</h3>
+            <ol id="detail-steps"></ol>
+            <h3>Exemplo ilustrativo</h3>
+            <pre class="example" tabindex="0" aria-label="Exemplo ilustrativo"><code id="detail-example"></code></pre>
+            <h3>Exercício no projeto</h3>
+            <p id="detail-exercise" class="exercise"></p>
+            <h3>Critério de aceite</h3>
+            <p id="detail-acceptance" class="acceptance"></p>
+            <div id="detail-dependency" hidden>
+                <h3>Quando fazer</h3>
+                <p id="detail-timing"></p>
+            </div>
+            <a id="detail-link" class="detail-link" hidden></a>
+        </div>
+    </dialog>
+
+    <script>
+        const tasks = [
+            {
+                id: 'M01', priority: 'critical', category: 'Autorização', effort: 'Médio',
+                title: 'Restringir pedidos ao proprietário',
+                summary: 'Impedir que um vendedor consulte, cancele ou finalize pedidos de outro vendedor.',
+                learn: 'O papel permite chamar uma operação. A propriedade define quais registros o usuário pode ler ou alterar. O pedido já guarda essa relação em UsuarioId.',
+                start: ['ObterPedidoPorIdUseCase.cs', '../GestaoPedidos/Application/UseCases/Pedidos/Queries/ObterPedidoPorIdUseCase.cs'],
+                steps: [
+                    ['Siga a identidade até o pedido', 'Abra ObterUsuarioAutenticadoUseCase e veja como ele resolve o usuário da requisição. Em seguida, localize onde CadastrarPedidoUseCase grava o UsuarioId. Use esses dados autenticados para decidir o acesso.'],
+                    ['Filtre antes de carregar', 'No repositório, aplique o filtro de proprietário ao IQueryable de vendedores. Reuse o escopo na listagem e na consulta por ID. Devolva o mesmo 404 para um pedido inexistente e um pedido fora do escopo.'],
+                    ['Proteja as transições', 'Em FinalizarPedidoUseCase e CancelarPedidoUseCase, consulte no escopo dentro da transação, antes de tocar na reserva ou retornar uma transição já concluída. Registre quem fez a primeira transição e quando.']
+                ],
+                example: [
+                    '// consulta e usuario vêm do repositório e da identidade autenticada.',
+                    'if (usuario.Role != UserRole.Admin)',
+                    '{',
+                    '    consulta = consulta.Where(p => p.UsuarioId == usuario.Id);',
+                    '}',
+                    'var pedido = await consulta.SingleOrDefaultAsync(p => p.Id == pedidoId);'
+                ],
+                exercise: 'Crie dados de teste para dois vendedores e um administrador. Faça cada vendedor criar um pedido. Compare as três listagens e confirme que uma transição recusada manteve o status e a reserva originais.',
+                acceptance: 'Vendedor vê somente seus pedidos. Acesso a pedido alheio por ID retorna 404. A recusa preserva estoque e movimentações. Administrador tem acesso ao histórico.',
+                timing: 'Primeira melhoria recomendada. Recupere a suíte de M04 no mesmo ciclo.',
+                reference: ['Requisito RF-001', 'RF-001-pedido-com-dono-e-consulta.md']
+            },
+            {
+                id: 'M02', priority: 'high', category: 'Segredos', effort: 'Baixo',
+                title: 'Externalizar e rotacionar segredos',
+                summary: 'Retirar a chave JWT e a senha PostgreSQL da configuração versionada.',
+                learn: 'O ASP.NET Core combina várias fontes de configuração. Um valor fornecido pelo ambiente pode substituir o arquivo, e validar a configuração evita descobrir um segredo ausente só na primeira requisição.',
+                start: ['Program.cs', '../GestaoPedidos/Program.cs'],
+                steps: [
+                    ['Ache os pontos de leitura', 'Localize a seção Jwt e GetConnectionString("DefaultConnection") em Program.cs. No appsettings.json, mantenha somente os campos públicos e deixe os segredos para outra fonte.'],
+                    ['Injete valores locais', 'Use o UserSecretsId que já existe no projeto da API. Configure Jwt:Key e ConnectionStrings:DefaultConnection em User Secrets para Development. Nos demais ambientes, use os nomes Jwt__Key e ConnectionStrings__DefaultConnection no provedor de segredos.'],
+                    ['Valide e trate o histórico', 'Faça a aplicação falhar na inicialização se o JWT ou a conexão estiverem ausentes. Identifique os ambientes que usaram valores rastreados, rotacione os valores em uso e revise o histórico do Git.']
+                ],
+                example: [
+                    '$projeto = "GestaoPedidos/GestaoPedidos.csproj"',
+                    'dotnet user-secrets set "Jwt:Key" "<chave-local-gerada>" --project $projeto',
+                    'dotnet user-secrets set "ConnectionStrings:DefaultConnection" "<conexao-de-teste>" --project $projeto'
+                ],
+                exercise: 'Em uma configuração descartável, inicialize a API com os segredos de teste injetados. Retire um valor por vez e confira se a falha identifica a chave ausente sem imprimir credenciais. Troque a chave e confira que uma sessão anterior perdeu acesso.',
+                acceptance: 'A API inicia com configuração externa, falha claramente quando ela está ausente e rejeita tokens assinados com a chave anterior após a rotação.',
+                timing: 'Pode avançar em paralelo à correção de autorização.'
+            },
+            {
+                id: 'M03', priority: 'high', category: 'Banco de dados', effort: 'Médio',
+                title: 'Preservar o histórico nas migrations',
+                summary: 'Tratar autoria, valor total e tipo de pedidos antigos durante a atualização.',
+                learn: 'Uma migration altera tanto o esquema quanto o significado dos dados. Uma FK só pode ser exigida depois que os registros existentes estiverem preparados para cumpri-la.',
+                start: ['20260830144756_ValorTotalPedido.cs', '../GestaoPedidos/Migrations/20260830144756_ValorTotalPedido.cs'],
+                steps: [
+                    ['Desenhe a cadeia de atualização', 'Leia a migration que adiciona UsuarioId e depois a que cria a FK. Em uma base de teste representativa, consulte o histórico de migrations aplicadas. Uma base que ainda falha na FK precisa de intervenção antes dessa etapa.'],
+                    ['Defina o tratamento de cada dado', 'Mantenha o autor histórico como desconhecido quando não houver evidência para atribuí-lo. Reconstrua ValorTotal com os preços gravados nos itens. Classifique compra e venda a partir de uma regra histórica acordada.'],
+                    ['Feche as invariantes', 'Valide os dados antes de exigir constraints. Reveja a exclusão em cascata do usuário e, antes do endpoint de edição de itens, recalcule o total pelo agregado. Em bases já atualizadas, planeje a correção de dados em uma nova migration.']
+                ],
+                example: [
+                    'SELECT "PedidoId",',
+                    '       SUM("Preco" * "Quantidade") AS "TotalCalculado"',
+                    'FROM "PedidoItens"',
+                    'GROUP BY "PedidoId";'
+                ],
+                exercise: 'Em PostgreSQL descartável, prepare um pedido antigo com dois itens, nas combinações 2 × 10,00 e 1 × 7,50. Preveja 27,50 e compare com o valor armazenado depois da atualização. Repita em uma base vazia e verifique a reversão prevista.',
+                acceptance: 'A cadeia funciona em banco vazio e em uma base descartável com pedidos antigos. Total, autoria e tipo são conferidos, assim como a reversão prevista.',
+                timing: 'Antes de atualizar qualquer base com dados históricos.',
+                reference: ['Plano de migração no RF-001', 'RF-001-pedido-com-dono-e-consulta.md']
+            },
+            {
+                id: 'M04', priority: 'high', category: 'Testes e CI', effort: 'Médio',
+                title: 'Restaurar a suíte de testes',
+                summary: 'Corrigir o mock da finalização, acertar o formatador e testar as garantias no PostgreSQL.',
+                learn: 'Um teste unitário isola o caso de uso. Um teste de integração usa o pipeline ou o banco reais para verificar garantias que o mock não representa, como rollback, constraints e concorrência.',
+                start: ['TransicaoPedidoUseCaseTests.cs', '../GestaoPedidosTests/Application/UseCases/Pedidos/Commands/TransicaoPedidoUseCaseTests.cs'],
+                steps: [
+                    ['Leia onde a falha começa', 'Rode o teste de finalização sozinho e veja que a exceção acontece ao acessar .Object. No Setup, inicialize o mock de movimentação junto com os outros três.'],
+                    ['Afirme o efeito que importa', 'Execute FinalizarPedidoUseCase duas vezes no mesmo pedido. Confira os dois status, o consumo da reserva e uma única chamada de cadastro de movimentação. Rode a suíte e a verificação de formato.'],
+                    ['Escolha os testes de integração', 'Use uma base PostgreSQL descartável para rollback, reservas concorrentes, migrations e deduplicação. Passe pelo HTTP para testar autorização por dono e revogação de JWT.']
+                ],
+                example: [
+                    '// No Setup do teste de transição.',
+                    '_movimentacaoEstoqueRepository = new Mock<IMovimentacaoEstoqueRepository>();',
+                    '',
+                    '// Após as duas chamadas ao caso de uso.',
+                    '_movimentacaoEstoqueRepository.Verify(',
+                    '    r => r.Cadastrar(It.IsAny<MovimentacaoEstoque>()), Times.Once());'
+                ],
+                exercise: 'Rode dotnet test GestaoPedidos/GestaoPedidos.sln --filter FullyQualifiedName~TransicaoPedidoUseCaseTests. Em um teste de banco, force uma falha antes de confirmar o pedido e consulte os dados com outro contexto para verificar o rollback.',
+                acceptance: 'Formato, build e testes passam. Os testes de integração conferem o estado persistido após conflitos e falhas.',
+                timing: 'Recupere o teste que falha junto com M01. Amplie a integração em seguida.'
+            },
+            {
+                id: 'M05', priority: 'high', category: 'Validação', effort: 'Baixo',
+                title: 'Validar tipo e itens do pedido',
+                summary: 'Exigir o tipo explícito e barrar itens inválidos antes de reservar estoque.',
+                learn: 'Um campo omitido pode ganhar o valor padrão do tipo. Aqui o zero significa Entrada, por isso validar apenas os itens permite escolher o fluxo de compra sem intenção explícita.',
+                start: ['CriarPedidoRequestValidator.cs', '../GestaoPedidos/Application/Validators/Pedidos/CriarPedidoRequestValidator.cs'],
+                steps: [
+                    ['Represente a ausência no DTO', 'Altere a propriedade para TipoMovimentacao? TipoMovimentacao. Preserve o nome JSON tipoMovimentacao e valide que o valor informado é Entrada ou Saida.'],
+                    ['Valide a lista em ordem segura', 'Valide que a coleção existe, tem itens e respeita um limite. Rejeite elementos nulos e valide ProdutoId e Quantidade. Só compare duplicatas quando a coleção e seus elementos estiverem presentes.'],
+                    ['Proteja a fronteira de escrita', 'Garanta que o caso de uso só siga para reserva com um tipo válido. Ao verificar o resultado, observe QuantidadeReservada de venda e QuantidadeCompradaPendente de compra no domínio.']
+                ],
+                example: [
+                    'RuleFor(x => x.TipoMovimentacao)',
+                    '    .Must(tipo => tipo is TipoMovimentacao.Entrada or TipoMovimentacao.Saida)',
+                    '    .WithMessage("Informe um tipo de movimentação válido.");'
+                ],
+                exercise: 'Faça testes HTTP com tipo omitido, valor fora do enum, coleção vazia, lista com item nulo e produto repetido. Os inválidos devem retornar 400 e preservar o banco. Em seguida, compare a reserva produzida por uma compra e por uma venda.',
+                acceptance: 'Tipo omitido ou inválido e itens inválidos retornam 400 sem persistência. Compra e venda válidas atualizam as reservas corretas.'
+            },
+            {
+                id: 'M06', priority: 'high', category: 'Administração', effort: 'Médio',
+                title: 'Proteger o último administrador',
+                summary: 'Impedir que a conta administrativa final seja desativada ou rebaixada.',
+                learn: 'A regra considera o conjunto de administradores ativos. Com dois administradores, duas requisições podem ler a mesma contagem e tomar decisões incompatíveis entre si.',
+                start: ['AlterarRoleUsuarioUseCase.cs', '../GestaoPedidos/Application/UseCases/Usuarios/Commands/AlterarRoleUsuarioUseCase.cs'],
+                steps: [
+                    ['Identifique quando a contagem cai', 'Aplique a regra em AlterarRoleUsuarioUseCase e InativarUsuarioUseCase ao retirar um administrador ativo do conjunto. Centralize essa decisão para os dois fluxos usarem a mesma regra.'],
+                    ['Proteja leitura e escrita juntas', 'Leia e atualize dentro de uma transação que serialize a decisão, como isolamento Serializable com tratamento de conflito. Em uma nova tentativa, repita a leitura e reavalie a regra.'],
+                    ['Revise atualizações de usuário', 'Evite marcar todos os campos como modificados quando a entidade já estiver rastreada. Use um token específico de concorrência de escrita para distinguir essa proteção da revogação da sessão.']
+                ],
+                example: [
+                    'Simulação com dois administradores ativos',
+                    'A pretende desativar A e B pretende rebaixar B.',
+                    'A confirma primeiro. A operação de B conflita ou reavalia a contagem.',
+                    'Resultado esperado: B permanece administrador ativo.'
+                ],
+                exercise: 'Monte dois escopos separados no teste PostgreSQL e tente as duas operações simultaneamente. Reabra o contexto para conferir a contagem. Depois, teste uma edição de perfil simultânea à troca de senha e verifique que o hash novo foi preservado.',
+                acceptance: 'Alterações individuais e concorrentes preservam ao menos um administrador ativo. Alterações de perfil concorrentes preservam a senha mais recente.'
+            },
+            {
+                id: 'M07', priority: 'high', category: 'Estoque', effort: 'Médio',
+                title: 'Auditar as mudanças de estoque',
+                summary: 'Concentrar alterações de saldo no ajuste por quantidade, com operador e motivo.',
+                learn: 'O saldo responde quanto existe agora. A movimentação documenta quanto mudou, em qual sentido e por quem. Os dois registros precisam concordar após cada ajuste.',
+                start: ['AjusteEstoqueUseCase.cs', '../GestaoPedidos/Application/UseCases/Produtos/Commands/AjusteEstoqueUseCase.cs'],
+                steps: [
+                    ['Separe edição de ajuste', 'Em AtualizarProdutoUseCase, siga o campo Estoque até Produto.Atualizar. Remova a alteração de saldo desse caminho junto com a mudança no formulário de edição. Preserve a definição de estoque inicial.'],
+                    ['Valide a entrada e a aritmética', 'Adicione motivo ao DTO de ajuste, respeitando o tamanho da observação. No domínio, calcule o novo saldo como long antes de converter. Recuse zero, saldo negativo e overflow e defina a regra para produto inativo.'],
+                    ['Grave o rastro da alteração', 'No caso de uso de ajuste, derive o sentido pelo delta. Grave a quantidade absoluta, o operador e o motivo com a alteração de saldo em uma transação. Preserve a atualização de Produto.Versao.']
+                ],
+                example: [
+                    'var novoSaldo = (long)Estoque + delta;',
+                    'if (delta == 0 || novoSaldo < 0 || novoSaldo > int.MaxValue)',
+                    '{',
+                    '    throw new BadRequestException("Ajuste de estoque inválido.");',
+                    '}',
+                    'Estoque = (int)novoSaldo;',
+                    'AtualizarVersao();'
+                ],
+                exercise: 'Comece com 10 unidades. Edite a marca e confira que continuam 10. Registre -3 com motivo e confira saldo 7 e uma saída de 3. Tente um ajuste que deixaria saldo negativo e compare saldo e trilha antes e depois.',
+                acceptance: 'Editar catálogo preserva saldo. Cada ajuste válido gera uma movimentação com operador e motivo. Falhas preservam o saldo e o histórico.',
+                reference: ['Tarefa de ajuste manual de estoque', 'tarefas/TAREFA-10-ajuste-manual-de-estoque.md']
+            },
+            {
+                id: 'M08', priority: 'high', category: 'Webhook', effort: 'Médio',
+                title: 'Verificar a origem do webhook',
+                summary: 'Validar notificações do WhatsApp e limitar corpo, lote e retenção.',
+                learn: 'A assinatura confere a origem e a integridade do corpo recebido. O índice único impede que uma reentrega válida grave a mesma mensagem novamente.',
+                start: ['WhatsAppController.cs', '../GestaoPedidos/WebAPI/Controllers/WhatsAppController.cs'],
+                steps: [
+                    ['Valide a inscrição do webhook', 'No GET, compare o token recebido com o token configurado antes de devolver o challenge. Guarde o token e o segredo do aplicativo na configuração externa de M02.'],
+                    ['Verifique o corpo antes de persistir', 'No POST, aplique um limite de tamanho e valide X-Hub-Signature-256 com HMAC-SHA256 sobre os bytes recebidos, antes de processar a notificação. Faça uma comparação em tempo constante e encaminhe ao caso de uso só o conteúdo validado.'],
+                    ['Preserve as garantias existentes', 'Mantenha o índice único de mensagem e devolva sucesso para reentregas válidas. Defina o limite de eventos por lote e o prazo de retenção do conteúdo e dos números.']
+                ],
+                example: [
+                    'Notificação recebida',
+                    '  → conferir tamanho, cabeçalho e assinatura',
+                    '  → ler o JSON e validar o lote',
+                    '  → processar com deduplicação',
+                    '  → responder 200 após o processamento'
+                ],
+                exercise: 'Use notificações sintéticas e um segredo descartável nos testes. Verifique que a entrada sem assinatura válida não altera o banco. Envie duas vezes uma notificação válida e confirme uma única mensagem gravada.',
+                acceptance: 'Somente notificações válidas são persistidas. Duas entregas válidas da mesma mensagem geram uma única linha.',
+                timing: 'Alta prioridade antes de expor o webhook à internet.'
+            },
+            {
+                id: 'M09', priority: 'high', category: 'Dependências', effort: 'Médio',
+                title: 'Atualizar o .NET e auditar pacotes',
+                summary: 'Alinhar a stack em .NET 10 LTS e recuperar os alertas de dependências.',
+                learn: 'O SDK selecionado executa os comandos, o alvo dos projetos define o runtime e o restore resolve o grafo de pacotes. Os três precisam funcionar juntos na sua máquina e na CI.',
+                start: ['GestaoPedidos.csproj', '../GestaoPedidos/GestaoPedidos.csproj'],
+                steps: [
+                    ['Registre a situação atual', 'Compare dotnet --info, global.json, os dois TargetFramework e o manifesto dotnet-tools.json. Use a suíte recuperada em M04 como linha de base.'],
+                    ['Alinhe a mudança de runtime', 'Ajuste o SDK e os dois projetos para .NET 10. Confira a compatibilidade entre EF Core, o provedor Npgsql e a ferramenta EF. Atualize o README e faça a CI usar o mesmo SDK.'],
+                    ['Reative a auditoria', 'Retire a supressão global de NU1903. Trate o AutoMapper com uma versão corrigida compatível ou simplifique os mapeamentos. Confira a licença, os perfis e os pacotes transitivos.']
+                ],
+                example: [
+                    'dotnet --info',
+                    'dotnet restore GestaoPedidos/GestaoPedidos.sln',
+                    'dotnet list GestaoPedidos/GestaoPedidos.sln package --vulnerable --include-transitive',
+                    'dotnet test GestaoPedidos/GestaoPedidos.sln --no-restore'
+                ],
+                exercise: 'Compare a saída da auditoria antes e depois da atualização e escolha um pacote transitivo para rastrear até a dependência direta que o inclui. Rode também a verificação de mudanças pendentes no modelo EF.',
+                acceptance: 'Restore com auditoria ativada, build, testes e verificação EF passam em checkout limpo.',
+                timing: 'Use a base de verificação restabelecida em M04.'
+            },
+            {
+                id: 'M10', priority: 'medium', category: 'Transações', effort: 'Médio',
+                title: 'Tornar retentativas seguras',
+                summary: 'Evitar que uma falha transitória ou um reenvio duplique pedido ou ajuste.',
+                learn: 'Rollback limpa o efeito da transação no banco. Ele pode deixar objetos modificados no DbContext. Também existe o caso em que o banco confirma, mas o cliente perde a resposta.',
+                start: ['UnitOfWork.cs', '../GestaoPedidos/Infrastructure/Data/UnitOfWork.cs'],
+                steps: [
+                    ['Separe os dois tipos de falha', 'Em ExecutarEmTransacao, localize a criação do contexto, SaveChanges e CommitAsync. Distinga uma falha anterior ao commit de uma falha com resultado do commit desconhecido.'],
+                    ['Recomece com estado limpo', 'Para comandos que precisam de retry automático, garanta novo contexto e repositórios na próxima tentativa. Releia o estado atual e reavalie as regras de estoque.'],
+                    ['Dê identidade ao comando quando necessário', 'Para um cliente que pode reenviar criação ou ajuste, associe uma chave da operação ao usuário e ao conteúdo. Grave a chave e o efeito juntos com unicidade. Consulte o resultado anterior antes de repetir um efeito.']
+                ],
+                example: [
+                    'Primeira execução de uma compra → pedido e identidade da operação gravados',
+                    'A resposta se perde, mas o commit foi confirmado',
+                    'Reenvio da mesma operação → devolve a referência do mesmo pedido',
+                    'Mesma chave e conteúdo diferente → conflito'
+                ],
+                exercise: 'Em banco descartável, simule uma falha antes do commit e outra depois de persistir, com resposta perdida. Consulte o estado com um novo contexto e compare o número de pedidos, ajustes e movimentações.',
+                acceptance: 'Falha antes do commit e perda de sua confirmação não produzem pedidos, ajustes ou movimentações duplicados.',
+                timing: 'Comece com os cenários de banco de M04. Amplie conforme houver necessidade de reenvio confiável.'
+            },
+            {
+                id: 'M11', priority: 'medium', category: 'Consultas', effort: 'Médio',
+                title: 'Paginar a listagem de pedidos',
+                summary: 'Filtrar e ordenar no banco, com limite por página e totais corretos no painel.',
+                learn: 'Enquanto a consulta é um IQueryable, o EF Core pode traduzir filtro, ordenação, projeção e paginação para SQL. Depois de materializar, o trabalho restante acontece na memória da API.',
+                start: ['PedidoRepository.cs', '../GestaoPedidos/Infrastructure/Repositories/PedidoRepository.cs'],
+                steps: [
+                    ['Monte a consulta filtrada', 'Aplique o escopo de M01 antes dos filtros de período, status ou vendedor. Valide uma página positiva e tamanho entre 1 e 100, conforme o RF-001.'],
+                    ['Calcule total e página separadamente', 'Conte os registros da consulta filtrada. Ordene por data e ID antes de Skip e Take para desempatar datas iguais. Projete apenas os campos do resumo antes de executar a consulta de leitura.'],
+                    ['Atualize o consumidor', 'Combine com o frontend a troca do array pelo envelope paginado. Preserve o significado dos totais do painel calculando-os sobre o escopo inteiro, independentemente da página.']
+                ],
+                example: [
+                    '// consulta já contém o filtro de acesso e os demais filtros.',
+                    'var total = await consulta.CountAsync(ct);',
+                    'var itens = await consulta.AsNoTracking()',
+                    '    .OrderByDescending(p => p.DataCadastro)',
+                    '    .ThenByDescending(p => p.Id)',
+                    '    .Skip(deslocamento).Take(tamanhoPagina)',
+                    '    .Select(p => new { p.Id, p.Status, p.ValorTotal })',
+                    '    .ToListAsync(ct);'
+                ],
+                exercise: 'Crie cinco pedidos com a mesma data e peça duas páginas de dois itens para um vendedor. Confira a ordem pelo ID, a ausência de repetição e o total filtrado. Compare o SQL ou o log antes e depois para localizar o limite.',
+                acceptance: 'O consumo fica limitado ao tamanho da página, a ordem é estável e o painel representa os totais do escopo do usuário.',
+                timing: 'Depois do filtro de proprietário de M01.',
+                reference: ['Tarefa de listagem de pedidos', 'tarefas/TAREFA-05-listagem-de-pedidos.md']
+            },
+            {
+                id: 'M12', priority: 'medium', category: 'Contrato HTTP', effort: 'Médio',
+                title: 'Padronizar os contratos HTTP',
+                summary: 'Alinhar erros, status, schemas do Swagger e o tipo na resposta de pedido.',
+                learn: 'O contrato HTTP inclui o código de status, o media type e a estrutura da resposta. O consumidor deve receber o mesmo contrato para o mesmo tipo de erro, mesmo quando o banco é quem detecta o conflito.',
+                start: ['ExceptionMiddleware.cs', '../GestaoPedidos/Infrastructure/Middlewares/ExceptionMiddleware.cs'],
+                steps: [
+                    ['Escreva ProblemDetails explicitamente', 'Em EscreverProblema, passe application/problem+json ao método de escrita. Preserve o status e o traceId. Trate violações conhecidas como conflitos e mantenha falhas inesperadas com resposta adequada à causa.'],
+                    ['Uniformize duplicidade de cliente', 'Normalize CPF e e-mail antes de consultar. Use a mesma regra de resposta quando a duplicidade for detectada no caso de uso ou pela constraint de unicidade.'],
+                    ['Complete o contrato de pedido', 'Acrescente o tipo de movimentação ao DTO de resposta e ajuste o mapeamento. Atualize o Swagger com os schemas e os principais status de cada operação.']
+                ],
+                example: [
+                    'await context.Response.WriteAsJsonAsync(',
+                    '    problem,',
+                    '    options: null,',
+                    '    contentType: "application/problem+json",',
+                    '    cancellationToken: context.RequestAborted);'
+                ],
+                exercise: 'Escreva um teste HTTP para um pedido ausente. Confira 404, MediaType igual a application/problem+json e traceId no corpo. Repita com duplicidade de cliente e compare o contrato nos dois caminhos de detecção.',
+                acceptance: 'Testes verificam status, cabeçalhos e corpo dos erros. O frontend consegue distinguir compra de venda pela resposta.'
+            },
+            {
+                id: 'M13', priority: 'medium', category: 'Operação', effort: 'Médio',
+                title: 'Verificar a prontidão da API',
+                summary: 'Sinalizar indisponibilidade do banco e melhorar o diagnóstico de requisições.',
+                learn: 'Uma sonda de vida responde se o processo está em execução. Uma sonda de prontidão responde se ele consegue atender, incluindo as dependências indispensáveis.',
+                start: ['Program.cs', '../GestaoPedidos/Program.cs'],
+                steps: [
+                    ['Registre um check de banco', 'Mantenha /health para a vida do processo. Registre um check PostgreSQL com a tag ready, conexão curta, timeout e cancelamento. Use a tag no endpoint de prontidão.'],
+                    ['Propague o cancelamento', 'Comece pela listagem de pedidos. Receba CancellationToken no controller e repasse ao caso de uso e ao EF Core. Evite registrar cancelamentos esperados como falhas inesperadas da API.'],
+                    ['Correlacione e meça', 'Inclua traceId no log de falhas e acompanhe duração e status por rota. Se houver proxy reverso, confira o IP efetivo usado pelo rate limiter em uma configuração de teste.']
+                ],
+                example: [
+                    '// O check do PostgreSQL precisa estar registrado com a tag ready.',
+                    'app.MapHealthChecks("/health/ready", new HealthCheckOptions',
+                    '{',
+                    '    Predicate = check => check.Tags.Contains("ready")',
+                    '});'
+                ],
+                exercise: 'Com a API e o PostgreSQL em ambiente descartável, confira as duas sondas. Interrompa só o banco e observe vida saudável com prontidão indisponível. Correlacione uma resposta de erro com o log usando traceId.',
+                acceptance: 'Com o PostgreSQL de teste indisponível, a prontidão sinaliza falha e a vida do processo continua detectável. Erros são localizáveis pelo traceId.'
+            },
+            {
+                id: 'M14', priority: 'low', category: 'Manutenção', effort: 'Baixo a médio',
+                title: 'Limpar artefatos do repositório',
+                summary: 'Retirar arquivos gerados do Git e explicitar a persistência dos fluxos alterados.',
+                learn: 'O .gitignore evita que arquivos ignorados sejam adicionados normalmente. Arquivos já rastreados continuam no índice do Git. Na persistência, um ponto explícito de gravação ajuda a enxergar o limite da operação.',
+                start: ['.gitignore', '../.gitignore'],
+                steps: [
+                    ['Liste antes de modificar', 'Abra o .gitignore e liste os artefatos que o Git ainda rastreia. Confira a lista e retire apenas os diretórios gerados do índice com git rm --cached em um commit próprio.'],
+                    ['Ache os pontos de gravação', 'Compare PedidoRepository com ClienteRepository. Localize os métodos que só preparam entidades e os que já chamam SaveChangesAsync. Em uma escrita composta, concentre a decisão de persistir no caso de uso via unidade de trabalho.'],
+                    ['Simplifique no fluxo tocado', 'Revise métodos assíncronos que só aguardam Task.CompletedTask. Ajuste as interfaces e os chamadores junto com os métodos, preservando o comportamento coberto pelos testes.']
+                ],
+                example: [
+                    'git ls-files -- ":(glob)**/bin/**" ":(glob)**/obj/**" ":(glob)**/.vs/**"',
+                    'dotnet build GestaoPedidos/GestaoPedidos.sln',
+                    'git status --short'
+                ],
+                exercise: 'Em checkout limpo após a limpeza, compile e confira que o Git permanece limpo. Depois desenhe o fluxo de uma finalização de pedido, localizando a abertura da transação, a gravação e o commit.',
+                acceptance: 'Um build em checkout limpo não gera mudanças no Git. Cada fluxo composto tocado tem um limite de persistência claro.'
+            }
+        ];
+
+        const priorities = { critical: 'Crítica', high: 'Alta', medium: 'Média', low: 'Baixa' };
+        const statuses = { todo: 'A fazer', doing: 'Em andamento', done: 'Concluída' };
+        const storageKey = 'gestao-de-pedidos.quadro-de-melhorias.v1';
+        const board = document.querySelector('#board');
+        const search = document.querySelector('#search');
+        const filter = document.querySelector('#status-filter');
+        const announcement = document.querySelector('#announcement');
+        const note = document.querySelector('#board-note');
+        const dialog = document.querySelector('#task-dialog');
+        const viewButtons = document.querySelectorAll('.view-switch button');
+        let view = 'priority';
+        let draggedId;
+        let storageAvailable = true;
+
+        function loadProgress() {
+            try {
+                const raw = localStorage.getItem(storageKey);
+                const saved = raw && JSON.parse(raw);
+                return Object.fromEntries(tasks.map(({ id }) => [
+                    id, Object.hasOwn(statuses, saved?.[id]) ? saved[id] : 'todo'
+                ]));
+            } catch {
+                storageAvailable = false;
+                return Object.fromEntries(tasks.map(({ id }) => [id, 'todo']));
+            }
+        }
+
+        const progress = loadProgress();
+
+        function normalize(value) {
+            return value.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase();
+        }
+
+        function updateProgress() {
+            const completed = tasks.filter(({ id }) => progress[id] === 'done').length;
+            const inProgress = tasks.filter(({ id }) => progress[id] === 'doing').length;
+            const progressBar = document.querySelector('#progress-bar');
+            progressBar.max = tasks.length;
+            progressBar.value = completed;
+            document.querySelector('#progress-rate').textContent = `${Math.round(completed * 100 / tasks.length)}%`;
+            document.querySelector('#progress-caption').textContent =
+                `${completed} de ${tasks.length} concluídas · ${inProgress} em andamento`;
+            note.textContent = storageAvailable
+                ? 'O progresso fica salvo neste navegador.'
+                : 'O armazenamento local está indisponível. O progresso vale enquanto esta página estiver aberta.';
+        }
+
+        function cardMarkup(task) {
+            const status = progress[task.id];
+            const options = Object.entries(statuses).map(([value, label]) =>
+                `<option value="${value}"${value === status ? ' selected' : ''}>${label}</option>`
+            ).join('');
+
+            return `
+                <li class="card ${task.priority}" data-card="${task.id}" draggable="${view === 'status'}">
+                    <div class="card-meta">
+                        <span class="card-id">${task.id}${view === 'status' ? ` · ${priorities[task.priority]}` : ''}</span>
+                        <span class="category">${task.category}</span>
+                    </div>
+                    <h3><button class="open-card" type="button" data-details="${task.id}" aria-haspopup="dialog">
+                        ${task.title} <span aria-hidden="true">›</span>
+                    </button></h3>
+                    <p class="card-desc">${task.summary}</p>
+                    <div class="card-footer">
+                        <span class="effort">Esforço · ${task.effort.toLowerCase()}</span>
+                        <select class="status-input ${status}" data-task="${task.id}" aria-label="Status de ${task.id}">${options}</select>
+                    </div>
+                </li>`;
+        }
+
+        function renderBoard() {
+            const query = normalize(search.value.trim()).split(/\s+/);
+            const visible = tasks.filter(task => {
+                const text = normalize([task.id, task.title, task.category, task.summary, task.learn, ...task.steps.flat()].join(' '));
+                return (filter.value === 'all' || progress[task.id] === filter.value)
+                    && query.every(word => text.includes(word));
+            });
+            const groups = view === 'priority' ? priorities : statuses;
+            board.dataset.view = view;
+            board.innerHTML = Object.entries(groups).map(([key, label]) => {
+                const cards = visible.filter(task => (view === 'priority' ? task.priority : progress[task.id]) === key);
+                return `
+                    <section class="lane ${key}" data-lane="${key}" aria-labelledby="lane-${key}">
+                        <div class="lane-header">
+                            <h2 class="lane-title" id="lane-${key}">${label}</h2>
+                            <span class="lane-count" aria-label="${cards.length} tarefas">${cards.length}</span>
+                        </div>
+                        ${cards.length
+                            ? `<ol class="cards">${cards.map(cardMarkup).join('')}</ol>`
+                            : `<p class="empty-lane">${query[0] || filter.value !== 'all' ? 'Nenhuma tarefa com estes filtros.' : 'Nenhuma tarefa nesta lista.'}</p>`}
+                    </section>`;
+            }).join('');
+            updateProgress();
+            return visible.length;
+        }
+
+        function changeStatus(id, status, restoreFocus = false) {
+            if (!Object.hasOwn(progress, id) || !Object.hasOwn(statuses, status) || progress[id] === status) {
+                return;
+            }
+            progress[id] = status;
+            try {
+                localStorage.setItem(storageKey, JSON.stringify(progress));
+                storageAvailable = true;
+            } catch {
+                storageAvailable = false;
+            }
+            renderBoard();
+            if (restoreFocus) {
+                (board.querySelector(`select[data-task="${id}"]`) ?? filter).focus();
+            }
+            announcement.textContent = `${id} movida para ${statuses[status]}.`;
+        }
+
+        function showDetails(task) {
+            const badge = document.querySelector('#detail-badge');
+            badge.className = `detail-badge ${task.priority}`;
+            badge.textContent = `${task.id} · ${priorities[task.priority]} · ${task.category}`;
+            document.querySelector('#detail-title').textContent = task.title;
+            document.querySelector('#detail-context').textContent = task.summary;
+            document.querySelector('#detail-learn').textContent = task.learn;
+            const start = document.querySelector('#detail-start');
+            [start.textContent, start.href] = task.start;
+            const steps = task.steps.map(([title, description]) => {
+                const item = document.createElement('li');
+                const heading = document.createElement('strong');
+                heading.textContent = title;
+                const content = document.createElement('p');
+                content.textContent = description;
+                item.append(heading, content);
+                return item;
+            });
+            document.querySelector('#detail-steps').replaceChildren(...steps);
+            document.querySelector('#detail-example').textContent = task.example.join('\n');
+            document.querySelector('#detail-exercise').textContent = task.exercise;
+            document.querySelector('#detail-acceptance').textContent = task.acceptance;
+            document.querySelector('#detail-dependency').hidden = !task.timing;
+            document.querySelector('#detail-timing').textContent = task.timing ?? '';
+            const link = document.querySelector('#detail-link');
+            link.hidden = !task.reference;
+            if (task.reference) {
+                [link.textContent, link.href] = task.reference;
+            }
+            dialog.showModal();
+            dialog.scrollTop = 0;
+        }
+
+        function applyFilters() {
+            const count = renderBoard();
+            announcement.textContent = count === 1 ? 'Uma tarefa encontrada.' : `${count} tarefas encontradas.`;
+        }
+
+        viewButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                view = button.dataset.view;
+                viewButtons.forEach(item => item.setAttribute('aria-pressed', item === button));
+                renderBoard();
+            });
+        });
+
+        search.addEventListener('input', applyFilters);
+        filter.addEventListener('change', applyFilters);
+        board.addEventListener('click', event => {
+            const card = event.target.closest('[data-card]');
+            const trigger = card?.querySelector('[data-details]');
+            if (trigger && !event.target.closest('select')) {
+                trigger.focus({ preventScroll: true });
+                showDetails(tasks.find(task => task.id === trigger.dataset.details));
+            }
+        });
+        board.addEventListener('change', event => {
+            if (event.target.matches('[data-task]')) {
+                changeStatus(event.target.dataset.task, event.target.value, true);
+            }
+        });
+        board.addEventListener('dragstart', event => {
+            const card = event.target.closest('[data-card]');
+            if (view !== 'status' || !card || event.target.closest('button, select')) {
+                event.preventDefault();
+                return;
+            }
+            draggedId = card.dataset.card;
+            event.dataTransfer.effectAllowed = 'move';
+            event.dataTransfer.setData('text/plain', draggedId);
+            card.classList.add('dragging');
+        });
+        board.addEventListener('dragover', event => {
+            const lane = event.target.closest('.lane');
+            if (draggedId && lane && view === 'status') {
+                event.preventDefault();
+                event.dataTransfer.dropEffect = 'move';
+                lane.classList.add('drag-over');
+            }
+        });
+        board.addEventListener('dragleave', event => {
+            const lane = event.target.closest('.lane');
+            if (lane && !lane.contains(event.relatedTarget)) {
+                lane.classList.remove('drag-over');
+            }
+        });
+        board.addEventListener('drop', event => {
+            const lane = event.target.closest('.lane');
+            if (draggedId && lane && view === 'status') {
+                event.preventDefault();
+                lane.classList.remove('drag-over');
+                const id = draggedId;
+                draggedId = undefined;
+                board.querySelector('.dragging')?.classList.remove('dragging');
+                changeStatus(id, lane.dataset.lane);
+            }
+        });
+        board.addEventListener('dragend', () => {
+            draggedId = undefined;
+            board.querySelectorAll('.dragging, .drag-over').forEach(element =>
+                element.classList.remove('dragging', 'drag-over')
+            );
+        });
+        dialog.addEventListener('click', event => {
+            if (event.target === dialog) {
+                dialog.close();
+            }
+        });
+
+        renderBoard();
+    </script>
+</body>
+</html>

@@ -24,6 +24,17 @@ namespace GestaoPedidos.Infrastructure.Repositories
             return pedidos;
         }
 
+        public async Task <List<Pedido>>ListarPorVendedor(int usuarioId)
+        {
+            var pedidos = await _context.Pedidos
+               .Include(p => p.Itens)
+               .Include(p => p.Cliente)
+               .Include(p => p.Usuario)
+               .Where(p => p.UsuarioId == usuarioId)
+               .ToListAsync();
+            return pedidos;
+        }
+
         public async Task Cadastrar(Pedido pedido)
         {
             await _context.Pedidos.AddAsync(pedido);

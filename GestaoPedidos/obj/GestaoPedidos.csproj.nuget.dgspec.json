@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Vendas\\GestaoDeVendas\\GestaoPedidos\\GestaoPedidos.csproj": {}
+    "C:\\Users\\celso\\Desktop\\sistemaVenda\\GestaoDeVendas\\GestaoPedidos\\GestaoPedidos.csproj": {}
   },
   "projects": {
-    "C:\\Vendas\\GestaoDeVendas\\GestaoPedidos\\GestaoPedidos.csproj": {
+    "C:\\Users\\celso\\Desktop\\sistemaVenda\\GestaoDeVendas\\GestaoPedidos\\GestaoPedidos.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Vendas\\GestaoDeVendas\\GestaoPedidos\\GestaoPedidos.csproj",
+        "projectUniqueName": "C:\\Users\\celso\\Desktop\\sistemaVenda\\GestaoDeVendas\\GestaoPedidos\\GestaoPedidos.csproj",
         "projectName": "GestaoPedidos",
-        "projectPath": "C:\\Vendas\\GestaoDeVendas\\GestaoPedidos\\GestaoPedidos.csproj",
-        "packagesPath": "C:\\Users\\Pedro Machado\\.nuget\\packages\\",
-        "outputPath": "C:\\Vendas\\GestaoDeVendas\\GestaoPedidos\\obj\\",
+        "projectPath": "C:\\Users\\celso\\Desktop\\sistemaVenda\\GestaoDeVendas\\GestaoPedidos\\GestaoPedidos.csproj",
+        "packagesPath": "C:\\Users\\celso\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\celso\\Desktop\\sistemaVenda\\GestaoDeVendas\\GestaoPedidos\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Pedro Machado\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\celso\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -26,11 +26,11 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
-            "framework": "net8.0",
             "targetAlias": "net8.0",
             "projectReferences": {}
           }
@@ -52,7 +52,6 @@
       },
       "frameworks": {
         "net8.0": {
-          "framework": "net8.0",
           "targetAlias": "net8.0",
           "dependencies": {
             "AutoMapper": {
@@ -123,7 +122,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.414/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.428/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
