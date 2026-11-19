@@ -1,11 +1,13 @@
 using AutoMapper;
 using GestaoPedidos.Application.DTO.Pedidos;
+using GestaoPedidos.Application.UseCases.Usuarios.Queries;
 using GestaoPedidos.Domain.Abstractions;
 using GestaoPedidos.Domain.Entities;
 using GestaoPedidos.Domain.Enum;
 using GestaoPedidos.Domain.Exceptions;
 using GestaoPedidos.Domain.Exceptions.Pedidos;
 using GestaoPedidos.Domain.Exceptions.Produtos;
+using GestaoPedidos.Migrations;
 
 namespace GestaoPedidos.Application.UseCases.Pedidos.Commands
 {
@@ -16,26 +18,33 @@ namespace GestaoPedidos.Application.UseCases.Pedidos.Commands
         private readonly IMovimentacaoEstoqueRepository _movimentacaoEstoqueRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly ObterUsuarioAutenticadoUseCase _obterUsuarioAutenticadoUseCase;
 
         public FinalizarPedidoUseCase(
             IPedidoRepository pedidoRepository,
             IProdutoRepository produtoRepository,
             IMovimentacaoEstoqueRepository movimentacaoEstoqueRepository,
             IUnitOfWork unitOfWork,
-            IMapper mapper)
+            IMapper mapper,
+            ObterUsuarioAutenticadoUseCase obterUsuarioAutenticadoUseCase)
         {
             _pedidoRepository = pedidoRepository;
             _produtoRepository = produtoRepository;
             _movimentacaoEstoqueRepository = movimentacaoEstoqueRepository;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _obterUsuarioAutenticadoUseCase = obterUsuarioAutenticadoUseCase;
         }
 
         public Task<PedidoResponseDTO> Executar(int pedidoId)
             => _unitOfWork.ExecutarEmTransacao(async () =>
             {
-                var pedido = await _pedidoRepository.ObterPorId(pedidoId)
-                    ?? throw new NotFoundException(PedidosExceptions.Pedido_NaoEncontrado);
+                var usuario = await _obterUsuarioAutenticadoUseCase.Executar();
+                var pedido = await _pedidoRepository.ObterPorId(pedidoId);
+                if (pedido?.UsuarioId != usuario.Id && usuario.Role != UserRole.Admin || pedido == null)
+                {
+                    throw new NotFoundException(PedidosExceptions.Pedido_NaoEncontrado);
+                }
 
                 if (pedido.Status == StatusPedido.Finalizado)
                 {

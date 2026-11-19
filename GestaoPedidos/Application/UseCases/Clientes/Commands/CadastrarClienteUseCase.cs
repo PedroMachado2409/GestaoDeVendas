@@ -12,7 +12,7 @@ namespace GestaoPedidos.Application.UseCases.Clientes.Commands
         private readonly IClienteRepository _clienteRepository;
         private readonly IMapper _mapper;
 
-        public CadastrarClienteUseCase(IClienteRepository clienteRepository, IMapper mapper)
+        public CadastrarClienteUseCase (IClienteRepository clienteRepository, IMapper mapper)
         {
             _clienteRepository = clienteRepository;
             _mapper = mapper;
