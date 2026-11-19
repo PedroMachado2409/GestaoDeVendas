@@ -3,6 +3,7 @@ using FluentAssertions;
 using GestaoPedidos.Application.DTO.Pedidos;
 using GestaoPedidos.Application.Mapper;
 using GestaoPedidos.Application.UseCases.Pedidos.Commands;
+using GestaoPedidos.Application.UseCases.Usuarios.Queries;
 using GestaoPedidos.Domain.Abstractions;
 using GestaoPedidos.Domain.Entities;
 using GestaoPedidos.Domain.Entities.Pedidos;
@@ -20,6 +21,7 @@ namespace GestaoPedidosTests.Application.UseCases.Pedidos.Commands
         private Mock<IMovimentacaoEstoqueRepository> _movimentacaoEstoqueRepository = null!;
         private Mock<IUnitOfWork> _unitOfWork = null!;
         private IMapper _mapper = null!;
+        private Mock<ObterUsuarioAutenticadoUseCase> _usuarioAutenticado = null!;
 
         [TestInitialize]
         public void Setup()
@@ -51,7 +53,8 @@ namespace GestaoPedidosTests.Application.UseCases.Pedidos.Commands
                 _mapper,
                 _pedidoRepository.Object,
                 _produtoRepository.Object,
-                _unitOfWork.Object);
+                _unitOfWork.Object,
+                _usuarioAutenticado.Object);
 
             var primeiraResposta = await useCase.Executar(1);
             var segundaResposta = await useCase.Executar(1);

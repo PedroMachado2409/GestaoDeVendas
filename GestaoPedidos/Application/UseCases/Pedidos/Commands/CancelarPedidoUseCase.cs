@@ -36,7 +36,7 @@ namespace GestaoPedidos.Application.UseCases.Pedidos.Commands
             {
                 var usuario = await _obterUsuarioAutenticadoUseCase.Executar();
                 var pedido = await _pedidoRepository.ObterPorId(pedidoId);
-                if (pedido?.UsuarioId != usuario.Id || pedido == null)
+                if (pedido?.UsuarioId != usuario.Id && usuario.Role != UserRole.Admin || pedido == null)
                 {
                     throw new NotFoundException(PedidosExceptions.Pedido_NaoEncontrado);
                 }

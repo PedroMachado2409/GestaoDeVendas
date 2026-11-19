@@ -2,6 +2,7 @@ using AutoMapper;
 using GestaoPedidos.Application.DTO.Pedidos;
 using GestaoPedidos.Application.UseCases.Usuarios.Queries;
 using GestaoPedidos.Domain.Abstractions;
+using GestaoPedidos.Domain.Enum;
 using GestaoPedidos.Domain.Exceptions;
 using GestaoPedidos.Domain.Exceptions.Pedidos;
 
@@ -24,7 +25,7 @@ namespace GestaoPedidos.Application.UseCases.Pedidos.Queries
             var usuario = await _usuarioAutenticadoUseCase.Executar();
 
             var pedido = await _repository.ObterPorId(id);
-            if (pedido?.UsuarioId != usuario.Id || pedido == null)
+            if (pedido?.UsuarioId != usuario.Id && usuario.Role != UserRole.Admin || pedido == null)
             {
                 throw new NotFoundException(PedidosExceptions.Pedido_NaoEncontrado);
             }
