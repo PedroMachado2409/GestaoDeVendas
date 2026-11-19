@@ -1,5 +1,6 @@
 using AutoMapper;
 using GestaoPedidos.Application.DTO.Pedidos;
+using GestaoPedidos.Application.UseCases.Usuarios.Queries;
 using GestaoPedidos.Domain.Abstractions;
 using GestaoPedidos.Domain.Enum;
 using GestaoPedidos.Domain.Exceptions;
@@ -14,24 +15,31 @@ namespace GestaoPedidos.Application.UseCases.Pedidos.Commands
         private readonly IPedidoRepository _pedidoRepository;
         private readonly IProdutoRepository _produtoRepository;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly ObterUsuarioAutenticadoUseCase _obterUsuarioAutenticadoUseCase;
 
         public CancelarPedidoUseCase(
             IMapper mapper,
             IPedidoRepository pedidoRepository,
             IProdutoRepository produtoRepository,
-            IUnitOfWork unitOfWork)
+            IUnitOfWork unitOfWork,
+            ObterUsuarioAutenticadoUseCase obterUsuarioAutenticadoUseCase)
         {
             _mapper = mapper;
             _pedidoRepository = pedidoRepository;
             _produtoRepository = produtoRepository;
             _unitOfWork = unitOfWork;
+            _obterUsuarioAutenticadoUseCase = obterUsuarioAutenticadoUseCase;
         }
 
         public Task<PedidoResponseDTO> Executar(int pedidoId)
             => _unitOfWork.ExecutarEmTransacao(async () =>
             {
-                var pedido = await _pedidoRepository.ObterPorId(pedidoId)
-                    ?? throw new NotFoundException(PedidosExceptions.Pedido_NaoEncontrado);
+                var usuario = await _obterUsuarioAutenticadoUseCase.Executar();
+                var pedido = await _pedidoRepository.ObterPorId(pedidoId);
+                if (pedido?.UsuarioId != usuario.Id || pedido == null)
+                {
+                    throw new NotFoundException(PedidosExceptions.Pedido_NaoEncontrado);
+                }
 
                 if (pedido.Status == StatusPedido.Cancelado)
                 {
@@ -54,10 +62,6 @@ namespace GestaoPedidos.Application.UseCases.Pedidos.Commands
                         throw new NotFoundException(ProdutoExceptions.Produto_NaoEncontrado);
                     }
 
-                    // Venda e compra reservam em campos diferentes do produto:
-                    // venda retira do estoque, compra apenas anota a pendência.
-                    // Desfazer sempre pela trilha de venda devolveria ao estoque
-                    // unidades que nunca saíram dele.
                     if (pedido.TipoMovimentacao == TipoMovimentacao.Saida)
                     {
                         produto.LiberarReserva(item.Quantidade);
