@@ -42,7 +42,7 @@ export function aplicarErrosDaApi<T extends FieldValues>(
 
 /**
  * Caminho comum de falha ao salvar: o que der para mostrar no campo vai para
- * o campo; o resto vira toast. Evita erro de validação que some da tela.
+ * o campo; o modal global resume a falha sem apagar os dados preenchidos.
  */
 export function tratarErroDeFormulario<T extends FieldValues>(
   erro: unknown,
@@ -50,13 +50,8 @@ export function tratarErroDeFormulario<T extends FieldValues>(
   camposConhecidos: ReadonlyArray<Path<T>>,
   titulo = 'Não foi possível salvar',
 ) {
-  const orfaos = aplicarErrosDaApi(erro, definirErro, camposConhecidos)
-  const totalmenteTratado =
-    erro instanceof ErroApi && erro.temErrosDeCampo && orfaos.length === 0
-
-  if (!totalmenteTratado) {
-    notificarErro(erro, titulo)
-  }
+  aplicarErrosDaApi(erro, definirErro, camposConhecidos)
+  notificarErro(erro, titulo)
 }
 
 function normalizarCaminho(propriedade: string) {

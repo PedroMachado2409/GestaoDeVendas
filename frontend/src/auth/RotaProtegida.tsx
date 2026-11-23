@@ -63,8 +63,8 @@ function SemPermissao() {
         <div className="grid gap-1">
           <h1 className="text-base font-semibold text-ink">Área restrita a administradores</h1>
           <p className="text-sm text-ink-muted">
-            Seu perfil é <strong className="text-ink-soft">Vendedor</strong>. A API recusa este
-            recurso para papéis que não sejam Admin.
+            Seu perfil é <strong className="text-ink-soft">Vendedor</strong>. Esta área está
+            disponível apenas para administradores.
           </p>
         </div>
         <LinkBotao to="/" variante="contorno" tamanho="pequeno">

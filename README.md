@@ -1,13 +1,13 @@
 # Gestão de Pedidos
 
-API REST para gestão de clientes, produtos, usuários e pedidos, construída com
-.NET 10, ASP.NET Core, Entity Framework Core e PostgreSQL.
+API REST para gestão de pessoas, produtos, usuários e pedidos, construída com
+.NET 8, ASP.NET Core, Entity Framework Core e PostgreSQL.
 
 ## Principais garantias
 
 - JWT com validação de emissor, audiência, expiração e versão do token.
 - Papéis `Admin` e `Vendedor`, com autorização restritiva por padrão.
-- Cadastro público sempre cria um vendedor; somente admin altera papéis.
+- Somente administradores cadastram usuários; novos cadastros recebem o perfil Vendedor, e somente admin altera papéis.
 - Troca de senha, alteração de papel e inativação revogam tokens anteriores.
 - Reservas de estoque com controle otimista de concorrência.
 - Criação, cancelamento e finalização de pedidos executados em transação.
@@ -15,12 +15,10 @@ API REST para gestão de clientes, produtos, usuários e pedidos, construída co
 - Índices únicos, foreign keys e check constraints no PostgreSQL.
 - Erros no padrão `application/problem+json`, incluindo `traceId`.
 - Rate limit nos endpoints de cadastro e autenticação.
-- Webhook do WhatsApp com registro idempotente das mensagens recebidas
-  (sem autenticação — projeto de estudo).
 
 ## Pré-requisitos
 
-- .NET SDK 10.0.100 ou patch mais recente da linha 10.0.1xx.
+- .NET SDK 8.0.414 ou patch mais recente da linha 8.0.4xx, conforme `global.json`.
 - PostgreSQL.
 
 ## Configuração
@@ -36,23 +34,6 @@ dotnet user-secrets set "Jwt:Key" "UMA_CHAVE_ALEATORIA_COM_PELO_MENOS_32_CARACTE
 
 Em produção, configure também `Jwt:Issuer`, `Jwt:Audience` e as origens
 permitidas em `Cors:AllowedOrigins`.
-
-## Webhook do WhatsApp
-
-> **Sem proteção.** Este é um projeto de estudo e não vai para produção. O
-> webhook não confere a assinatura `X-Hub-Signature-256` nem o
-> `hub.verify_token`: qualquer pessoa que conheça a URL consegue registrar
-> mensagens. Não exponha a API publicamente assim.
-
-`POST /api/whatsapp/webhook` recebe as notificações de mensagem e não exige
-nenhuma configuração.
-
-`GET /api/whatsapp/webhook` responde à verificação inicial da Meta, devolvendo
-`hub.challenge` em texto puro sempre que `hub.mode` for `subscribe`.
-
-Mensagens já registradas são ignoradas em vez de gerar erro: a Meta reentrega
-a notificação enquanto não receber `200`, e devolver conflito faria a
-reentrega se repetir indefinidamente.
 
 ## Banco de dados
 
@@ -100,10 +81,29 @@ dotnet list GestaoPedidos/GestaoPedidos.csproj package --vulnerable --include-tr
 
 | Recurso | Vendedor | Admin |
 |---|---:|---:|
-| Consultar/criar/editar clientes | Sim | Sim |
-| Ativar/inativar clientes | Não | Sim |
+| Consultar/criar/editar pessoas | Sim | Sim |
+| Ativar/inativar pessoas | Não | Sim |
 | Consultar produtos | Sim | Sim |
 | Alterar produtos e estoque | Não | Sim |
 | Criar/finalizar/cancelar pedidos | Sim | Sim |
 | Listar e administrar usuários | Não | Sim |
 | Alterar o próprio perfil e senha | Sim | Sim |
+
+## Pessoas
+
+O cadastro de pessoas usa `nome`, `email` e `cpf`.
+
+| Operação | Endpoint | Permissão |
+|---|---|---|
+| Cadastrar | `POST /api/Pessoa` | Admin ou Vendedor |
+| Listar | `GET /api/Pessoa` | Admin ou Vendedor |
+| Consultar | `GET /api/Pessoa/{id}` | Admin ou Vendedor |
+| Atualizar | `PUT /api/Pessoa/{id}` | Admin ou Vendedor |
+| Ativar | `PUT /api/Pessoa/{id}/ativar` | Admin |
+| Inativar | `PUT /api/Pessoa/{id}/inativar` | Admin |
+
+Pedidos mantêm suas rotas e os campos `clienteId` e `clienteNome`. O vínculo
+interno aponta para Pessoas. A migração `RenomearClientesParaPessoas` renomeia
+a tabela e seus índices, preservando os registros e os vínculos existentes.
+O campo `TipoPessoa` já presente na entidade é incluído com valor inicial
+`Cliente` nos cadastros anteriores.

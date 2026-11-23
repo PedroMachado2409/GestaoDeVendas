@@ -44,7 +44,7 @@ export class ErroApi extends Error {
     return Object.values(this.erros).flat().join(' ')
   }
 
-  /** Mensagem pronta para toast: prioriza validação, depois detalhe. */
+  /** Mensagem para a interface: prioriza validação, depois detalhe. */
   get mensagem() {
     if (this.temErrosDeCampo) {
       return this.resumoDeValidacao || this.detalhe
@@ -80,7 +80,7 @@ function tituloPadrao(status: number) {
 function mensagemPadrao(status: number) {
   switch (status) {
     case STATUS_SEM_RESPOSTA:
-      return 'Não foi possível falar com a API. Verifique se ela está no ar e se a origem deste site está liberada em Cors:AllowedOrigins.'
+      return 'Não foi possível conectar ao servidor. Verifique sua conexão e tente novamente.'
     case 401:
       return 'Sua sessão expirou ou o token foi revogado. Entre novamente.'
     case 403:

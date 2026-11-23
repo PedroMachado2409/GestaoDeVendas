@@ -1,4 +1,4 @@
-﻿using GestaoPedidos.Domain.Entities;
+using GestaoPedidos.Domain.Entities;
 using GestaoPedidos.Domain.Entities.Pedidos;
 using Microsoft.EntityFrameworkCore;
 
@@ -6,13 +6,12 @@ namespace GestaoPedidos.Infrastructure.Data
 {
     public class AppDbContext : DbContext
     {
-        public DbSet<Cliente> Clientes => Set<Cliente>();
+        public DbSet<Pessoa> Pessoas => Set<Pessoa>();
         public DbSet<Produto> Produtos => Set<Produto>();
         public DbSet<Usuario> Usuarios => Set<Usuario>();
         public DbSet<Pedido> Pedidos => Set<Pedido>();
         public DbSet<MovimentacaoEstoque> MovimentacoesEstoque => Set<MovimentacaoEstoque>();
         public DbSet<PedidoItem> PedidoItens => Set<PedidoItem>();
-        public DbSet<MensagemWhatsApp> MensagensWhatsApp => Set<MensagemWhatsApp>();
 
         public AppDbContext(DbContextOptions<AppDbContext> options)
             : base(options)
@@ -23,11 +22,7 @@ namespace GestaoPedidos.Infrastructure.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            // ==========================================
-            // CLIENTE
-            // ==========================================
-
-            modelBuilder.Entity<Cliente>(entity =>
+            modelBuilder.Entity<Pessoa>(entity =>
             {
                 entity.Property(c => c.Nome)
                     .HasMaxLength(120);
@@ -202,51 +197,6 @@ namespace GestaoPedidos.Infrastructure.Data
                         "CK_MovimentacoesEstoque_Quantidade_Positiva",
                         "\"Quantidade\" > 0");
                 });
-            });
-
-            // ==========================================
-            // WHATSAPP
-            // ==========================================
-
-            modelBuilder.Entity<MensagemWhatsApp>(entity =>
-            {
-                entity.HasKey(m => m.Id);
-
-                entity.Property(m => m.IdMensagemWhatsApp)
-                    .IsRequired()
-                    .HasMaxLength(MensagemWhatsApp.TamanhoMaximoIdMensagem);
-
-                // A Meta fornece um ID único para cada mensagem.
-                // Impede que a mesma mensagem seja salva duas vezes.
-                entity.HasIndex(m => m.IdMensagemWhatsApp)
-                    .IsUnique();
-
-                entity.Property(m => m.NumeroRemetente)
-                    .IsRequired()
-                    .HasMaxLength(MensagemWhatsApp.TamanhoMaximoNumeroRemetente);
-
-                entity.Property(m => m.NomeRemetente)
-                    .IsRequired()
-                    .HasMaxLength(MensagemWhatsApp.TamanhoMaximoNomeRemetente);
-
-                entity.Property(m => m.TipoMensagem)
-                    .IsRequired()
-                    .HasMaxLength(MensagemWhatsApp.TamanhoMaximoTipoMensagem);
-
-                entity.Property(m => m.Conteudo)
-                    .IsRequired()
-                    .HasMaxLength(MensagemWhatsApp.TamanhoMaximoConteudo);
-
-                entity.Property(m => m.DataMensagem)
-                    .IsRequired();
-
-                entity.Property(m => m.PhoneNumberId)
-                    .IsRequired()
-                    .HasMaxLength(MensagemWhatsApp.TamanhoMaximoPhoneNumberId);
-
-                entity.HasIndex(m => m.NumeroRemetente);
-
-                entity.HasIndex(m => m.DataMensagem);
             });
         }
     }

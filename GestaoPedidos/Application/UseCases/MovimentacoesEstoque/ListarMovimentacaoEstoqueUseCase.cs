@@ -29,7 +29,7 @@ namespace GestaoPedidos.Application.UseCases.MovimentacoesEstoque
 
             var movimentacoes = await _movimentacaoEstoqueRepository.ListarPorProduto(produtoId);
 
-            // Produto sem movimentação é resposta válida: lista vazia, 200.
+          
             return _mapper.Map<List<MovimentacaoEstoqueResponseDTO>>(movimentacoes);
         }
     }

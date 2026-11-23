@@ -25,6 +25,8 @@ namespace GestaoPedidos.Domain.Entities
             Marca = marca.Trim();
             Estoque = estoque;
             Preco = preco;
+            QuantidadeReservada = 0;
+            QuantidadeCompradaPendente = 0;
         }
 
         public void Atualizar(string nome, string marca, int estoque, decimal preco)
@@ -83,7 +85,7 @@ namespace GestaoPedidos.Domain.Entities
             
         }
 
-        public void LiberarReserva(int quantidade)
+        public void CancelarReserva(int quantidade)
         {
             ValidarReservaDeVenda(quantidade);
 
@@ -145,7 +147,7 @@ namespace GestaoPedidos.Domain.Entities
             }
         }
 
-        private static void ValidarQuantidadePositiva(int quantidade)
+        public static void ValidarQuantidadePositiva(int quantidade)
         {
             if (quantidade <= 0)
             {

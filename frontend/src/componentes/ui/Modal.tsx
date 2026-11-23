@@ -1,5 +1,5 @@
 import { X } from 'lucide-react'
-import { useEffect, useRef, type ReactNode } from 'react'
+import { useEffect, useId, useRef, type ReactNode } from 'react'
 
 import { cn } from '@/lib/utils'
 
@@ -13,7 +13,12 @@ interface Propriedades {
   children: ReactNode
   rodape?: ReactNode
   largura?: 'estreita' | 'media' | 'larga'
+  papel?: 'dialog' | 'alertdialog'
+  descritoPor?: string
 }
+
+let modaisAbertos = 0
+let overflowOriginal = ''
 
 const larguras = {
   estreita: 'max-w-md',
@@ -36,8 +41,12 @@ export function Modal({
   children,
   rodape,
   largura = 'media',
+  papel = 'dialog',
+  descritoPor,
 }: Propriedades) {
   const referencia = useRef<HTMLDialogElement>(null)
+  const idDoTitulo = useId()
+  const idDaDescricao = useId()
 
   useEffect(() => {
     const dialogo = referencia.current
@@ -53,17 +62,21 @@ export function Modal({
   // Impede a rolagem do fundo enquanto o modal está aberto.
   useEffect(() => {
     if (!aberto) return
-    const anterior = document.body.style.overflow
+    if (modaisAbertos === 0) overflowOriginal = document.body.style.overflow
+    modaisAbertos += 1
     document.body.style.overflow = 'hidden'
     return () => {
-      document.body.style.overflow = anterior
+      modaisAbertos -= 1
+      if (modaisAbertos === 0) document.body.style.overflow = overflowOriginal
     }
   }, [aberto])
 
   return (
     <dialog
       ref={referencia}
-      aria-labelledby="titulo-modal"
+      role={papel}
+      aria-labelledby={idDoTitulo}
+      aria-describedby={descritoPor ?? (descricao ? idDaDescricao : undefined)}
       onCancel={(evento) => {
         evento.preventDefault()
         aoFechar()
@@ -81,10 +94,10 @@ export function Modal({
     >
       <div className="flex shrink-0 items-start justify-between gap-4 border-b border-line px-5 py-4">
         <div className="min-w-0">
-          <h2 id="titulo-modal" className="text-base font-semibold tracking-tight">
+          <h2 id={idDoTitulo} className="text-base font-semibold tracking-tight">
             {titulo}
           </h2>
-          {descricao && <p className="mt-0.5 text-[0.8125rem] text-ink-muted">{descricao}</p>}
+          {descricao && <p id={idDaDescricao} className="mt-0.5 text-[0.8125rem] text-ink-muted">{descricao}</p>}
         </div>
         <Botao
           variante="sutil"

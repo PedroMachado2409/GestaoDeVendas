@@ -3,19 +3,20 @@ import { AlertTriangle, Minus, Plus, ShoppingCart, Trash2 } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 
-import { clientesApi, pedidosApi, produtosApi } from '@/api/recursos'
-import type { Cliente, Pedido, Produto, TipoMovimentacao } from '@/api/tipos'
+import { pessoasApi, pedidosApi, produtosApi } from '@/api/recursos'
+import type { Pessoa, Pedido, Produto, TipoMovimentacao } from '@/api/tipos'
+import { useSessao } from '@/auth/useSessao'
 import { Botao } from '@/componentes/ui/Botao'
 import { Campo } from '@/componentes/ui/Campo'
 import { Etiqueta } from '@/componentes/ui/Etiqueta'
-import { Segmentos } from '@/componentes/ui/Filtros'
 import { Modal } from '@/componentes/ui/Modal'
 import { SeletorComPesquisa } from '@/componentes/ui/SeletorComPesquisa'
 import { notificarErro } from '@/lib/notificacoes'
 import { cn, formatarMoeda, formatarNumero } from '@/lib/utils'
+import { podeOperarPedido } from './tipos'
 
 // Referências estáveis: um [] novo a cada render invalidaria o useMemo.
-const SEM_CLIENTES: Cliente[] = []
+const SEM_CLIENTES: Pessoa[] = []
 const SEM_PRODUTOS: Produto[] = []
 
 interface ItemEmMontagem {
@@ -25,29 +26,31 @@ interface ItemEmMontagem {
 
 interface Propriedades {
   aberto: boolean
+  tipo: TipoMovimentacao
   aoFechar: () => void
   aoCriar: (pedido: Pedido) => void
 }
 
-export function NovoPedido({ aberto, aoFechar, aoCriar }: Propriedades) {
+export function NovoPedido({ aberto, tipo, aoFechar, aoCriar }: Propriedades) {
+  const { usuario } = useSessao()
+  const permitido = podeOperarPedido(tipo, usuario?.role)
   const clienteDeConsultas = useQueryClient()
   const [clienteId, definirClienteId] = useState<number | null>(null)
-  const [tipo, definirTipo] = useState<TipoMovimentacao>('Saida')
   const [itens, definirItens] = useState<ItemEmMontagem[]>([])
   // Venda retira do disponível; compra só anota a pendência e não depende dele.
   const ehVenda = tipo === 'Saida'
   const [enviando, definirEnviando] = useState(false)
 
   const consultaClientes = useQuery({
-    queryKey: ['clientes'],
-    queryFn: ({ signal }) => clientesApi.listar(signal),
-    enabled: aberto,
+    queryKey: ['pessoas'],
+    queryFn: ({ signal }) => pessoasApi.listar(signal),
+    enabled: aberto && permitido,
   })
 
   const consultaProdutos = useQuery({
     queryKey: ['produtos'],
     queryFn: ({ signal }) => produtosApi.listar(signal),
-    enabled: aberto,
+    enabled: aberto && permitido,
   })
 
   const clientes = consultaClientes.data ?? SEM_CLIENTES
@@ -59,7 +62,6 @@ export function NovoPedido({ aberto, aoFechar, aoCriar }: Propriedades) {
   useEffect(() => {
     if (!aberto) {
       definirClienteId(null)
-      definirTipo('Saida')
       definirItens([])
     }
   }, [aberto])
@@ -94,21 +96,6 @@ export function NovoPedido({ aberto, aoFechar, aoCriar }: Propriedades) {
     return soma + (produto ? produto.preco * item.quantidade : 0)
   }, 0)
 
-  function mudarTipo(novo: TipoMovimentacao) {
-    definirTipo(novo)
-    if (novo !== 'Saida') return
-    // Ao voltar para venda, o que foi montado como compra pode exceder o
-    // disponível: ajusta ao limite e tira o que não tem estoque.
-    definirItens((atuais) =>
-      atuais
-        .map((item) => ({
-          ...item,
-          quantidade: Math.min(item.quantidade, porId.get(item.produtoId)?.estoque ?? 0),
-        }))
-        .filter((item) => item.quantidade > 0),
-    )
-  }
-
   function alterarQuantidade(produtoId: number, quantidade: number) {
     const produto = porId.get(produtoId)
     const limite = ehVenda ? (produto?.estoque ?? 1) : Number.MAX_SAFE_INTEGER
@@ -122,7 +109,7 @@ export function NovoPedido({ aberto, aoFechar, aoCriar }: Propriedades) {
     definirItens((atuais) => atuais.filter((item) => item.produtoId !== produtoId))
   }
 
-  const podeEnviar = clienteId !== null && itens.length > 0 && !enviando
+  const podeEnviar = permitido && clienteId !== null && itens.length > 0 && !enviando
 
   async function enviar() {
     if (!podeEnviar) {
@@ -149,7 +136,7 @@ export function NovoPedido({ aberto, aoFechar, aoCriar }: Propriedades) {
 
       // A criação reserva estoque: a lista de produtos ficou desatualizada.
       await clienteDeConsultas.invalidateQueries({ queryKey: ['produtos'] })
-      aoCriar(pedido)
+      aoCriar({ ...pedido, tipoMovimentacao: tipo })
       aoFechar()
     } catch (erro) {
       notificarErro(erro, 'Não foi possível criar o pedido')
@@ -158,14 +145,20 @@ export function NovoPedido({ aberto, aoFechar, aoCriar }: Propriedades) {
     }
   }
 
+  if (!permitido) return null
+
+  function fechar() {
+    if (!enviando) aoFechar()
+  }
+
   return (
     <Modal
       aberto={aberto}
-      aoFechar={aoFechar}
-      titulo="Novo pedido"
+      aoFechar={fechar}
+      titulo={ehVenda ? 'Novo pedido de venda' : 'Novo pedido de compra'}
       descricao={
         ehVenda
-          ? 'A venda reserva o estoque dos itens em uma única transação. Se qualquer item falhar, nada é reservado.'
+          ? 'Escolha o cliente e os produtos. As quantidades serão reservadas no estoque.'
           : 'A compra registra as unidades como pendentes; elas entram no estoque quando o pedido for finalizado.'
       }
       largura="larga"
@@ -177,7 +170,7 @@ export function NovoPedido({ aberto, aoFechar, aoCriar }: Propriedades) {
               {formatarMoeda(total)}
             </span>
           </div>
-          <Botao variante="sutil" onClick={aoFechar} disabled={enviando}>
+          <Botao variante="sutil" onClick={fechar} disabled={enviando}>
             Cancelar
           </Botao>
           <Botao
@@ -187,25 +180,12 @@ export function NovoPedido({ aberto, aoFechar, aoCriar }: Propriedades) {
             carregando={enviando}
             iconeInicial={<ShoppingCart aria-hidden className="size-4" />}
           >
-            Criar pedido
+            {ehVenda ? 'Criar venda' : 'Criar compra'}
           </Botao>
         </>
       }
     >
       <div className="grid gap-5">
-        <div className="grid gap-1.5">
-          <span className="text-[0.8125rem] font-medium text-ink-soft">Tipo de pedido</span>
-          <Segmentos
-            rotulo="Tipo de pedido"
-            valor={tipo}
-            aoMudar={mudarTipo}
-            opcoes={[
-              { valor: 'Saida', rotulo: 'Venda' },
-              { valor: 'Entrada', rotulo: 'Compra' },
-            ]}
-          />
-        </div>
-
         <Campo
           rotulo="Cliente"
           obrigatorio

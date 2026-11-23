@@ -49,10 +49,10 @@ namespace GestaoPedidos.Infrastructure.Repositories
                 .FirstOrDefaultAsync(p => p.Id == id);
         }
 
-        public async Task Atualizar(Pedido pedido)
+        public Task Atualizar(Pedido pedido)
         {
             _context.Pedidos.Update(pedido);
-            await Task.CompletedTask;
+            return Task.CompletedTask;
         }
     }
 }

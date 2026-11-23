@@ -1,11 +1,14 @@
 
+using GestaoPedidos.Domain.Enum;
+
 namespace GestaoPedidos.Application.DTO.Pedidos
 {
     public class PedidoResponseDTO
     {
         public int Id { get; set; }
-        public int ClienteId { get; set; }
-        public string ClienteNome { get; set; } = string.Empty;
+        public TipoMovimentacao TipoMovimentacao { get; set; }
+        public int PessoaId { get; set; }
+        public string PessoaNome { get; set; } = string.Empty;
         public int UsuarioId { get; set; }
         public string UsuarioNome { get; set; } = string.Empty;
         public string Status { get; set; } = string.Empty;

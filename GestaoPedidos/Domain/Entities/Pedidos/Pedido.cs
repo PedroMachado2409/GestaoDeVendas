@@ -8,7 +8,7 @@ namespace GestaoPedidos.Domain.Entities.Pedidos
     {
         public int Id { get; private set; }
         public int ClienteId { get; private set; }
-        public Cliente? Cliente { get; private set; }
+        public Pessoa? Cliente { get; private set; }
         public StatusPedido Status { get; private set; }
         public TipoMovimentacao TipoMovimentacao { get; private set; }
         public DateTime DataCadastro { get; private set; } = DateTime.UtcNow;

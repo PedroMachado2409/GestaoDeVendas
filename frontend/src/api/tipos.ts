@@ -12,22 +12,26 @@ export type TipoMovimentacao = 'Entrada' | 'Saida'
 
 export type OrigemMovimentacao = 'PedidoDeVenda' | 'PedidoDeCompra' | 'AjusteManual'
 
-export interface Cliente {
+export type TipoPessoa = 'Cliente' | 'Fornecedor' | 'Funcionario' | 'Parceiro'
+
+export interface Pessoa {
   id: number
   nome: string
   email: string
   cpf: string
   ativo: boolean
   dataCadastro: string
+  tipoPessoa: TipoPessoa | 0 | 1 | 2 | 3
 }
 
-export interface ClienteCreate {
+export interface PessoaCreate {
   nome: string
   email: string
   cpf: string
+  tipoPessoa: TipoPessoa
 }
 
-export interface ClienteUpdate extends ClienteCreate {
+export interface PessoaUpdate extends PessoaCreate {
   id: number
 }
 
@@ -83,6 +87,8 @@ export interface PedidoItem {
 
 export interface Pedido {
   id: number
+  /** Entrada = compra; Saida = venda. A API deve informar o tipo na resposta. */
+  tipoMovimentacao: TipoMovimentacao
   clienteId: number
   /** Vazio quando o repositório não carrega o cliente junto. */
   clienteNome: string

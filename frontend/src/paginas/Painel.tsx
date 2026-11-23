@@ -12,7 +12,7 @@ import {
 import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
 
-import { clientesApi, pedidosApi, produtosApi } from '@/api/recursos'
+import { pessoasApi, pedidosApi, produtosApi } from '@/api/recursos'
 import type { Pedido } from '@/api/tipos'
 import { useSessao } from '@/auth/useSessao'
 import { CabecalhoDaPagina } from '@/componentes/layout/CabecalhoDaPagina'
@@ -32,6 +32,7 @@ import {
   pluralizar,
 } from '@/lib/utils'
 import { tonsDeStatus } from './Pedidos'
+import { filtrarPedidosPorTipo } from '@/pedidos/tipos'
 
 const MESES_NO_GRAFICO = 6
 const ITENS_NO_RANQUE = 5
@@ -41,9 +42,9 @@ const SEM_PEDIDOS: Pedido[] = []
 export function Painel() {
   const { usuario, ehAdmin } = useSessao()
 
-  const consultaClientes = useQuery({
-    queryKey: ['clientes'],
-    queryFn: ({ signal }) => clientesApi.listar(signal),
+  const consultaPessoas = useQuery({
+    queryKey: ['pessoas'],
+    queryFn: ({ signal }) => pessoasApi.listar(signal),
   })
 
   const consultaProdutos = useQuery({
@@ -56,9 +57,12 @@ export function Painel() {
     queryFn: ({ signal }) => pedidosApi.listar(signal),
   })
 
-  const clientes = consultaClientes.data ?? []
+  const pessoas = consultaPessoas.data ?? []
   const produtos = consultaProdutos.data ?? []
-  const pedidos = consultaPedidos.data ?? SEM_PEDIDOS
+  const pedidos = useMemo(
+    () => filtrarPedidosPorTipo(consultaPedidos.data ?? SEM_PEDIDOS, 'Saida'),
+    [consultaPedidos.data],
+  )
 
   const recentes = useMemo(
     () =>
@@ -68,7 +72,7 @@ export function Painel() {
     [pedidos],
   )
 
-  const clientesAtivos = clientes.filter((cliente) => cliente.ativo).length
+  const pessoasAtivas = pessoas.filter((pessoa) => pessoa.ativo).length
   const produtosAtivos = produtos.filter((produto) => produto.ativo)
   const semEstoque = produtosAtivos.filter((produto) => produto.estoque === 0)
   const valorEmEstoque = produtos.reduce(
@@ -88,8 +92,8 @@ export function Painel() {
 
     for (let recuo = MESES_NO_GRAFICO - 1; recuo >= 0; recuo -= 1) {
       const referencia = new Date(hoje.getFullYear(), hoje.getMonth() - recuo, 1)
-      const total = clientes.filter((cliente) => {
-        const data = new Date(cliente.dataCadastro)
+      const total = pessoas.filter((pessoa) => {
+        const data = new Date(pessoa.dataCadastro)
         return (
           data.getFullYear() === referencia.getFullYear() &&
           data.getMonth() === referencia.getMonth()
@@ -104,7 +108,7 @@ export function Painel() {
     }
 
     return baldes
-  }, [clientes])
+  }, [pessoas])
 
   const ranqueDeEstoque = useMemo<PontoDeSerie[]>(
     () =>
@@ -129,8 +133,8 @@ export function Painel() {
     [produtos],
   )
 
-  const erro = consultaClientes.error ?? consultaProdutos.error
-  const carregando = consultaClientes.isPending || consultaProdutos.isPending
+  const erro = consultaPessoas.error ?? consultaProdutos.error
+  const carregando = consultaPessoas.isPending || consultaProdutos.isPending
 
   if (erro && !carregando) {
     return (
@@ -140,7 +144,7 @@ export function Painel() {
           <EstadoDeErro
             erro={erro}
             aoTentarNovamente={() => {
-              void consultaClientes.refetch()
+              void consultaPessoas.refetch()
               void consultaProdutos.refetch()
             }}
           />
@@ -155,8 +159,8 @@ export function Painel() {
         titulo={`Olá, ${primeiroNome(usuario?.nome)}`}
         descricao={
           ehAdmin
-            ? 'Visão geral do catálogo, da carteira de clientes e dos pedidos.'
-            : 'Visão geral do catálogo e da carteira de clientes. Alterações de catálogo exigem perfil Admin.'
+            ? 'Visão geral do catálogo, da carteira de pessoas e dos pedidos.'
+            : 'Visão geral do catálogo e da carteira de pessoas. Alterações de catálogo exigem perfil Admin.'
         }
         acoes={
           <LinkBotao
@@ -171,14 +175,14 @@ export function Painel() {
 
       <div className="grid grid-cols-1 gap-3 min-[420px]:grid-cols-2 sm:gap-4 xl:grid-cols-4">
         <Indicador
-          rotulo="Clientes ativos"
+          rotulo="Pessoas ativas"
           Icone={Users}
           carregando={carregando}
-          valor={formatarNumero(clientesAtivos)}
+          valor={formatarNumero(pessoasAtivas)}
           apoio={
-            clientes.length > 0
-              ? `de ${formatarNumero(clientes.length)} ${pluralizar(clientes.length, 'cadastrado', 'cadastrados')}`
-              : 'Nenhum cliente cadastrado'
+            pessoas.length > 0
+              ? `de ${formatarNumero(pessoas.length)} ${pluralizar(pessoas.length, 'cadastrada', 'cadastradas')}`
+              : 'Nenhuma pessoa cadastrada'
           }
         />
         <Indicador
@@ -205,7 +209,7 @@ export function Painel() {
           apoio={`${formatarNumero(unidadesReservadas)} ${pluralizar(unidadesReservadas, 'unidade reservada', 'unidades reservadas')}`}
         />
         <Indicador
-          rotulo="Pedidos em aberto"
+          rotulo="Vendas em aberto"
           Icone={ShoppingCart}
           carregando={consultaPedidos.isPending}
           valor={consultaPedidos.isError ? '—' : formatarNumero(pedidosAbertos.length)}
@@ -225,22 +229,22 @@ export function Painel() {
       <div className="grid grid-cols-1 gap-5 sm:gap-6 lg:grid-cols-2">
         <Cartao>
           <CabecalhoDoCartao
-            titulo="Novos clientes por mês"
+            titulo="Novas pessoas por mês"
             descricao={`Últimos ${MESES_NO_GRAFICO} meses, pela data de cadastro`}
           />
           <CorpoDoCartao>
             {carregando ? (
               <div className="h-52 animar-cintilar rounded-lg bg-surface-2" />
-            ) : clientes.length === 0 ? (
+            ) : pessoas.length === 0 ? (
               <EstadoVazio
                 icone={<Users aria-hidden className="size-5" />}
                 titulo="Sem cadastros para exibir"
-                descricao="O gráfico aparece assim que houver clientes cadastrados."
+                descricao="O gráfico aparece assim que houver pessoas cadastradas."
               />
             ) : (
               <ColunasPorPeriodo
-                titulo={`Novos clientes por mês nos últimos ${MESES_NO_GRAFICO} meses`}
-                nomeDaMedida="Clientes cadastrados"
+                titulo={`Novas pessoas por mês nos últimos ${MESES_NO_GRAFICO} meses`}
+                nomeDaMedida="Pessoas cadastradas"
                 dados={cadastrosPorMes}
                 formatarValor={formatarNumero}
               />
@@ -319,14 +323,14 @@ export function Painel() {
 
         <Cartao>
           <CabecalhoDoCartao
-            titulo="Pedidos recentes"
+            titulo="Vendas recentes"
             descricao={`Os ${ITENS_NO_RANQUE} mais recentes`}
             acao={
               <Link
                 to="/pedidos"
                 className="inline-flex items-center gap-1 rounded text-[0.8125rem] font-medium text-brand-ink hover:underline"
               >
-                Abrir pedidos
+                Abrir vendas
                 <ArrowRight aria-hidden className="size-3.5" />
               </Link>
             }

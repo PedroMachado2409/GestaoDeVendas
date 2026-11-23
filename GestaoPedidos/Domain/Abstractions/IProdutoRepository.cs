@@ -9,6 +9,5 @@ namespace GestaoPedidos.Domain.Abstractions
         Task<Produto?> ObterPorId(int id);
         Task<List<Produto>> ObterPorIds(IEnumerable<int> ids);
         Task Atualizar(Produto produto);
-        Task Atualizar(IEnumerable<Produto> produtos);
     }
 }

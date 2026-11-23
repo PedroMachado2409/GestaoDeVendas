@@ -1,5 +1,6 @@
 import { z } from 'zod'
 
+import { cnpjValido, normalizarCpfCnpj } from './documentos'
 import { somenteDigitos } from './utils'
 
 /**
@@ -45,6 +46,15 @@ export const esquemaCpf = z
   .trim()
   .min(1, 'Informe o CPF.')
   .refine(cpfValido, 'CPF inválido.')
+
+export const esquemaCpfCnpj = z
+  .string()
+  .trim()
+  .min(1, 'Informe o CPF ou CNPJ.')
+  .refine((valor) => {
+    const documento = normalizarCpfCnpj(valor)
+    return (/^\d{11}$/.test(documento) && cpfValido(documento)) || cnpjValido(documento)
+  }, 'CPF ou CNPJ inválido.')
 
 /** Mesmas regras do UsuarioCreateValidator: 10+ caracteres, letra e número. */
 export const esquemaSenhaNova = z

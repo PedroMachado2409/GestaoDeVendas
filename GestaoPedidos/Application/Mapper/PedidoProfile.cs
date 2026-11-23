@@ -17,7 +17,7 @@ namespace GestaoPedidos.Application.Mapper
                            opt => opt.MapFrom(src => src.Status.ToString()))
                 .ForMember(dest => dest.ValorTotal,
                            opt => opt.MapFrom(src => src.ValorTotal))
-                .ForMember(dest => dest.ClienteNome,
+                .ForMember(dest => dest.PessoaNome,
                              opt => opt.MapFrom(src => src.Cliente != null ? src.Cliente.Nome : string.Empty))
                     .ForMember(dest => dest.UsuarioNome,
                         opt => opt.MapFrom(src => src.Usuario != null ? src.Usuario.Nome : string.Empty));

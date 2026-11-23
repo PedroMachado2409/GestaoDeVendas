@@ -64,7 +64,7 @@ namespace GestaoPedidos.Application.UseCases.Pedidos.Commands
 
                     if (pedido.TipoMovimentacao == TipoMovimentacao.Saida)
                     {
-                        produto.LiberarReserva(item.Quantidade);
+                        produto.CancelarReserva(item.Quantidade);
                     }
                     else
                     {

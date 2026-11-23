@@ -7,7 +7,6 @@ using GestaoPedidos.Domain.Enum;
 using GestaoPedidos.Domain.Exceptions;
 using GestaoPedidos.Domain.Exceptions.Pedidos;
 using GestaoPedidos.Domain.Exceptions.Produtos;
-using GestaoPedidos.Migrations;
 
 namespace GestaoPedidos.Application.UseCases.Pedidos.Commands
 {
@@ -60,7 +59,7 @@ namespace GestaoPedidos.Application.UseCases.Pedidos.Commands
                     pedido.Itens.Select(i => i.ProdutoId));
                 var produtosPorId = produtos.ToDictionary(p => p.Id);
 
-                var ehVenda = pedido.TipoMovimentacao == TipoMovimentacao.Saida;
+                var ehVenda = pedido.TipoMovimentacao == Domain.Enum.TipoMovimentacao.Saida;
                 var origem = ehVenda
                     ? OrigemMovimentacao.PedidoDeVenda
                     : OrigemMovimentacao.PedidoDeCompra;
@@ -81,8 +80,6 @@ namespace GestaoPedidos.Application.UseCases.Pedidos.Commands
                         produto.EfetivarCompra(item.Quantidade);
                     }
 
-                    // Montada depois de mover o estoque: se a movimentação do
-                    // produto falhar, nenhum registro de trilha é criado.
                     var movimentacao = new MovimentacaoEstoque(
                         produto.Id,
                         produto.Nome,

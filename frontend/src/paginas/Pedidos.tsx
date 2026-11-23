@@ -3,8 +3,8 @@ import { Ban, CheckCircle2, Eye, Plus, RefreshCw, ShoppingCart } from 'lucide-re
 import { useMemo, useState } from 'react'
 import { toast } from 'sonner'
 
-import { clientesApi, pedidosApi, produtosApi } from '@/api/recursos'
-import type { Pedido, StatusPedido } from '@/api/tipos'
+import { pessoasApi, pedidosApi, produtosApi } from '@/api/recursos'
+import type { Pedido, StatusPedido, TipoMovimentacao } from '@/api/tipos'
 import { useSessao } from '@/auth/useSessao'
 import { CabecalhoDaPagina } from '@/componentes/layout/CabecalhoDaPagina'
 import { Botao } from '@/componentes/ui/Botao'
@@ -25,6 +25,7 @@ import {
   pluralizar,
 } from '@/lib/utils'
 import { NovoPedido } from '@/pedidos/NovoPedido'
+import { filtrarPedidosPorTipo, podeOperarPedido } from '@/pedidos/tipos'
 
 export const tonsDeStatus: Record<StatusPedido, TomEtiqueta> = {
   Aberto: 'marca',
@@ -37,8 +38,10 @@ type Filtro = 'todos' | StatusPedido
 // Referência estável: um [] novo a cada render invalidaria os useMemo abaixo.
 const SEM_PEDIDOS: Pedido[] = []
 
-export function Pedidos() {
+export function Pedidos({ tipo }: { tipo: TipoMovimentacao }) {
   const { usuario } = useSessao()
+  const ehCompra = tipo === 'Entrada'
+  const permitido = podeOperarPedido(tipo, usuario?.role)
   const clienteDeConsultas = useQueryClient()
 
   const [busca, definirBusca] = useState('')
@@ -52,14 +55,21 @@ export function Pedidos() {
   const consulta = useQuery({
     queryKey: ['pedidos'],
     queryFn: ({ signal }) => pedidosApi.listar(signal),
+    enabled: permitido,
   })
 
   const consultaClientes = useQuery({
-    queryKey: ['clientes'],
-    queryFn: ({ signal }) => clientesApi.listar(signal),
+    queryKey: ['pessoas'],
+    queryFn: ({ signal }) => pessoasApi.listar(signal),
   })
 
-  const pedidos = consulta.data ?? SEM_PEDIDOS
+  const pedidos = useMemo(
+    () => filtrarPedidosPorTipo(consulta.data ?? SEM_PEDIDOS, tipo),
+    [consulta.data, tipo],
+  )
+  const semClassificacao = (consulta.data ?? SEM_PEDIDOS).filter(
+    (pedido) => pedido.tipoMovimentacao !== 'Entrada' && pedido.tipoMovimentacao !== 'Saida',
+  ).length
 
   const nomesDeClientes = useMemo(
     () => new Map((consultaClientes.data ?? []).map((cliente) => [cliente.id, cliente.nome])),
@@ -110,6 +120,7 @@ export function Pedidos() {
           ? // A resposta da transição pode vir sem os nomes; preserva os da lista.
             {
               ...atualizado,
+              tipoMovimentacao: atualizado.tipoMovimentacao ?? pedido.tipoMovimentacao,
               clienteNome: atualizado.clienteNome || pedido.clienteNome,
               usuarioNome: atualizado.usuarioNome || pedido.usuarioNome,
             }
@@ -123,7 +134,10 @@ export function Pedidos() {
   }
 
   const finalizar = useMutation({
-    mutationFn: (pedido: Pedido) => pedidosApi.finalizar(pedido.id),
+    mutationFn: (pedido: Pedido) => {
+      if (!permitido) throw new Error('Seu perfil não permite operar pedidos de compra.')
+      return pedidosApi.finalizar(pedido.id)
+    },
     onSuccess: (atualizado) => {
       toast.success(`Pedido #${atualizado.id} finalizado`, {
         description: 'O estoque foi atualizado e a movimentação ficou registrada.',
@@ -134,7 +148,10 @@ export function Pedidos() {
   })
 
   const cancelar = useMutation({
-    mutationFn: (pedido: Pedido) => pedidosApi.cancelar(pedido.id),
+    mutationFn: (pedido: Pedido) => {
+      if (!permitido) throw new Error('Seu perfil não permite operar pedidos de compra.')
+      return pedidosApi.cancelar(pedido.id)
+    },
     onSuccess: (atualizado) => {
       toast.success(`Pedido #${atualizado.id} cancelado`, {
         description: 'Reservas e pendências do pedido foram desfeitas.',
@@ -175,7 +192,7 @@ export function Pedidos() {
     },
     {
       chave: 'vendedor',
-      cabecalho: 'Vendedor',
+      cabecalho: ehCompra ? 'Responsável' : 'Vendedor',
       ocultarEmTelaPequena: true,
       valor: (pedido) => nomeDoVendedor(pedido) ?? '',
       celula: (pedido) => (
@@ -272,11 +289,17 @@ export function Pedidos() {
   const unidadesDoCancelamento =
     alvoDeCancelamento?.itens.reduce((soma, item) => soma + item.quantidade, 0) ?? 0
 
+  if (!permitido) return null
+
   return (
     <>
       <CabecalhoDaPagina
-        titulo="Pedidos"
-        descricao="Criação, finalização e cancelamento. Cada operação roda em transação e é idempotente do lado da API."
+        titulo={ehCompra ? 'Pedidos de compra' : 'Pedidos de venda'}
+        descricao={
+          ehCompra
+            ? 'Gerencie as compras e finalize os pedidos para registrar a entrada dos produtos no estoque.'
+            : 'Gerencie as vendas, acompanhe as reservas de estoque e finalize os pedidos.'
+        }
         acoes={
           <>
             <Botao
@@ -292,17 +315,24 @@ export function Pedidos() {
               onClick={() => definirCriacaoAberta(true)}
               iconeInicial={<Plus aria-hidden className="size-4" />}
             >
-              Novo pedido
+              {ehCompra ? 'Nova compra' : 'Nova venda'}
             </Botao>
           </>
         }
       />
 
+      {semClassificacao > 0 && (
+        <p role="status" className="rounded-lg border border-caution/30 bg-caution-soft px-4 py-3 text-sm text-caution-ink">
+          {semClassificacao} {pluralizar(semClassificacao, 'pedido está', 'pedidos estão')} sem
+          identificação de compra ou venda e não {pluralizar(semClassificacao, 'foi incluído', 'foram incluídos')} nesta lista.
+        </p>
+      )}
+
       <Cartao>
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line px-4 py-3">
           <CampoDeBusca
             rotulo="Buscar pedidos"
-            placeholder="Nº, cliente ou vendedor"
+            placeholder={ehCompra ? 'Nº, cliente ou responsável' : 'Nº, cliente ou vendedor'}
             valor={busca}
             aoMudar={definirBusca}
           />
@@ -325,7 +355,7 @@ export function Pedidos() {
           <EstadoDeErro erro={consulta.error} aoTentarNovamente={() => void consulta.refetch()} />
         ) : (
           <Tabela
-            legenda="Lista de pedidos"
+            legenda={ehCompra ? 'Lista de pedidos de compra' : 'Lista de pedidos de venda'}
             itens={visiveis}
             colunas={colunas}
             chaveDoItem={(pedido) => pedido.id}
@@ -334,7 +364,7 @@ export function Pedidos() {
               pedidos.length === 0 ? (
                 <EstadoVazio
                   icone={<ShoppingCart aria-hidden className="size-5" />}
-                  titulo="Nenhum pedido registrado"
+                  titulo={ehCompra ? 'Nenhum pedido de compra registrado' : 'Nenhum pedido de venda registrado'}
                   descricao="Crie o primeiro pedido para ele aparecer aqui."
                   acao={
                     <Botao
@@ -343,7 +373,7 @@ export function Pedidos() {
                       onClick={() => definirCriacaoAberta(true)}
                       iconeInicial={<Plus aria-hidden className="size-3.5" />}
                     >
-                      Criar pedido
+                      {ehCompra ? 'Criar compra' : 'Criar venda'}
                     </Botao>
                   }
                 />
@@ -360,6 +390,7 @@ export function Pedidos() {
       </Cartao>
 
       <NovoPedido
+        tipo={tipo}
         aberto={criacaoAberta}
         aoFechar={() => definirCriacaoAberta(false)}
         aoCriar={(pedido) => {
@@ -372,6 +403,7 @@ export function Pedidos() {
       />
 
       <DetalheDoPedido
+        tipo={tipo}
         pedido={detalhe}
         nomeDoCliente={detalhe ? nomeDoCliente(detalhe) : undefined}
         nomeDoVendedor={detalhe ? nomeDoVendedor(detalhe) : undefined}
@@ -390,8 +422,8 @@ export function Pedidos() {
             <strong className="text-ink">
               {unidadesDoCancelamento} {pluralizar(unidadesDoCancelamento, 'unidade', 'unidades')}
             </strong>{' '}
-            do pedido deixam de ficar reservadas (venda) ou pendentes (compra). Só pedidos abertos
-            podem ser cancelados.
+            {ehCompra ? 'do pedido deixam de ficar pendentes.' : 'do pedido deixam de ficar reservadas.'}{' '}
+            Só pedidos abertos podem ser cancelados.
           </>
         }
         rotuloConfirmar="Cancelar pedido"
@@ -405,6 +437,7 @@ export function Pedidos() {
 }
 
 function DetalheDoPedido({
+  tipo,
   pedido,
   nomeDoCliente,
   nomeDoVendedor,
@@ -413,6 +446,7 @@ function DetalheDoPedido({
   aoCancelar,
   aoFechar,
 }: {
+  tipo: TipoMovimentacao
   pedido: Pedido | null
   nomeDoCliente?: string
   nomeDoVendedor?: string
@@ -442,7 +476,7 @@ function DetalheDoPedido({
     <Modal
       aberto={pedido !== null}
       aoFechar={aoFechar}
-      titulo={`Pedido #${pedido.id}`}
+      titulo={`Pedido de ${tipo === 'Entrada' ? 'compra' : 'venda'} #${pedido.id}`}
       descricao={`Criado em ${formatarDataHora(pedido.dataCadastro)}`}
       rodape={
         <>
@@ -489,7 +523,7 @@ function DetalheDoPedido({
             </dd>
           </div>
           <div className="min-w-0">
-            <dt className="text-xs text-ink-muted">Vendedor</dt>
+            <dt className="text-xs text-ink-muted">{tipo === 'Entrada' ? 'Responsável' : 'Vendedor'}</dt>
             <dd className="mt-0.5 text-sm font-medium text-pretty text-ink">
               {nomeDoVendedor ?? '—'}
             </dd>

@@ -27,6 +27,7 @@ namespace GestaoPedidos.Domain.Entities
         {
             Nome = nome.Trim();
             Email = NormalizarEmail(email);
+            RevogarTokens();
         }
 
         public void AlterarSenha(string senhaHash)

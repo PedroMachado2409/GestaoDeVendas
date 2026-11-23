@@ -1,19 +1,23 @@
-import { toast } from 'sonner'
+import { alertasDeErro } from './alertasDeErro.ts'
+import { ErroApi, STATUS_SEM_RESPOSTA } from './erros.ts'
 
-import { ErroApi, STATUS_SEM_RESPOSTA } from './erros'
-
-/** Toast padronizado de falha, com o traceId quando a API o devolve. */
+/** Alerta global de falha, com a mensagem e o código de referência da API. */
 export function notificarErro(erro: unknown, titulo = 'Operação não concluída') {
+  if (erro instanceof Error && erro.name === 'AbortError') return
+
   if (erro instanceof ErroApi) {
-    const rodape =
-      erro.traceId && erro.status !== STATUS_SEM_RESPOSTA ? ` (traceId ${erro.traceId})` : ''
-    toast.error(erro.status === STATUS_SEM_RESPOSTA ? erro.titulo : titulo, {
-      description: erro.mensagem + rodape,
+    alertasDeErro.adicionar({
+      titulo: erro.status === STATUS_SEM_RESPOSTA ? erro.titulo : titulo,
+      mensagem: erro.mensagem,
+      traceId: erro.traceId,
+      // O mesmo 401 também pode ser observado pelo encerramento da sessão.
+      chave: erro.status === 401 ? 'sessao:401' : `${erro.status}:${erro.mensagem}:${erro.traceId ?? ''}`,
     })
     return
   }
 
-  toast.error(titulo, {
-    description: erro instanceof Error ? erro.message : 'Erro inesperado.',
+  alertasDeErro.adicionar({
+    titulo,
+    mensagem: erro instanceof Error ? erro.message : 'Erro inesperado.',
   })
 }

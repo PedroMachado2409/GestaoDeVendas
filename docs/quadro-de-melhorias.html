@@ -3,8 +3,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Quadro Kanban das melhorias da API Gestão de Pedidos, com prioridades, critérios de aceite e progresso.">
-    <title>Quadro de melhorias · Gestão de Pedidos</title>
+    <meta name="description" content="Backlog de implementações do back-end Gestão de Pedidos, com prioridades, dependências e critérios de aceite.">
+    <title>Backlog do back-end · Gestão de Pedidos</title>
     <style>
         :root {
             color-scheme: light;
@@ -279,22 +279,22 @@
         <div class="wrap app-nav">
             <span class="brand-icon" aria-hidden="true"><i></i><i></i><i></i></span>
             <span class="project">Gestão de Pedidos</span>
-            <span class="breadcrumb">Revisão técnica</span>
+            <span class="breadcrumb">Backlog do back-end</span>
         </div>
     </header>
 
     <main class="wrap">
         <div class="overview">
             <div>
-                <h1>Quadro de melhorias</h1>
-                <p class="lede">Acompanhe as tarefas da revisão técnica da API.</p>
+                <h1>Backlog do back-end</h1>
+                <p class="lede">M01 preservada e nove novas entregas para tornar o financeiro real e ampliar a operação de pedidos. Abra os cartões para consultar escopo, dependências e aceite.</p>
             </div>
             <section class="progress-panel" aria-labelledby="progress-title">
                 <div class="progress-head">
                     <span class="progress-title" id="progress-title">Progresso do quadro</span>
                     <strong class="progress-rate" id="progress-rate">0%</strong>
                 </div>
-                <progress id="progress-bar" value="0" max="14" aria-labelledby="progress-title"></progress>
+                <progress id="progress-bar" value="0" max="10" aria-labelledby="progress-title"></progress>
                 <div class="progress-caption" id="progress-caption"></div>
             </section>
         </div>
@@ -360,307 +360,369 @@
     <script>
         const tasks = [
             {
-                id: 'M01', priority: 'critical', category: 'Autorização', effort: 'Médio',
-                title: 'Restringir pedidos ao proprietário',
-                summary: 'Impedir que um vendedor consulte, cancele ou finalize pedidos de outro vendedor.',
-                learn: 'O papel permite chamar uma operação. A propriedade define quais registros o usuário pode ler ou alterar. O pedido já guarda essa relação em UsuarioId.',
-                start: ['ObterPedidoPorIdUseCase.cs', '../GestaoPedidos/Application/UseCases/Pedidos/Queries/ObterPedidoPorIdUseCase.cs'],
-                steps: [
-                    ['Siga a identidade até o pedido', 'Abra ObterUsuarioAutenticadoUseCase e veja como ele resolve o usuário da requisição. Em seguida, localize onde CadastrarPedidoUseCase grava o UsuarioId. Use esses dados autenticados para decidir o acesso.'],
-                    ['Filtre antes de carregar', 'No repositório, aplique o filtro de proprietário ao IQueryable de vendedores. Reuse o escopo na listagem e na consulta por ID. Devolva o mesmo 404 para um pedido inexistente e um pedido fora do escopo.'],
-                    ['Proteja as transições', 'Em FinalizarPedidoUseCase e CancelarPedidoUseCase, consulte no escopo dentro da transação, antes de tocar na reserva ou retornar uma transição já concluída. Registre quem fez a primeira transição e quando.']
+                "id": "M01",
+                "priority": "critical",
+                "category": "Autorização",
+                "effort": "Médio",
+                "title": "Restringir pedidos ao proprietário",
+                "summary": "Impedir que um vendedor consulte, cancele ou finalize pedidos de outro vendedor.",
+                "learn": "O papel permite chamar uma operação. A propriedade define quais registros o usuário pode ler ou alterar. O pedido já guarda essa relação em UsuarioId.",
+                "start": [
+                    "ObterPedidoPorIdUseCase.cs",
+                    "../GestaoPedidos/Application/UseCases/Pedidos/Queries/ObterPedidoPorIdUseCase.cs"
                 ],
-                example: [
-                    '// consulta e usuario vêm do repositório e da identidade autenticada.',
-                    'if (usuario.Role != UserRole.Admin)',
-                    '{',
-                    '    consulta = consulta.Where(p => p.UsuarioId == usuario.Id);',
-                    '}',
-                    'var pedido = await consulta.SingleOrDefaultAsync(p => p.Id == pedidoId);'
+                "steps": [
+                    [
+                        "Siga a identidade até o pedido",
+                        "Abra ObterUsuarioAutenticadoUseCase e veja como ele resolve o usuário da requisição. Em seguida, localize onde CadastrarPedidoUseCase grava o UsuarioId. Use esses dados autenticados para decidir o acesso."
+                    ],
+                    [
+                        "Filtre antes de carregar",
+                        "No repositório, aplique o filtro de proprietário ao IQueryable de vendedores. Reuse o escopo na listagem e na consulta por ID. Devolva o mesmo 404 para um pedido inexistente e um pedido fora do escopo."
+                    ],
+                    [
+                        "Proteja as transições",
+                        "Em FinalizarPedidoUseCase e CancelarPedidoUseCase, consulte no escopo dentro da transação, antes de tocar na reserva ou retornar uma transição já concluída. Registre quem fez a primeira transição e quando."
+                    ]
                 ],
-                exercise: 'Crie dados de teste para dois vendedores e um administrador. Faça cada vendedor criar um pedido. Compare as três listagens e confirme que uma transição recusada manteve o status e a reserva originais.',
-                acceptance: 'Vendedor vê somente seus pedidos. Acesso a pedido alheio por ID retorna 404. A recusa preserva estoque e movimentações. Administrador tem acesso ao histórico.',
-                timing: 'Primeira melhoria recomendada. Recupere a suíte de M04 no mesmo ciclo.',
-                reference: ['Requisito RF-001', 'RF-001-pedido-com-dono-e-consulta.md']
+                "example": [
+                    "// consulta e usuario vêm do repositório e da identidade autenticada.",
+                    "if (usuario.Role != UserRole.Admin)",
+                    "{",
+                    "    consulta = consulta.Where(p => p.UsuarioId == usuario.Id);",
+                    "}",
+                    "var pedido = await consulta.SingleOrDefaultAsync(p => p.Id == pedidoId);"
+                ],
+                "exercise": "Crie dados de teste para dois vendedores e um administrador. Faça cada vendedor criar um pedido. Compare as três listagens e confirme que uma transição recusada manteve o status e a reserva originais.",
+                "acceptance": "Vendedor vê somente seus pedidos. Acesso a pedido alheio por ID retorna 404. A recusa preserva estoque e movimentações. Administrador tem acesso ao histórico.",
+                "timing": "Primeira entrega do quadro. Conferir as regras já implementadas e completar o aceite antes de ampliar as operações sobre pedidos.",
+                "reference": [
+                    "Requisito RF-001",
+                    "RF-001-pedido-com-dono-e-consulta.md"
+                ]
             },
             {
-                id: 'M02', priority: 'high', category: 'Segredos', effort: 'Baixo',
-                title: 'Externalizar e rotacionar segredos',
-                summary: 'Retirar a chave JWT e a senha PostgreSQL da configuração versionada.',
-                learn: 'O ASP.NET Core combina várias fontes de configuração. Um valor fornecido pelo ambiente pode substituir o arquivo, e validar a configuração evita descobrir um segredo ausente só na primeira requisição.',
-                start: ['Program.cs', '../GestaoPedidos/Program.cs'],
-                steps: [
-                    ['Ache os pontos de leitura', 'Localize a seção Jwt e GetConnectionString("DefaultConnection") em Program.cs. No appsettings.json, mantenha somente os campos públicos e deixe os segredos para outra fonte.'],
-                    ['Injete valores locais', 'Use o UserSecretsId que já existe no projeto da API. Configure Jwt:Key e ConnectionStrings:DefaultConnection em User Secrets para Development. Nos demais ambientes, use os nomes Jwt__Key e ConnectionStrings__DefaultConnection no provedor de segredos.'],
-                    ['Valide e trate o histórico', 'Faça a aplicação falhar na inicialização se o JWT ou a conexão estiverem ausentes. Identifique os ambientes que usaram valores rastreados, rotacione os valores em uso e revise o histórico do Git.']
+                "id": "B01",
+                "priority": "high",
+                "category": "Fornecedores",
+                "effort": "Médio",
+                "title": "Cadastrar e consultar fornecedores",
+                "summary": "Disponibilizar fornecedores reais para compras e contas a pagar, com cadastro, edição e ativação.",
+                "learn": "Um fornecedor identifica a contraparte da compra. Inativar impede novos vínculos sem apagar o histórico de pedidos e títulos.",
+                "start": [
+                    "ClienteController.cs — referência de cadastro",
+                    "../GestaoPedidos/WebAPI/Controllers/ClienteController.cs"
                 ],
-                example: [
-                    '$projeto = "GestaoPedidos/GestaoPedidos.csproj"',
-                    'dotnet user-secrets set "Jwt:Key" "<chave-local-gerada>" --project $projeto',
-                    'dotnet user-secrets set "ConnectionStrings:DefaultConnection" "<conexao-de-teste>" --project $projeto'
+                "steps": [
+                    [
+                        "Criar o cadastro",
+                        "Adicionar Fornecedor com nome, documento CPF/CNPJ normalizado, e-mail opcional, ativo e data de cadastro. Criar migration, DTOs, validadores, repositório e casos de uso seguindo a arquitetura atual. Documento válido e único; nome obrigatório."
+                    ],
+                    [
+                        "Expor as operações",
+                        "Criar GET /api/Fornecedor com busca por nome/documento, filtro de ativo e paginação; GET /{id}, POST, PUT /{id} e PUT /{id}/ativar ou /inativar. Restringir todas as operações a Admin; não oferecer exclusão física."
+                    ],
+                    [
+                        "Proteger o histórico",
+                        "Referências existentes continuam consultáveis após inativação. Novas compras e lançamentos a pagar só podem usar fornecedor ativo. Responder 409 para documento duplicado, inclusive em cadastros concorrentes."
+                    ]
                 ],
-                exercise: 'Em uma configuração descartável, inicialize a API com os segredos de teste injetados. Retire um valor por vez e confira se a falha identifica a chave ausente sem imprimir credenciais. Troque a chave e confira que uma sessão anterior perdeu acesso.',
-                acceptance: 'A API inicia com configuração externa, falha claramente quando ela está ausente e rejeita tokens assinados com a chave anterior após a rotação.',
-                timing: 'Pode avançar em paralelo à correção de autorização.'
+                "example": [
+                    "POST /api/Fornecedor",
+                    "{ \"nome\": \"Distribuidora Central\", \"documento\": \"11222333000181\" }",
+                    "GET /api/Fornecedor?busca=Central&ativo=true&pagina=1&tamanhoPagina=20"
+                ],
+                "exercise": "Cadastrar um fornecedor, localizar pelo documento formatado e pelo nome, editar, inativar e tentar um novo vínculo. Consultar um título histórico desse fornecedor.",
+                "acceptance": "Admin cadastra, edita, consulta e alterna o status. Documento inválido retorna 400; duplicado, 409; Vendedor recebe 403. Busca paginada funciona e inativação preserva os vínculos. Testes cobrem essas regras.",
+                "timing": "Independente de M01. Entregar antes de B03 e B06."
             },
             {
-                id: 'M03', priority: 'high', category: 'Banco de dados', effort: 'Médio',
-                title: 'Preservar o histórico nas migrations',
-                summary: 'Tratar autoria, valor total e tipo de pedidos antigos durante a atualização.',
-                learn: 'Uma migration altera tanto o esquema quanto o significado dos dados. Uma FK só pode ser exigida depois que os registros existentes estiverem preparados para cumpri-la.',
-                start: ['20260830144756_ValorTotalPedido.cs', '../GestaoPedidos/Migrations/20260830144756_ValorTotalPedido.cs'],
-                steps: [
-                    ['Desenhe a cadeia de atualização', 'Leia a migration que adiciona UsuarioId e depois a que cria a FK. Em uma base de teste representativa, consulte o histórico de migrations aplicadas. Uma base que ainda falha na FK precisa de intervenção antes dessa etapa.'],
-                    ['Defina o tratamento de cada dado', 'Mantenha o autor histórico como desconhecido quando não houver evidência para atribuí-lo. Reconstrua ValorTotal com os preços gravados nos itens. Classifique compra e venda a partir de uma regra histórica acordada.'],
-                    ['Feche as invariantes', 'Valide os dados antes de exigir constraints. Reveja a exclusão em cascata do usuário e, antes do endpoint de edição de itens, recalcule o total pelo agregado. Em bases já atualizadas, planeje a correção de dados em uma nova migration.']
+                "id": "B02",
+                "priority": "high",
+                "category": "Prazos de pagamento",
+                "effort": "Médio",
+                "title": "Persistir prazos e calcular parcelas",
+                "summary": "Cadastrar condições à vista e parceladas e calcular vencimentos e valores pelo servidor.",
+                "learn": "O prazo é um modelo reutilizável. O título guarda uma cópia das condições usadas; editar o modelo não altera documentos já gerados.",
+                "start": [
+                    "tipos.ts — contrato financeiro existente",
+                    "../frontend/src/financeiro/tipos.ts"
                 ],
-                example: [
-                    'SELECT "PedidoId",',
-                    '       SUM("Preco" * "Quantidade") AS "TotalCalculado"',
-                    'FROM "PedidoItens"',
-                    'GROUP BY "PedidoId";'
+                "steps": [
+                    [
+                        "Persistir os prazos",
+                        "Criar PrazoPagamento e parcelas com número, dias desde a data base e percentual. Expor GET /api/PrazoPagamento, GET /{id}, POST, PUT /{id} e PUT /{id}/ativar ou /inativar, somente para Admin. Nome único sem diferença de caixa ou espaços externos."
+                    ],
+                    [
+                        "Validar a condição",
+                        "Aceitar de 1 a 36 parcelas, numeração contínua, dias não negativos em ordem crescente ou iguais e percentuais positivos com soma exata de 100. Usar decimal para dinheiro e percentual, e DateOnly para datas de vencimento."
+                    ],
+                    [
+                        "Centralizar o cálculo",
+                        "Criar serviço de parcelamento compartilhado por pedidos e lançamentos. Arredondar cada parcela para centavos, ajustar a última para fechar o total e recusar condições que gerem parcela de valor zero. Prazo inativo não gera novos documentos."
+                    ]
                 ],
-                exercise: 'Em PostgreSQL descartável, prepare um pedido antigo com dois itens, nas combinações 2 × 10,00 e 1 × 7,50. Preveja 27,50 e compare com o valor armazenado depois da atualização. Repita em uma base vazia e verifique a reversão prevista.',
-                acceptance: 'A cadeia funciona em banco vazio e em uma base descartável com pedidos antigos. Total, autoria e tipo são conferidos, assim como a reversão prevista.',
-                timing: 'Antes de atualizar qualquer base com dados históricos.',
-                reference: ['Plano de migração no RF-001', 'RF-001-pedido-com-dono-e-consulta.md']
+                "example": [
+                    "Valor: R$ 100,00; data base: 2026-11-19",
+                    "33,33% em 0 dias → R$ 33,33 em 2026-11-19",
+                    "33,33% em 30 dias → R$ 33,33 em 2026-12-19",
+                    "33,34% em 60 dias → R$ 33,34 em 2027-01-18"
+                ],
+                "exercise": "Criar prazo à vista e 30/60/90 dias. Testar soma de 99%, parcelas fora de ordem, centavos residuais e inativação de um prazo usado anteriormente.",
+                "acceptance": "Prazos sobrevivem ao reinício da API. Condições inválidas retornam 400 e nome duplicado, 409. Parcelas somam exatamente o total e vencimentos contam da data base. Alterar um prazo preserva documentos anteriores. Testes cobrem arredondamento e datas.",
+                "timing": "Independente de M01 e B01. Entregar antes de B03 e B06."
             },
             {
-                id: 'M04', priority: 'high', category: 'Testes e CI', effort: 'Médio',
-                title: 'Restaurar a suíte de testes',
-                summary: 'Corrigir o mock da finalização, acertar o formatador e testar as garantias no PostgreSQL.',
-                learn: 'Um teste unitário isola o caso de uso. Um teste de integração usa o pipeline ou o banco reais para verificar garantias que o mock não representa, como rollback, constraints e concorrência.',
-                start: ['TransicaoPedidoUseCaseTests.cs', '../GestaoPedidosTests/Application/UseCases/Pedidos/Commands/TransicaoPedidoUseCaseTests.cs'],
-                steps: [
-                    ['Leia onde a falha começa', 'Rode o teste de finalização sozinho e veja que a exceção acontece ao acessar .Object. No Setup, inicialize o mock de movimentação junto com os outros três.'],
-                    ['Afirme o efeito que importa', 'Execute FinalizarPedidoUseCase duas vezes no mesmo pedido. Confira os dois status, o consumo da reserva e uma única chamada de cadastro de movimentação. Rode a suíte e a verificação de formato.'],
-                    ['Escolha os testes de integração', 'Use uma base PostgreSQL descartável para rollback, reservas concorrentes, migrations e deduplicação. Passe pelo HTTP para testar autorização por dono e revogação de JWT.']
+                "id": "B03",
+                "priority": "high",
+                "category": "Financeiro",
+                "effort": "Grande",
+                "title": "Lançar contas a receber e a pagar",
+                "summary": "Gravar lançamentos manuais e suas parcelas, substituindo a criação em memória do financeiro.",
+                "learn": "Um documento financeiro agrupa títulos. Cada parcela tem saldo próprio; o valor baixado e a situação são calculados pelo domínio.",
+                "start": [
+                    "NovoLancamento.tsx — campos já usados na tela",
+                    "../frontend/src/financeiro/NovoLancamento.tsx"
                 ],
-                example: [
-                    '// No Setup do teste de transição.',
-                    '_movimentacaoEstoqueRepository = new Mock<IMovimentacaoEstoqueRepository>();',
-                    '',
-                    '// Após as duas chamadas ao caso de uso.',
-                    '_movimentacaoEstoqueRepository.Verify(',
-                    '    r => r.Cadastrar(It.IsAny<MovimentacaoEstoque>()), Times.Once());'
+                "steps": [
+                    [
+                        "Definir o agregado financeiro",
+                        "Criar documento, TituloFinanceiro e relações com Cliente ou Fornecedor. Persistir tipo Receber/Pagar, origem LancamentoManual, descrição, observação, número de documento gerado pelo servidor, parcelas, prazo e nome da contraparte no momento da emissão. Valores em decimal; datas de negócio sem fuso."
+                    ],
+                    [
+                        "Criar o lançamento",
+                        "Expor POST /api/Financeiro/lancamentos, somente Admin, com tipo, contraparteId, valorTotal, prazoPagamentoId e dataBase. Receber exige Cliente ativo; Pagar exige Fornecedor ativo. Usar o cálculo de B02 e gravar documento e todas as parcelas em uma transação."
+                    ],
+                    [
+                        "Tratar reenvio",
+                        "Exigir Idempotency-Key no POST, associada ao usuário e à operação. Repetição da mesma chave e corpo devolve o documento original; a mesma chave com outro corpo retorna 409. Aplicar unicidade no banco para impedir duplicação concorrente."
+                    ]
                 ],
-                exercise: 'Rode dotnet test GestaoPedidos/GestaoPedidos.sln --filter FullyQualifiedName~TransicaoPedidoUseCaseTests. Em um teste de banco, force uma falha antes de confirmar o pedido e consulte os dados com outro contexto para verificar o rollback.',
-                acceptance: 'Formato, build e testes passam. Os testes de integração conferem o estado persistido após conflitos e falhas.',
-                timing: 'Recupere o teste que falha junto com M01. Amplie a integração em seguida.'
+                "example": [
+                    "POST /api/Financeiro/lancamentos",
+                    "Idempotency-Key: lancamento-001",
+                    "{ \"tipo\": \"Pagar\", \"contraparteId\": 7, \"valorTotal\": 1000.00,",
+                    "  \"prazoPagamentoId\": 2, \"dataBase\": \"2026-11-19\", \"descricao\": \"Frete\" }"
+                ],
+                "exercise": "Emitir R$ 1.000,00 em três parcelas, repetir o POST e forçar uma falha ao persistir a segunda parcela. Conferir o banco em outro contexto.",
+                "acceptance": "Um lançamento válido gera todas as parcelas e nenhum registro parcial em caso de falha. Valor não positivo, contraparte incompatível/inativa e prazo inativo são recusados. Reenvios sequenciais e concorrentes não duplicam documentos. Dados permanecem após reinício. Testes de integração verificam persistência e rollback.",
+                "timing": "Depende de B01 e B02. Não inclui integração com pedidos, entregue em B06."
             },
             {
-                id: 'M05', priority: 'high', category: 'Validação', effort: 'Baixo',
-                title: 'Validar tipo e itens do pedido',
-                summary: 'Exigir o tipo explícito e barrar itens inválidos antes de reservar estoque.',
-                learn: 'Um campo omitido pode ganhar o valor padrão do tipo. Aqui o zero significa Entrada, por isso validar apenas os itens permite escolher o fluxo de compra sem intenção explícita.',
-                start: ['CriarPedidoRequestValidator.cs', '../GestaoPedidos/Application/Validators/Pedidos/CriarPedidoRequestValidator.cs'],
-                steps: [
-                    ['Represente a ausência no DTO', 'Altere a propriedade para TipoMovimentacao? TipoMovimentacao. Preserve o nome JSON tipoMovimentacao e valide que o valor informado é Entrada ou Saida.'],
-                    ['Valide a lista em ordem segura', 'Valide que a coleção existe, tem itens e respeita um limite. Rejeite elementos nulos e valide ProdutoId e Quantidade. Só compare duplicatas quando a coleção e seus elementos estiverem presentes.'],
-                    ['Proteja a fronteira de escrita', 'Garanta que o caso de uso só siga para reserva com um tipo válido. Ao verificar o resultado, observe QuantidadeReservada de venda e QuantidadeCompradaPendente de compra no domínio.']
+                "id": "B04",
+                "priority": "high",
+                "category": "Financeiro",
+                "effort": "Médio",
+                "title": "Consultar títulos e cancelar cobranças",
+                "summary": "Servir as abas a receber e a pagar com filtros, detalhes, saldo e cancelamento de parcelas.",
+                "learn": "Vencido é uma situação calculada pela data e pelo saldo. Um título parcialmente baixado pode estar vencido sem perder seu histórico de pagamentos.",
+                "start": [
+                    "Financeiro.tsx — filtros e detalhes atuais",
+                    "../frontend/src/paginas/Financeiro.tsx"
                 ],
-                example: [
-                    'RuleFor(x => x.TipoMovimentacao)',
-                    '    .Must(tipo => tipo is TipoMovimentacao.Entrada or TipoMovimentacao.Saida)',
-                    '    .WithMessage("Informe um tipo de movimentação válido.");'
+                "steps": [
+                    [
+                        "Criar consultas",
+                        "Expor GET /api/Financeiro/titulos e GET /{id}, somente Admin. Listar por tipo, situação, contraparte, pedido, documento, busca e intervalo de vencimento inclusivo. Usar envelope itens/total/pagina/tamanhoPagina, página positiva e tamanho entre 1 e 100. Ordenar por vencimento e ID."
+                    ],
+                    [
+                        "Montar o detalhe",
+                        "Retornar os campos previstos em tipos.ts, saldo calculado, baixas com operador e referência para consultar as demais parcelas do documento. Saldo deve ser valorOriginal menos baixas; cancelados não entram nos valores em aberto. Definir hoje pelo fuso America/Sao_Paulo."
+                    ],
+                    [
+                        "Cancelar uma parcela",
+                        "Expor PUT /api/Financeiro/titulos/{id}/cancelar. Permitir apenas título sem baixa, registrar operador, data/hora e motivo obrigatório. Repetir cancelamento não duplica o registro. Cancelar uma parcela não altera as demais."
+                    ]
                 ],
-                exercise: 'Faça testes HTTP com tipo omitido, valor fora do enum, coleção vazia, lista com item nulo e produto repetido. Os inválidos devem retornar 400 e preservar o banco. Em seguida, compare a reserva produzida por uma compra e por uma venda.',
-                acceptance: 'Tipo omitido ou inválido e itens inválidos retornam 400 sem persistência. Compra e venda válidas atualizam as reservas corretas.'
+                "example": [
+                    "GET /api/Financeiro/titulos?tipo=Receber&situacao=Vencido&pagina=1&tamanhoPagina=20",
+                    "PUT /api/Financeiro/titulos/42/cancelar",
+                    "{ \"motivo\": \"Cobrança emitida indevidamente\" }"
+                ],
+                "exercise": "Consultar parcelas vencidas, futuras, canceladas e parcialmente baixadas. Cancelar uma parcela de um documento com três e conferir que as outras permanecem abertas.",
+                "acceptance": "Filtros combinam entre si, total corresponde ao filtro completo e páginas não repetem registros no conjunto estável. Datas-limite são inclusivas. Título ausente retorna 404 e título com baixa não pode ser cancelado (409). Testes verificam saldos, limites de datas e preservação das outras parcelas.",
+                "timing": "Depende de B03. O caso de parcialmente baixado será exercitado também em B05."
             },
             {
-                id: 'M06', priority: 'high', category: 'Administração', effort: 'Médio',
-                title: 'Proteger o último administrador',
-                summary: 'Impedir que a conta administrativa final seja desativada ou rebaixada.',
-                learn: 'A regra considera o conjunto de administradores ativos. Com dois administradores, duas requisições podem ler a mesma contagem e tomar decisões incompatíveis entre si.',
-                start: ['AlterarRoleUsuarioUseCase.cs', '../GestaoPedidos/Application/UseCases/Usuarios/Commands/AlterarRoleUsuarioUseCase.cs'],
-                steps: [
-                    ['Identifique quando a contagem cai', 'Aplique a regra em AlterarRoleUsuarioUseCase e InativarUsuarioUseCase ao retirar um administrador ativo do conjunto. Centralize essa decisão para os dois fluxos usarem a mesma regra.'],
-                    ['Proteja leitura e escrita juntas', 'Leia e atualize dentro de uma transação que serialize a decisão, como isolamento Serializable com tratamento de conflito. Em uma nova tentativa, repita a leitura e reavalie a regra.'],
-                    ['Revise atualizações de usuário', 'Evite marcar todos os campos como modificados quando a entidade já estiver rastreada. Use um token específico de concorrência de escrita para distinguir essa proteção da revogação da sessão.']
+                "id": "B05",
+                "priority": "high",
+                "category": "Recebimentos e pagamentos",
+                "effort": "Grande",
+                "title": "Registrar baixas parciais e totais",
+                "summary": "Persistir recebimentos e pagamentos com forma, data, valor e responsável, sem ultrapassar o saldo.",
+                "learn": "Uma baixa é um evento financeiro imutável. Pagamentos simultâneos precisam disputar o mesmo saldo dentro da transação.",
+                "start": [
+                    "BaixaDeTitulo.tsx — operação disponível na tela",
+                    "../frontend/src/financeiro/BaixaDeTitulo.tsx"
                 ],
-                example: [
-                    'Simulação com dois administradores ativos',
-                    'A pretende desativar A e B pretende rebaixar B.',
-                    'A confirma primeiro. A operação de B conflita ou reavalia a contagem.',
-                    'Resultado esperado: B permanece administrador ativo.'
+                "steps": [
+                    [
+                        "Expor a baixa",
+                        "Criar POST /api/Financeiro/titulos/{id}/baixas, somente Admin, com valor, data e forma de pagamento. Aceitar Pix, Boleto, CartaoCredito, CartaoDebito, Dinheiro e Transferencia. Obter operador da identidade autenticada."
+                    ],
+                    [
+                        "Aplicar as regras de saldo",
+                        "Recusar valor zero, negativo, acima do saldo, data futura e título cancelado ou quitado. Registrar baixa e atualizar valorBaixado e status na mesma transação; ParcialmenteBaixado enquanto houver saldo e Baixado ao quitar. Preservar o histórico."
+                    ],
+                    [
+                        "Garantir concorrência e reenvio",
+                        "Usar controle de concorrência sobre o título e exigir Idempotency-Key com as regras de B03. Duas baixas concorrentes nunca podem ultrapassar o valor original. Devolver 409 quando houver conflito e o saldo já não comportar a operação."
+                    ]
                 ],
-                exercise: 'Monte dois escopos separados no teste PostgreSQL e tente as duas operações simultaneamente. Reabra o contexto para conferir a contagem. Depois, teste uma edição de perfil simultânea à troca de senha e verifique que o hash novo foi preservado.',
-                acceptance: 'Alterações individuais e concorrentes preservam ao menos um administrador ativo. Alterações de perfil concorrentes preservam a senha mais recente.'
+                "example": [
+                    "Título de R$ 300,00",
+                    "POST /api/Financeiro/titulos/42/baixas",
+                    "{ \"valor\": 100.00, \"data\": \"2026-11-19\", \"forma\": \"Pix\" }",
+                    "Resultado: valorBaixado = 100,00; saldo = 200,00; status = ParcialmenteBaixado"
+                ],
+                "exercise": "Baixar R$ 100,00 e depois R$ 200,00 de um título de R$ 300,00. Repetir uma chave e disparar duas baixas simultâneas que, somadas, excederiam o saldo.",
+                "acceptance": "Baixa parcial e quitação persistem com operador correto. Reenvio não duplica baixa; chave reutilizada com dados diferentes retorna 409. Concorrência preserva saldo não negativo e soma das baixas. Testes em PostgreSQL verificam o estado final.",
+                "timing": "Depende de B03 e B04. Estorno de baixa fica fora desta entrega."
             },
             {
-                id: 'M07', priority: 'high', category: 'Estoque', effort: 'Médio',
-                title: 'Auditar as mudanças de estoque',
-                summary: 'Concentrar alterações de saldo no ajuste por quantidade, com operador e motivo.',
-                learn: 'O saldo responde quanto existe agora. A movimentação documenta quanto mudou, em qual sentido e por quem. Os dois registros precisam concordar após cada ajuste.',
-                start: ['AjusteEstoqueUseCase.cs', '../GestaoPedidos/Application/UseCases/Produtos/Commands/AjusteEstoqueUseCase.cs'],
-                steps: [
-                    ['Separe edição de ajuste', 'Em AtualizarProdutoUseCase, siga o campo Estoque até Produto.Atualizar. Remova a alteração de saldo desse caminho junto com a mudança no formulário de edição. Preserve a definição de estoque inicial.'],
-                    ['Valide a entrada e a aritmética', 'Adicione motivo ao DTO de ajuste, respeitando o tamanho da observação. No domínio, calcule o novo saldo como long antes de converter. Recuse zero, saldo negativo e overflow e defina a regra para produto inativo.'],
-                    ['Grave o rastro da alteração', 'No caso de uso de ajuste, derive o sentido pelo delta. Grave a quantidade absoluta, o operador e o motivo com a alteração de saldo em uma transação. Preserve a atualização de Produto.Versao.']
+                "id": "B06",
+                "priority": "high",
+                "category": "Pedido e financeiro",
+                "effort": "Grande",
+                "title": "Gerar o financeiro ao finalizar pedidos",
+                "summary": "Associar prazo à venda ou compra e emitir contas automaticamente junto com a movimentação de estoque.",
+                "learn": "Finalização é uma única operação de negócio: ou confirma pedido, estoque e títulos, ou desfaz tudo. Repetir a finalização precisa devolver o mesmo resultado.",
+                "start": [
+                    "FinalizarPedidoUseCase.cs",
+                    "../GestaoPedidos/Application/UseCases/Pedidos/Commands/FinalizarPedidoUseCase.cs"
                 ],
-                example: [
-                    'var novoSaldo = (long)Estoque + delta;',
-                    'if (delta == 0 || novoSaldo < 0 || novoSaldo > int.MaxValue)',
-                    '{',
-                    '    throw new BadRequestException("Ajuste de estoque inválido.");',
-                    '}',
-                    'Estoque = (int)novoSaldo;',
-                    'AtualizarVersao();'
+                "steps": [
+                    [
+                        "Criar o contrato de pedido com financeiro",
+                        "Adicionar POST /api/v2/Pedido para informar explicitamente tipoMovimentacao, itens, prazoPagamentoId e contraparte: clienteId na venda, fornecedorId na compra. Compra fica restrita a Admin. Preservar o POST atual para compatibilidade, identificando pedidos legados sem condição financeira; não gerar cobranças retroativas."
+                    ],
+                    [
+                        "Preservar as condições",
+                        "Na criação v2, validar contraparte e prazo ativos e gravar uma cópia das parcelas do prazo e do nome da contraparte. Resposta e detalhe expõem tipo, contraparte e condição. Finalizar usa a cópia, mesmo após alterações ou inativação do cadastro. Data base é a data de finalização em America/Sao_Paulo."
+                    ],
+                    [
+                        "Finalizar atomicamente",
+                        "Venda gera Receber/PedidoDeVenda e compra gera Pagar/PedidoDeCompra com pedidoId. Gravar títulos, estoque, movimentações e status na transação existente. Impor unicidade de documento por pedido. Repetições e concorrência não duplicam efeitos; cancelamento de pedido aberto não gera títulos."
+                    ]
                 ],
-                exercise: 'Comece com 10 unidades. Edite a marca e confira que continuam 10. Registre -3 com motivo e confira saldo 7 e uma saída de 3. Tente um ajuste que deixaria saldo negativo e compare saldo e trilha antes e depois.',
-                acceptance: 'Editar catálogo preserva saldo. Cada ajuste válido gera uma movimentação com operador e motivo. Falhas preservam o saldo e o histórico.',
-                reference: ['Tarefa de ajuste manual de estoque', 'tarefas/TAREFA-10-ajuste-manual-de-estoque.md']
+                "example": [
+                    "Venda de R$ 900,00; condição 30/60/90 dias",
+                    "Finalizar → três títulos a receber de R$ 300,00 vinculados ao pedido",
+                    "Finalizar novamente → mesmos títulos, sem nova saída de estoque",
+                    "Pedido legado sem condição → mantém o comportamento anterior, sem emissão automática"
+                ],
+                "exercise": "Finalizar venda e compra, repetir e concorrer as chamadas. Forçar falha na emissão financeira e verificar que pedido e estoque também voltaram ao estado anterior.",
+                "acceptance": "Pedidos v2 geram parcelas corretas somente ao finalizar. Compras usam fornecedor e vendas usam cliente. Reenvio não duplica títulos ou movimentações; falha desfaz todos os efeitos. Outro vendedor recebe 404 e Vendedor não cria compra v2. Legados continuam operando sem títulos automáticos. Testes de integração cobrem esses casos.",
+                "timing": "Depende de M01, B01, B02 e B03. Contrato v2 permite migrar o front-end em uma entrega posterior."
             },
             {
-                id: 'M08', priority: 'high', category: 'Webhook', effort: 'Médio',
-                title: 'Verificar a origem do webhook',
-                summary: 'Validar notificações do WhatsApp e limitar corpo, lote e retenção.',
-                learn: 'A assinatura confere a origem e a integridade do corpo recebido. O índice único impede que uma reentrega válida grave a mesma mensagem novamente.',
-                start: ['WhatsAppController.cs', '../GestaoPedidos/WebAPI/Controllers/WhatsAppController.cs'],
-                steps: [
-                    ['Valide a inscrição do webhook', 'No GET, compare o token recebido com o token configurado antes de devolver o challenge. Guarde o token e o segredo do aplicativo na configuração externa de M02.'],
-                    ['Verifique o corpo antes de persistir', 'No POST, aplique um limite de tamanho e valide X-Hub-Signature-256 com HMAC-SHA256 sobre os bytes recebidos, antes de processar a notificação. Faça uma comparação em tempo constante e encaminhe ao caso de uso só o conteúdo validado.'],
-                    ['Preserve as garantias existentes', 'Mantenha o índice único de mensagem e devolva sucesso para reentregas válidas. Defina o limite de eventos por lote e o prazo de retenção do conteúdo e dos números.']
+                "id": "B07",
+                "priority": "medium",
+                "category": "Pedidos",
+                "effort": "Grande",
+                "title": "Alterar itens de pedidos abertos",
+                "summary": "Adicionar, remover e alterar quantidades sem cancelar o pedido inteiro, mantendo reservas e total consistentes.",
+                "learn": "A API recebe a lista completa desejada. O servidor calcula a diferença de reservas e preserva o preço já negociado dos itens existentes.",
+                "start": [
+                    "Pedido.cs — agregado de pedidos",
+                    "../GestaoPedidos/Domain/Entities/Pedidos/Pedido.cs"
                 ],
-                example: [
-                    'Notificação recebida',
-                    '  → conferir tamanho, cabeçalho e assinatura',
-                    '  → ler o JSON e validar o lote',
-                    '  → processar com deduplicação',
-                    '  → responder 200 após o processamento'
+                "steps": [
+                    [
+                        "Definir a substituição de itens",
+                        "Expor PUT /api/Pedido/{id}/itens com lista completa não vazia, produtos únicos e quantidades positivas. Produto omitido é removido; produto novo usa o preço atual. Item mantido conserva seu preço original. Recusar pedido finalizado ou cancelado."
+                    ],
+                    [
+                        "Recalcular na transação",
+                        "Aplicar o escopo de M01 antes de qualquer efeito. Para venda, ajustar QuantidadeReservada e estoque disponível pelo delta; para compra, ajustar QuantidadeCompradaPendente. Validar disponibilidade e produto ativo ao incluir ou aumentar quantidade. Recalcular ValorTotal pelo agregado e persistir atomicamente."
+                    ],
+                    [
+                        "Fechar os efeitos",
+                        "Reenviar a mesma lista não altera reservas novamente. Não emitir movimentação definitiva nem títulos na edição; esses efeitos permanecem na finalização. Conflito de estoque retorna 409 e preserva todos os itens anteriores."
+                    ]
                 ],
-                exercise: 'Use notificações sintéticas e um segredo descartável nos testes. Verifique que a entrada sem assinatura válida não altera o banco. Envie duas vezes uma notificação válida e confirme uma única mensagem gravada.',
-                acceptance: 'Somente notificações válidas são persistidas. Duas entregas válidas da mesma mensagem geram uma única linha.',
-                timing: 'Alta prioridade antes de expor o webhook à internet.'
+                "example": [
+                    "PUT /api/Pedido/42/itens",
+                    "{ \"itens\": [{ \"produtoId\": 3, \"quantidade\": 2 }, { \"produtoId\": 8, \"quantidade\": 1 }] }",
+                    "A lista substitui os itens atuais; não é uma soma de quantidades."
+                ],
+                "exercise": "Adicionar produto, reduzir outro, remover um terceiro e reenviar a mesma lista. Disputar o último saldo entre edição e novo pedido e conferir reservas no banco.",
+                "acceptance": "Itens, total e reservas permanecem consistentes em venda e compra. Último item não pode ser removido; pedido encerrado retorna 409; pedido alheio, 404. Falhas e concorrência não deixam efeito parcial. Testes verificam preço preservado, delta e idempotência.",
+                "timing": "Depende de M01; pode anteceder o financeiro. A implementação deve considerar os campos de condição adicionados em B06 quando já existirem.",
+                "reference": [
+                    "Detalhamento de edição de itens",
+                    "tarefas/TAREFA-08-alterar-itens-do-pedido.md"
+                ]
             },
             {
-                id: 'M09', priority: 'high', category: 'Dependências', effort: 'Médio',
-                title: 'Atualizar o .NET e auditar pacotes',
-                summary: 'Alinhar a stack em .NET 10 LTS e recuperar os alertas de dependências.',
-                learn: 'O SDK selecionado executa os comandos, o alvo dos projetos define o runtime e o restore resolve o grafo de pacotes. Os três precisam funcionar juntos na sua máquina e na CI.',
-                start: ['GestaoPedidos.csproj', '../GestaoPedidos/GestaoPedidos.csproj'],
-                steps: [
-                    ['Registre a situação atual', 'Compare dotnet --info, global.json, os dois TargetFramework e o manifesto dotnet-tools.json. Use a suíte recuperada em M04 como linha de base.'],
-                    ['Alinhe a mudança de runtime', 'Ajuste o SDK e os dois projetos para .NET 10. Confira a compatibilidade entre EF Core, o provedor Npgsql e a ferramenta EF. Atualize o README e faça a CI usar o mesmo SDK.'],
-                    ['Reative a auditoria', 'Retire a supressão global de NU1903. Trate o AutoMapper com uma versão corrigida compatível ou simplifique os mapeamentos. Confira a licença, os perfis e os pacotes transitivos.']
+                "id": "B08",
+                "priority": "medium",
+                "category": "Consulta de pedidos",
+                "effort": "Médio",
+                "title": "Pesquisar pedidos por período e vendedor",
+                "summary": "Entregar uma nova consulta paginada com filtros combináveis, sem exigir carregar todos os pedidos.",
+                "learn": "O total é calculado sobre o resultado filtrado, antes da página. A permissão de acesso faz parte da consulta e não pode ser removida por um filtro enviado pelo cliente.",
+                "start": [
+                    "ListarPedidosUseCase.cs",
+                    "../GestaoPedidos/Application/UseCases/Pedidos/Queries/ListarPedidosUseCase.cs"
                 ],
-                example: [
-                    'dotnet --info',
-                    'dotnet restore GestaoPedidos/GestaoPedidos.sln',
-                    'dotnet list GestaoPedidos/GestaoPedidos.sln package --vulnerable --include-transitive',
-                    'dotnet test GestaoPedidos/GestaoPedidos.sln --no-restore'
+                "steps": [
+                    [
+                        "Adicionar a consulta v2",
+                        "Criar GET /api/v2/Pedido com status, tipoMovimentacao, clienteId, fornecedorId, usuarioId, dataInicio e dataFim. Datas são inclusivas no fuso de negócio; no banco usar início incluso e dia seguinte ao fim exclusivo. Rejeitar intervalo invertido."
+                    ],
+                    [
+                        "Paginar no banco",
+                        "Retornar itens, total, pagina e tamanhoPagina. Página começa em 1, tamanho entre 1 e 100; padrão 20. Ordenar por DataCadastro e Id decrescentes e projetar cabeçalhos sem coleção de itens. Página além do fim retorna lista vazia e total correto."
+                    ],
+                    [
+                        "Preservar o escopo e o consumidor atual",
+                        "Admin consulta todos; Vendedor permanece restrito ao próprio UsuarioId, mesmo enviando outro vendedor. Manter GET /api/Pedido atual enquanto o front-end migra. Indicar no contrato que os indicadores não devem ser calculados apenas com a página recebida."
+                    ]
                 ],
-                exercise: 'Compare a saída da auditoria antes e depois da atualização e escolha um pacote transitivo para rastrear até a dependência direta que o inclui. Rode também a verificação de mudanças pendentes no modelo EF.',
-                acceptance: 'Restore com auditoria ativada, build, testes e verificação EF passam em checkout limpo.',
-                timing: 'Use a base de verificação restabelecida em M04.'
+                "example": [
+                    "GET /api/v2/Pedido?status=Aberto&usuarioId=7&dataInicio=2026-11-01&dataFim=2026-11-19&pagina=1&tamanhoPagina=20",
+                    "{ \"itens\": [], \"total\": 0, \"pagina\": 1, \"tamanhoPagina\": 20 }"
+                ],
+                "exercise": "Criar pedidos dos dois vendedores nas datas-limite, incluindo horários próximos à meia-noite. Combinar filtros e consultar páginas sucessivas com datas empatadas.",
+                "acceptance": "Filtros combinam, limites de data respeitam o fuso e o total é do conjunto filtrado. Vendedor não amplia seu acesso. Paginação ocorre em SQL com ordem estável e tamanho limitado. Endpoint anterior continua compatível. Testes cobrem escopo, datas e páginas.",
+                "timing": "Depende de M01. Filtro por fornecedor e campos de compra ficam disponíveis após B06; entregar esta tarefa depois de B06."
             },
             {
-                id: 'M10', priority: 'medium', category: 'Transações', effort: 'Médio',
-                title: 'Tornar retentativas seguras',
-                summary: 'Evitar que uma falha transitória ou um reenvio duplique pedido ou ajuste.',
-                learn: 'Rollback limpa o efeito da transação no banco. Ele pode deixar objetos modificados no DbContext. Também existe o caso em que o banco confirma, mas o cliente perde a resposta.',
-                start: ['UnitOfWork.cs', '../GestaoPedidos/Infrastructure/Data/UnitOfWork.cs'],
-                steps: [
-                    ['Separe os dois tipos de falha', 'Em ExecutarEmTransacao, localize a criação do contexto, SaveChanges e CommitAsync. Distinga uma falha anterior ao commit de uma falha com resultado do commit desconhecido.'],
-                    ['Recomece com estado limpo', 'Para comandos que precisam de retry automático, garanta novo contexto e repositórios na próxima tentativa. Releia o estado atual e reavalie as regras de estoque.'],
-                    ['Dê identidade ao comando quando necessário', 'Para um cliente que pode reenviar criação ou ajuste, associe uma chave da operação ao usuário e ao conteúdo. Grave a chave e o efeito juntos com unicidade. Consulte o resultado anterior antes de repetir um efeito.']
+                "id": "B09",
+                "priority": "medium",
+                "category": "Indicadores",
+                "effort": "Médio",
+                "title": "Fornecer indicadores comerciais e financeiros",
+                "summary": "Calcular no servidor os totais e séries do painel a partir dos pedidos e títulos reais.",
+                "learn": "Valor vendido, saldo a receber e dinheiro recebido representam momentos diferentes. Somar pedidos finalizados não mede recebimentos.",
+                "start": [
+                    "Painel.tsx — indicadores existentes",
+                    "../frontend/src/paginas/Painel.tsx"
                 ],
-                example: [
-                    'Primeira execução de uma compra → pedido e identidade da operação gravados',
-                    'A resposta se perde, mas o commit foi confirmado',
-                    'Reenvio da mesma operação → devolve a referência do mesmo pedido',
-                    'Mesma chave e conteúdo diferente → conflito'
+                "steps": [
+                    [
+                        "Criar o resumo comercial",
+                        "Expor GET /api/Indicadores/comercial por intervalo inclusivo. Retornar contagens por status e tipo, valor de vendas finalizadas, ticket médio e série mensal. Compra e pedido cancelado não compõem faturamento de vendas. Vendedor vê somente pedidos próprios; Admin pode filtrar vendedor."
+                    ],
+                    [
+                        "Criar o resumo financeiro",
+                        "Expor GET /api/Indicadores/financeiro, somente Admin, com dataReferencia e semanas (padrão 6, máximo 52). Retornar saldos a receber/pagar, vencidos, vencimentos dos próximos 7 dias, baixas dos últimos 30 dias, próximos vencimentos e fluxo semanal previsto. Cancelados e saldos quitados não entram na previsão."
+                    ],
+                    [
+                        "Documentar o significado",
+                        "Definir moeda BRL, fuso America/Sao_Paulo e intervalos no Swagger. Somar baixas pela data da baixa e previsão pelo saldo e vencimento. Comercial com zero vendas retorna ticket médio zero; preencher períodos sem movimento com zero. Agregar no banco sem depender da paginação de B08."
+                    ]
                 ],
-                exercise: 'Em banco descartável, simule uma falha antes do commit e outra depois de persistir, com resposta perdida. Consulte o estado com um novo contexto e compare o número de pedidos, ajustes e movimentações.',
-                acceptance: 'Falha antes do commit e perda de sua confirmação não produzem pedidos, ajustes ou movimentações duplicados.',
-                timing: 'Comece com os cenários de banco de M04. Amplie conforme houver necessidade de reenvio confiável.'
-            },
-            {
-                id: 'M11', priority: 'medium', category: 'Consultas', effort: 'Médio',
-                title: 'Paginar a listagem de pedidos',
-                summary: 'Filtrar e ordenar no banco, com limite por página e totais corretos no painel.',
-                learn: 'Enquanto a consulta é um IQueryable, o EF Core pode traduzir filtro, ordenação, projeção e paginação para SQL. Depois de materializar, o trabalho restante acontece na memória da API.',
-                start: ['PedidoRepository.cs', '../GestaoPedidos/Infrastructure/Repositories/PedidoRepository.cs'],
-                steps: [
-                    ['Monte a consulta filtrada', 'Aplique o escopo de M01 antes dos filtros de período, status ou vendedor. Valide uma página positiva e tamanho entre 1 e 100, conforme o RF-001.'],
-                    ['Calcule total e página separadamente', 'Conte os registros da consulta filtrada. Ordene por data e ID antes de Skip e Take para desempatar datas iguais. Projete apenas os campos do resumo antes de executar a consulta de leitura.'],
-                    ['Atualize o consumidor', 'Combine com o frontend a troca do array pelo envelope paginado. Preserve o significado dos totais do painel calculando-os sobre o escopo inteiro, independentemente da página.']
+                "example": [
+                    "Venda finalizada de R$ 1.000,00 com baixa de R$ 200,00",
+                    "Valor vendido: R$ 1.000,00",
+                    "A receber: R$ 800,00; recebido: R$ 200,00",
+                    "Os totais permanecem iguais ao trocar a página da listagem de pedidos."
                 ],
-                example: [
-                    '// consulta já contém o filtro de acesso e os demais filtros.',
-                    'var total = await consulta.CountAsync(ct);',
-                    'var itens = await consulta.AsNoTracking()',
-                    '    .OrderByDescending(p => p.DataCadastro)',
-                    '    .ThenByDescending(p => p.Id)',
-                    '    .Skip(deslocamento).Take(tamanhoPagina)',
-                    '    .Select(p => new { p.Id, p.Status, p.ValorTotal })',
-                    '    .ToListAsync(ct);'
-                ],
-                exercise: 'Crie cinco pedidos com a mesma data e peça duas páginas de dois itens para um vendedor. Confira a ordem pelo ID, a ausência de repetição e o total filtrado. Compare o SQL ou o log antes e depois para localizar o limite.',
-                acceptance: 'O consumo fica limitado ao tamanho da página, a ordem é estável e o painel representa os totais do escopo do usuário.',
-                timing: 'Depois do filtro de proprietário de M01.',
-                reference: ['Tarefa de listagem de pedidos', 'tarefas/TAREFA-05-listagem-de-pedidos.md']
-            },
-            {
-                id: 'M12', priority: 'medium', category: 'Contrato HTTP', effort: 'Médio',
-                title: 'Padronizar os contratos HTTP',
-                summary: 'Alinhar erros, status, schemas do Swagger e o tipo na resposta de pedido.',
-                learn: 'O contrato HTTP inclui o código de status, o media type e a estrutura da resposta. O consumidor deve receber o mesmo contrato para o mesmo tipo de erro, mesmo quando o banco é quem detecta o conflito.',
-                start: ['ExceptionMiddleware.cs', '../GestaoPedidos/Infrastructure/Middlewares/ExceptionMiddleware.cs'],
-                steps: [
-                    ['Escreva ProblemDetails explicitamente', 'Em EscreverProblema, passe application/problem+json ao método de escrita. Preserve o status e o traceId. Trate violações conhecidas como conflitos e mantenha falhas inesperadas com resposta adequada à causa.'],
-                    ['Uniformize duplicidade de cliente', 'Normalize CPF e e-mail antes de consultar. Use a mesma regra de resposta quando a duplicidade for detectada no caso de uso ou pela constraint de unicidade.'],
-                    ['Complete o contrato de pedido', 'Acrescente o tipo de movimentação ao DTO de resposta e ajuste o mapeamento. Atualize o Swagger com os schemas e os principais status de cada operação.']
-                ],
-                example: [
-                    'await context.Response.WriteAsJsonAsync(',
-                    '    problem,',
-                    '    options: null,',
-                    '    contentType: "application/problem+json",',
-                    '    cancellationToken: context.RequestAborted);'
-                ],
-                exercise: 'Escreva um teste HTTP para um pedido ausente. Confira 404, MediaType igual a application/problem+json e traceId no corpo. Repita com duplicidade de cliente e compare o contrato nos dois caminhos de detecção.',
-                acceptance: 'Testes verificam status, cabeçalhos e corpo dos erros. O frontend consegue distinguir compra de venda pela resposta.'
-            },
-            {
-                id: 'M13', priority: 'medium', category: 'Operação', effort: 'Médio',
-                title: 'Verificar a prontidão da API',
-                summary: 'Sinalizar indisponibilidade do banco e melhorar o diagnóstico de requisições.',
-                learn: 'Uma sonda de vida responde se o processo está em execução. Uma sonda de prontidão responde se ele consegue atender, incluindo as dependências indispensáveis.',
-                start: ['Program.cs', '../GestaoPedidos/Program.cs'],
-                steps: [
-                    ['Registre um check de banco', 'Mantenha /health para a vida do processo. Registre um check PostgreSQL com a tag ready, conexão curta, timeout e cancelamento. Use a tag no endpoint de prontidão.'],
-                    ['Propague o cancelamento', 'Comece pela listagem de pedidos. Receba CancellationToken no controller e repasse ao caso de uso e ao EF Core. Evite registrar cancelamentos esperados como falhas inesperadas da API.'],
-                    ['Correlacione e meça', 'Inclua traceId no log de falhas e acompanhe duração e status por rota. Se houver proxy reverso, confira o IP efetivo usado pelo rate limiter em uma configuração de teste.']
-                ],
-                example: [
-                    '// O check do PostgreSQL precisa estar registrado com a tag ready.',
-                    'app.MapHealthChecks("/health/ready", new HealthCheckOptions',
-                    '{',
-                    '    Predicate = check => check.Tags.Contains("ready")',
-                    '});'
-                ],
-                exercise: 'Com a API e o PostgreSQL em ambiente descartável, confira as duas sondas. Interrompa só o banco e observe vida saudável com prontidão indisponível. Correlacione uma resposta de erro com o log usando traceId.',
-                acceptance: 'Com o PostgreSQL de teste indisponível, a prontidão sinaliza falha e a vida do processo continua detectável. Erros são localizáveis pelo traceId.'
-            },
-            {
-                id: 'M14', priority: 'low', category: 'Manutenção', effort: 'Baixo a médio',
-                title: 'Limpar artefatos do repositório',
-                summary: 'Retirar arquivos gerados do Git e explicitar a persistência dos fluxos alterados.',
-                learn: 'O .gitignore evita que arquivos ignorados sejam adicionados normalmente. Arquivos já rastreados continuam no índice do Git. Na persistência, um ponto explícito de gravação ajuda a enxergar o limite da operação.',
-                start: ['.gitignore', '../.gitignore'],
-                steps: [
-                    ['Liste antes de modificar', 'Abra o .gitignore e liste os artefatos que o Git ainda rastreia. Confira a lista e retire apenas os diretórios gerados do índice com git rm --cached em um commit próprio.'],
-                    ['Ache os pontos de gravação', 'Compare PedidoRepository com ClienteRepository. Localize os métodos que só preparam entidades e os que já chamam SaveChangesAsync. Em uma escrita composta, concentre a decisão de persistir no caso de uso via unidade de trabalho.'],
-                    ['Simplifique no fluxo tocado', 'Revise métodos assíncronos que só aguardam Task.CompletedTask. Ajuste as interfaces e os chamadores junto com os métodos, preservando o comportamento coberto pelos testes.']
-                ],
-                example: [
-                    'git ls-files -- ":(glob)**/bin/**" ":(glob)**/obj/**" ":(glob)**/.vs/**"',
-                    'dotnet build GestaoPedidos/GestaoPedidos.sln',
-                    'git status --short'
-                ],
-                exercise: 'Em checkout limpo após a limpeza, compile e confira que o Git permanece limpo. Depois desenhe o fluxo de uma finalização de pedido, localizando a abertura da transação, a gravação e o commit.',
-                acceptance: 'Um build em checkout limpo não gera mudanças no Git. Cada fluxo composto tocado tem um limite de persistência claro.'
+                "exercise": "Preparar vendas, compras, cancelamentos, baixas parciais e vencimentos em semanas distintas. Comparar cada indicador com o conjunto conhecido e testar o perfil Vendedor.",
+                "acceptance": "Valores e séries conferem com os dados persistidos, incluindo datas-limite, períodos vazios e baixas parciais. O painel financeiro não é acessível a Vendedor. Indicadores comerciais respeitam M01 e independem do tamanho da página. Testes usam conjunto com resultados calculados previamente.",
+                "timing": "Depende de M01, B04, B05 e B06. Entregar após as operações financeiras estarem persistidas."
             }
         ];
 

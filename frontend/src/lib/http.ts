@@ -20,7 +20,7 @@ export function definirTratadorDeSessaoExpirada(ouvinte: Ouvinte | null) {
 interface Opcoes {
   metodo?: 'GET' | 'POST' | 'PUT' | 'DELETE'
   corpo?: unknown
-  /** Endpoints anônimos (autenticar, registrar, health) não enviam o token. */
+  /** Endpoints anônimos (autenticar e health) não enviam o token. */
   anonimo?: boolean
   sinal?: AbortSignal
 }

@@ -2,9 +2,9 @@ import { http, URL_API } from '@/lib/http'
 
 import type {
   AjusteEstoque,
-  Cliente,
-  ClienteCreate,
-  ClienteUpdate,
+  Pessoa,
+  PessoaCreate,
+  PessoaUpdate,
   CriarPedido,
   LoginRequest,
   LoginResponse,
@@ -20,14 +20,14 @@ import type {
   UsuarioUpdateSenha,
 } from './tipos'
 
-export const clientesApi = {
-  listar: (sinal?: AbortSignal) => http.get<Cliente[]>('/api/Cliente', { sinal }),
-  obter: (id: number) => http.get<Cliente>(`/api/Cliente/${id}`),
-  criar: (dados: ClienteCreate) => http.post<Cliente>('/api/Cliente', dados),
-  atualizar: ({ id, ...dados }: ClienteUpdate) =>
-    http.put<Cliente>(`/api/Cliente/${id}`, { id, ...dados }),
-  ativar: (id: number) => http.put<void>(`/api/Cliente/${id}/ativar`),
-  inativar: (id: number) => http.put<void>(`/api/Cliente/${id}/inativar`),
+export const pessoasApi = {
+  listar: (sinal?: AbortSignal) => http.get<Pessoa[]>('/api/Pessoa', { sinal }),
+  obter: (id: number) => http.get<Pessoa>(`/api/Pessoa/${id}`),
+  criar: (dados: PessoaCreate) => http.post<Pessoa>('/api/Pessoa', dados),
+  atualizar: ({ id, ...dados }: PessoaUpdate) =>
+    http.put<Pessoa>(`/api/Pessoa/${id}`, { id, ...dados }),
+  ativar: (id: number) => http.put<void>(`/api/Pessoa/${id}/ativar`),
+  inativar: (id: number) => http.put<void>(`/api/Pessoa/${id}/inativar`),
 }
 
 export const produtosApi = {
@@ -62,7 +62,7 @@ export const usuariosApi = {
   autenticar: (dados: LoginRequest) =>
     http.post<LoginResponse>('/api/Usuario/autenticar', dados, { anonimo: true }),
   registrar: (dados: UsuarioCreate) =>
-    http.post<Usuario>('/api/Usuario/registrar', dados, { anonimo: true }),
+    http.post<Usuario>('/api/Usuario/registrar', dados),
   autenticado: (sinal?: AbortSignal) => http.get<Usuario>('/api/Usuario/autenticado', { sinal }),
   listar: (sinal?: AbortSignal) => http.get<Usuario[]>('/api/Usuario', { sinal }),
   atualizarPerfil: (dados: UsuarioUpdate) => http.put<Usuario>('/api/Usuario/perfil', dados),

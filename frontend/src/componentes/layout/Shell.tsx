@@ -10,7 +10,7 @@ import { ProvedorFinanceiro } from '@/financeiro/contexto'
 import { cn, iniciais } from '@/lib/utils'
 
 import { IndicadorDaApi } from './IndicadorDaApi'
-import { itensDeNavegacao } from './navegacao'
+import { gruposDeNavegacao } from './navegacao'
 import { SeletorDeTema } from './SeletorDeTema'
 
 export function Shell() {
@@ -43,7 +43,13 @@ export function Shell() {
     }
   }, [gavetaAberta])
 
-  const itens = itensDeNavegacao.filter((item) => !item.somenteAdmin || ehAdmin)
+  const grupos = gruposDeNavegacao
+    .map((grupo) => ({
+      ...grupo,
+      itens: grupo.itens.filter((item) => !item.somenteAdmin || ehAdmin),
+    }))
+    .filter((grupo) => grupo.itens.length > 0)
+  const itens = grupos.flatMap((grupo) => grupo.itens)
 
   return (
     <div className="min-h-dvh bg-canvas">
@@ -97,42 +103,51 @@ export function Shell() {
         </div>
 
         <nav aria-label="Navegação principal" className="flex-1 overflow-y-auto p-3">
-          <ul className="grid gap-0.5">
-            {itens.map(({ para, rotulo, icone: Icone, fim, somenteAdmin }) => (
-              <li key={para}>
-                <NavLink
-                  to={para}
-                  end={fim}
-                  className={({ isActive }) =>
-                    cn(
-                      'group flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
-                      isActive
-                        ? 'bg-brand-soft text-brand-ink'
-                        : 'text-ink-soft hover:bg-surface-2 hover:text-ink',
-                    )
-                  }
-                >
-                  {({ isActive }) => (
-                    <>
-                      <Icone
-                        aria-hidden
-                        className={cn(
-                          'size-4.5 shrink-0',
-                          isActive ? 'text-brand' : 'text-ink-muted group-hover:text-ink-soft',
+          <div className="grid gap-5">
+            {grupos.map((grupo) => (
+              <section key={grupo.rotulo} aria-label={grupo.rotulo}>
+                <h2 className="mb-1.5 px-3 text-[0.625rem] font-semibold tracking-wider text-ink-muted uppercase">
+                  {grupo.rotulo}
+                </h2>
+                <ul className="grid gap-0.5">
+                  {grupo.itens.map(({ para, rotulo, icone: Icone, fim, somenteAdmin }) => (
+                    <li key={para}>
+                      <NavLink
+                        to={para}
+                        end={fim}
+                        className={({ isActive }) =>
+                          cn(
+                            'group flex items-center gap-2.5 rounded-lg px-3 py-2 text-[0.8125rem] font-medium transition-colors',
+                            isActive
+                              ? 'bg-brand-soft text-brand-ink'
+                              : 'text-ink-soft hover:bg-surface-2 hover:text-ink',
+                          )
+                        }
+                      >
+                        {({ isActive }) => (
+                          <>
+                            <Icone
+                              aria-hidden
+                              className={cn(
+                                'size-4.5 shrink-0',
+                                isActive ? 'text-brand' : 'text-ink-muted group-hover:text-ink-soft',
+                              )}
+                            />
+                            {rotulo}
+                            {somenteAdmin && (
+                              <span className="ml-auto text-[0.625rem] font-semibold tracking-wide text-ink-muted uppercase">
+                                admin
+                              </span>
+                            )}
+                          </>
                         )}
-                      />
-                      {rotulo}
-                      {somenteAdmin && (
-                        <span className="ml-auto text-[0.625rem] font-semibold tracking-wide text-ink-muted uppercase">
-                          admin
-                        </span>
-                      )}
-                    </>
-                  )}
-                </NavLink>
-              </li>
+                      </NavLink>
+                    </li>
+                  ))}
+                </ul>
+              </section>
             ))}
-          </ul>
+          </div>
         </nav>
 
         <div className="border-t border-line p-3">

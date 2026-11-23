@@ -4,8 +4,9 @@
 ### Health check
 GET {{host}}/health
 
-### Registrar vendedor
+### Registrar vendedor (Admin)
 POST {{host}}/api/usuario/registrar
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
@@ -29,4 +30,42 @@ Authorization: Bearer {{token}}
 
 ### Listar produtos
 GET {{host}}/api/produto
+Authorization: Bearer {{token}}
+
+### Cadastrar pessoa
+POST {{host}}/api/Pessoa
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "nome": "Pessoa Exemplo",
+  "email": "pessoa@exemplo.com",
+  "cpf": "52998224725"
+}
+
+### Listar pessoas
+GET {{host}}/api/Pessoa
+Authorization: Bearer {{token}}
+
+### Consultar pessoa
+GET {{host}}/api/Pessoa/1
+Authorization: Bearer {{token}}
+
+### Atualizar pessoa
+PUT {{host}}/api/Pessoa/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "nome": "Pessoa Exemplo Atualizada",
+  "email": "pessoa@exemplo.com",
+  "cpf": "52998224725"
+}
+
+### Inativar pessoa (Admin)
+PUT {{host}}/api/Pessoa/1/inativar
+Authorization: Bearer {{token}}
+
+### Ativar pessoa (Admin)
+PUT {{host}}/api/Pessoa/1/ativar
 Authorization: Bearer {{token}}

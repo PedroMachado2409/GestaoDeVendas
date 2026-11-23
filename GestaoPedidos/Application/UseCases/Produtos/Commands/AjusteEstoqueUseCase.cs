@@ -1,11 +1,11 @@
 using AutoMapper;
 using GestaoPedidos.Application.DTO.Produtos;
+using GestaoPedidos.Application.UseCases.Usuarios.Queries;
 using GestaoPedidos.Domain.Abstractions;
 using GestaoPedidos.Domain.Entities;
+using GestaoPedidos.Domain.Enum;
 using GestaoPedidos.Domain.Exceptions;
 using GestaoPedidos.Domain.Exceptions.Produtos;
-using GestaoPedidos.Domain.Enum;
-using GestaoPedidos.Application.UseCases.Usuarios.Queries;
 
 namespace GestaoPedidos.Application.UseCases.Produtos.Commands
 {

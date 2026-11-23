@@ -5,7 +5,7 @@ using GestaoPedidos.Domain.Abstractions;
 using GestaoPedidos.Domain.Entities.Pedidos;
 using GestaoPedidos.Domain.Enum;
 using GestaoPedidos.Domain.Exceptions;
-using GestaoPedidos.Domain.Exceptions.Clientes;
+using GestaoPedidos.Domain.Exceptions.Pessoas;
 using GestaoPedidos.Domain.Exceptions.Produtos;
 
 namespace GestaoPedidos.Application.UseCases.Pedidos.Commands
@@ -14,7 +14,7 @@ namespace GestaoPedidos.Application.UseCases.Pedidos.Commands
     {
         private readonly IPedidoRepository _pedidoRepository;
         private readonly IProdutoRepository _produtoRepository;
-        private readonly IClienteRepository _clienteRepository;
+        private readonly IPessoaRepository _pessoaRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly ObterUsuarioAutenticadoUseCase _obterUsuarioAutenticado;
@@ -22,14 +22,14 @@ namespace GestaoPedidos.Application.UseCases.Pedidos.Commands
         public CadastrarPedidoUseCase(
             IPedidoRepository pedidoRepository,
             IProdutoRepository produtoRepository,
-            IClienteRepository clienteRepository,
+            IPessoaRepository pessoaRepository,
             IUnitOfWork unitOfWork,
             ObterUsuarioAutenticadoUseCase obterUsuarioAutenticadoUseCase,
             IMapper mapper)
         {
             _pedidoRepository = pedidoRepository;
             _produtoRepository = produtoRepository;
-            _clienteRepository = clienteRepository;
+            _pessoaRepository = pessoaRepository;
             _obterUsuarioAutenticado = obterUsuarioAutenticadoUseCase;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
@@ -38,12 +38,12 @@ namespace GestaoPedidos.Application.UseCases.Pedidos.Commands
         public Task<PedidoResponseDTO> Executar(CriarPedidoRequestDTO dto)
             => _unitOfWork.ExecutarEmTransacao(async () =>
             {
-                var cliente = await _clienteRepository.ObterPorId(dto.ClienteId)
-                    ?? throw new NotFoundException(ClientesExceptions.Cliente_NaoEncontrado);
+                var pessoa = await _pessoaRepository.ObterPorId(dto.PessoaId)
+                    ?? throw new NotFoundException(PessoasExceptions.Pessoa_NaoEncontrado);
 
-                if (!cliente.Ativo)
+                if (!pessoa.Ativo)
                 {
-                    throw new ConflictException(ClientesExceptions.Cliente_Inativo);
+                    throw new ConflictException(PessoasExceptions.Pessoa_Inativo);
                 }
 
                 var usuario = await _obterUsuarioAutenticado.Executar();
@@ -51,6 +51,11 @@ namespace GestaoPedidos.Application.UseCases.Pedidos.Commands
                     dto.Itens.Select(i => i.ProdutoId));
                 var produtosPorId = produtos.ToDictionary(p => p.Id);
                 var itens = new List<PedidoItem>(dto.Itens.Count);
+
+                if(dto.tipoMovimentacao == TipoMovimentacao.Entrada && usuario.Role != UserRole.Admin)
+                {
+                    throw new ForbiddenException("Usuário sem permissão para realizar Pedidos de Compras");
+                }
 
                 foreach (var itemDto in dto.Itens)
                 {
@@ -75,8 +80,7 @@ namespace GestaoPedidos.Application.UseCases.Pedidos.Commands
                     itens.Add(new PedidoItem(produto.Id, produto.Preco, itemDto.Quantidade));
                 }
                 var totalPedido = itens.Sum(i => i.SubTotal);
-
-                var pedido = new Pedido(dto.ClienteId, itens, usuario.Id, totalPedido, dto.tipoMovimentacao);
+                var pedido = new Pedido(dto.PessoaId, itens, usuario.Id, totalPedido, dto.tipoMovimentacao);
                 await _pedidoRepository.Cadastrar(pedido);
                 await _unitOfWork.SalvarAlteracoes();
 

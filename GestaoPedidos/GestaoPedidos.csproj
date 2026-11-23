@@ -1,9 +1,7 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
     <!-- Suprime aviso de vulnerabilidade do AutoMapper (NU1903) que afeta todas as versões disponíveis -->
     <NoWarn>$(NoWarn);NU1903</NoWarn>
     <UserSecretsId>57af52c6-39bf-4f11-a8a6-2d92bccd96de</UserSecretsId>
@@ -30,10 +28,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Domain\Exceptions\Clientes\ClientesExceptions.Designer.cs">
+    <Compile Update="Domain\Exceptions\Pessoas\PessoasExceptions.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>ClientesExceptions.resx</DependentUpon>
+      <DependentUpon>PessoasExceptions.resx</DependentUpon>
     </Compile>
     <Compile Update="Domain\Exceptions\Pedidos\PedidosExceptions.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -53,9 +51,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="Domain\Exceptions\Clientes\ClientesExceptions.resx">
+    <EmbeddedResource Update="Domain\Exceptions\Pessoas\PessoasExceptions.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>ClientesExceptions.Designer.cs</LastGenOutput>
+      <LastGenOutput>PessoasExceptions.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Domain\Exceptions\Pedidos\PedidosExceptions.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

@@ -1,4 +1,4 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { MutationCache, QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
@@ -6,8 +6,10 @@ import { Toaster } from 'sonner'
 
 import { App } from './App'
 import { ProvedorDeSessao } from './auth/sessao'
+import { AlertaDeErro } from './componentes/ui/AlertaDeErro'
 import { ErroApi } from './lib/erros'
 import { aplicarTema, lerTema } from './lib/tema'
+import { notificarErro } from './lib/notificacoes'
 
 import './index.css'
 
@@ -15,6 +17,16 @@ import './index.css'
 aplicarTema(lerTema())
 
 const clienteDeConsultas = new QueryClient({
+  queryCache: new QueryCache({
+    onError: (erro, consulta) => {
+      if (!consulta.meta?.silenciarAlertaDeErro) notificarErro(erro, 'Não foi possível carregar os dados')
+    },
+  }),
+  mutationCache: new MutationCache({
+    onError: (erro, _variaveis, _contexto, mutacao) => {
+      if (!mutacao.options.onError) notificarErro(erro)
+    },
+  }),
   defaultOptions: {
     queries: {
       staleTime: 30_000,
@@ -35,6 +47,7 @@ createRoot(document.getElementById('root')!).render(
       <BrowserRouter>
         <ProvedorDeSessao>
           <App />
+          <AlertaDeErro />
           <Toaster
             position="bottom-right"
             richColors

@@ -44,10 +44,5 @@ namespace GestaoPedidos.Infrastructure.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task Atualizar(IEnumerable<Produto> produtos)
-        {
-            _context.Produtos.UpdateRange(produtos);
-            await _context.SaveChangesAsync();
-        }
     }
 }

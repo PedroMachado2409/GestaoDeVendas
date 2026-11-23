@@ -7,7 +7,7 @@ namespace GestaoPedidos.Application.Validators.Pedidos
     {
         public CriarPedidoRequestValidator()
         {
-            RuleFor(x => x.ClienteId).GreaterThan(0);
+            RuleFor(x => x.PessoaId).GreaterThan(0);
             RuleFor(x => x.Itens).NotEmpty();
             RuleForEach(x => x.Itens).SetValidator(new CriarPedidoItemRequestValidator());
             RuleFor(x => x.Itens)

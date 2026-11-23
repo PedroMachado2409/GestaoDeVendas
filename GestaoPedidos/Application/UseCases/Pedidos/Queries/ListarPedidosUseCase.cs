@@ -2,8 +2,6 @@ using AutoMapper;
 using GestaoPedidos.Application.DTO.Pedidos;
 using GestaoPedidos.Application.UseCases.Usuarios.Queries;
 using GestaoPedidos.Domain.Abstractions;
-using GestaoPedidos.Domain.Exceptions;
-using GestaoPedidos.Domain.Exceptions.Pedidos;
 using GestaoPedidos.Domain.Enum;
 
 namespace GestaoPedidos.Application.UseCases.Pedidos.Queries

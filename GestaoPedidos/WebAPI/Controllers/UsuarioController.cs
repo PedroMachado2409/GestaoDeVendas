@@ -53,7 +53,7 @@ namespace GestaoPedidos.WebAPI.Controllers
         public async Task<IActionResult> ObterAutenticado()
             => Ok(await _obterUsuarioAutenticado.Executar());
 
-        [AllowAnonymous]
+        [Authorize(Roles = "Admin")]
         [EnableRateLimiting("login")]
         [HttpPost("registrar")]
         public async Task<IActionResult> Registrar([FromBody] UsuarioCreateDTO dto)

@@ -3,7 +3,7 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 import { RotaProtegida } from '@/auth/RotaProtegida'
 import { Shell } from '@/componentes/layout/Shell'
 import { Acesso } from '@/paginas/Acesso'
-import { Clientes } from '@/paginas/Clientes'
+import { Pessoas } from '@/paginas/Pessoas'
 import { Estoque } from '@/paginas/Estoque'
 import { Financeiro } from '@/paginas/Financeiro'
 import { NaoEncontrado } from '@/paginas/NaoEncontrado'
@@ -26,8 +26,17 @@ export function App() {
         }
       >
         <Route index element={<Painel />} />
-        <Route path="pedidos" element={<Pedidos />} />
-        <Route path="clientes" element={<Clientes />} />
+        <Route path="pedidos" element={<Pedidos key="vendas" tipo="Saida" />} />
+        <Route
+          path="compras"
+          element={
+            <RotaProtegida somenteAdmin>
+              <Pedidos key="compras" tipo="Entrada" />
+            </RotaProtegida>
+          }
+        />
+        <Route path="pessoas" element={<Pessoas />} />
+        <Route path="clientes" element={<Navigate to="/pessoas" replace />} />
         <Route path="produtos" element={<Produtos />} />
         <Route
           path="estoque"

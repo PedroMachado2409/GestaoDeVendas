@@ -3,7 +3,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.RateLimiting;
 using FluentValidation;
-using GestaoPedidos.Application.Validators.Clientes;
+using GestaoPedidos.Application.Validators.Pessoas;
 using GestaoPedidos.Domain.Abstractions;
 using GestaoPedidos.Domain.Abstractions.Usuarios;
 using GestaoPedidos.Infrastructure.Data;
@@ -15,10 +15,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -31,8 +29,6 @@ builder.Logging.AddSimpleConsole(options =>
 });
 builder.Logging.AddDebug();
 
-// A API usa somente JWT Bearer e não depende de cookies entre reinicializações.
-// Isso evita gravações implícitas no perfil do usuário em ambientes restritos.
 builder.Services
     .AddDataProtection()
     .SetApplicationName("GestaoPedidos")
@@ -208,18 +204,18 @@ builder.Services.AddDbContext<AppDbContext>(options =>
         builder.Configuration.GetConnectionString("DefaultConnection"),
         npgsql => npgsql.EnableRetryOnFailure(3)));
 
-builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
+builder.Services.AddScoped<IPessoaRepository, PessoaRepository>();
 builder.Services.AddScoped<IProdutoRepository, ProdutoRepository>();
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<IPedidoRepository, PedidoRepository>();
 builder.Services.AddScoped<IMovimentacaoEstoqueRepository, MovimentacaoEstoqueRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-builder.Services.AddScoped<IMensagemWhatsAppRepository, MensagemWhatsAppRepository>();
+
 
 builder.Services.AddAutoMapper(
     _ => { },
     AppDomain.CurrentDomain.GetAssemblies());
-builder.Services.AddValidatorsFromAssemblyContaining<ClienteCreateValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<PessoaCreateValidator>();
 builder.Services.AddScoped<FluentValidationFilter>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddHealthChecks();

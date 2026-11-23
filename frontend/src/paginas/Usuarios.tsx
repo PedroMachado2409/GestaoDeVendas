@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { Ban, CheckCircle2, ShieldCheck, TriangleAlert, UserCog, UserRound } from 'lucide-react'
+import { Ban, CheckCircle2, Plus, ShieldCheck, TriangleAlert, UserCog, UserRound } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { toast } from 'sonner'
 
@@ -7,6 +7,7 @@ import { usuariosApi } from '@/api/recursos'
 import type { Papel, Usuario } from '@/api/tipos'
 import { useSessao } from '@/auth/useSessao'
 import { CabecalhoDaPagina } from '@/componentes/layout/CabecalhoDaPagina'
+import { Botao } from '@/componentes/ui/Botao'
 import { Cartao } from '@/componentes/ui/Cartao'
 import { Confirmacao } from '@/componentes/ui/Confirmacao'
 import { EsqueletoDeTabela, EstadoDeErro, EstadoVazio } from '@/componentes/ui/Estados'
@@ -16,6 +17,7 @@ import { ItemDeMenu, Menu, SeparadorDeMenu } from '@/componentes/ui/Menu'
 import { notificarErro } from '@/lib/notificacoes'
 import { formatarData, iniciais, normalizarTexto } from '@/lib/utils'
 import { Tabela, type Coluna } from '@/componentes/ui/Tabela'
+import { NovoUsuario } from '@/usuarios/NovoUsuario'
 
 type Filtro = 'todos' | 'admins' | 'vendedores' | 'inativos'
 
@@ -26,12 +28,13 @@ interface AcaoPendente {
 }
 
 export function Usuarios() {
-  const { usuario: eu } = useSessao()
+  const { usuario: eu, ehAdmin } = useSessao()
   const clienteDeConsultas = useQueryClient()
 
   const [busca, definirBusca] = useState('')
   const [filtro, definirFiltro] = useState<Filtro>('todos')
   const [pendente, definirPendente] = useState<AcaoPendente | null>(null)
+  const [cadastroAberto, definirCadastroAberto] = useState(false)
 
   const consulta = useQuery({
     queryKey: ['usuarios'],
@@ -219,6 +222,9 @@ export function Usuarios() {
       <CabecalhoDaPagina
         titulo="Usuários"
         descricao="Papéis e acesso à API. Alterar papel ou status revoga imediatamente os tokens já emitidos para o usuário."
+        acoes={ehAdmin && (
+          <Botao variante="primario" onClick={() => definirCadastroAberto(true)} iconeInicial={<Plus aria-hidden className="size-4" />}>Novo usuário</Botao>
+        )}
       />
 
       <Cartao>
@@ -263,6 +269,8 @@ export function Usuarios() {
           />
         )}
       </Cartao>
+
+      {cadastroAberto && <NovoUsuario aoFechar={() => definirCadastroAberto(false)} />}
 
       <Confirmacao
         aberto={pendente !== null}

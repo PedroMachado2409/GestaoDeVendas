@@ -11,6 +11,8 @@ export function IndicadorDaApi({ className }: { className?: string }) {
     queryFn: ({ signal }) => sistemaApi.saude(signal),
     refetchInterval: 30_000,
     retry: false,
+    // A sonda periódica já informa a indisponibilidade no próprio indicador.
+    meta: { silenciarAlertaDeErro: true },
   })
 
   const online = data?.ok === true
