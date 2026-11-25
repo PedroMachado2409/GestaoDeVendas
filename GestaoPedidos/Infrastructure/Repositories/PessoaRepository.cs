@@ -14,9 +14,10 @@ namespace GestaoPedidos.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<List<Pessoa>> Listar()
+        public async Task<List<Pessoa>> Listar(int pagina, int tamanhoPagina)
         {
-            var pessoas = await _context.Pessoas.AsNoTracking().OrderBy(c => c.Id).ToListAsync();
+            var pessoas = await _context.Pessoas.AsNoTracking().OrderBy(p => p.Id)
+                .Skip((pagina - 1) * tamanhoPagina).Take(tamanhoPagina).ToListAsync();
             return pessoas;
         }
 
@@ -40,14 +41,12 @@ namespace GestaoPedidos.Infrastructure.Repositories
         public async Task Cadastrar(Pessoa pessoa)
         {
             await _context.Pessoas.AddAsync(pessoa);
-            await _context.SaveChangesAsync();
-
         }
 
-        public async Task Atualizar(Pessoa pessoa)
+        public Task Atualizar(Pessoa pessoa)
         {
             _context.Pessoas.Update(pessoa);
-            await _context.SaveChangesAsync();
+            return Task.CompletedTask;
         }
 
     }

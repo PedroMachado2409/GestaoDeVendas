@@ -1,32 +1,37 @@
-# React + TypeScript + Vite
+# Frontend Gestão de Vendas
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+React, TypeScript e Vite. Execute na pasta `frontend`:
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```sh
+npm ci
+npm run dev
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+O servidor usa `http://localhost:5173`. A API padrão é `http://localhost:5143`;
+para alterar, defina `VITE_API_URL` em `.env.local` e reinicie o Vite.
+
+## Integração com a API
+
+- Pessoas: `GET /api/Pessoa?pagina=1&tamanhoPagina=100`, com uma lista simples na resposta.
+- O frontend busca as páginas seguintes até completar a lista. Isso mantém a busca,
+  os filtros por categoria e situação e os seletores dos pedidos abrangendo todos os registros.
+  As tabelas exibem 20 registros por página, depois de filtrar e ordenar.
+- Produtos usam a mesma leitura, compatível também com a API que ainda devolve a lista inteira.
+- Pedidos enviam `pessoaId` e leem `pessoaNome`. `Saida` representa venda e `Entrada`, compra.
+- Compras, estoque e usuários exigem o papel Admin no frontend; a API deve validar as permissões.
+- Alterar perfil ou senha revoga o token: o usuário retorna ao login após salvar.
+- Financeiro usa dados de demonstração locais enquanto sua integração com a API não estiver pronta.
+
+Para grandes volumes de registros, o próximo passo é implementar busca e filtros na API
+e retornar a quantidade total, permitindo carregar somente a página em exibição.
+
+## Verificação
+
+```sh
+npm test
+npm run lint
+npm run build
+```
+
+Os testes cobrem paginação, cancelamento de consultas, isolamento entre sessões,
+contratos de requisição, tratamento de erros, validação de valores e permissões.

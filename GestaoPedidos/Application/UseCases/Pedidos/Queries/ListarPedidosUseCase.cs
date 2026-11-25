@@ -12,14 +12,14 @@ namespace GestaoPedidos.Application.UseCases.Pedidos.Queries
         private readonly ObterUsuarioAutenticadoUseCase _usuarioAutenticadoUseCase;
         private readonly IMapper _mapper;
 
-        public ListarPedidosUseCase (IPedidoRepository pedidoRepository, IMapper mapper, ObterUsuarioAutenticadoUseCase usuarioAutenticadoUseCase)
+        public ListarPedidosUseCase(IPedidoRepository pedidoRepository, IMapper mapper, ObterUsuarioAutenticadoUseCase usuarioAutenticadoUseCase)
         {
             _pedidoRepository = pedidoRepository;
             _mapper = mapper;
             _usuarioAutenticadoUseCase = usuarioAutenticadoUseCase;
         }
 
-        public async Task <List<PedidoResponseDTO>> Executar()
+        public async Task<List<PedidoResponseDTO>> Executar()
         {
             var usuario = await _usuarioAutenticadoUseCase.Executar();
 

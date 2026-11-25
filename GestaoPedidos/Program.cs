@@ -2,7 +2,9 @@ using System.Security.Claims;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.RateLimiting;
+using AutoMapper;
 using FluentValidation;
+using GestaoPedidos.Application.Mapper;
 using GestaoPedidos.Application.Validators.Pessoas;
 using GestaoPedidos.Domain.Abstractions;
 using GestaoPedidos.Domain.Abstractions.Usuarios;
@@ -20,6 +22,20 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+
+if (builder.Environment.IsDevelopment())
+{
+    builder.Configuration
+        .AddJsonFile("appsettings.Local.json", optional: true, reloadOnChange: true)
+        .AddUserSecrets<Program>(optional: true);
+}
+
+// Variáveis de ambiente e argumentos continuam tendo precedência sobre arquivos locais.
+builder.Configuration.AddEnvironmentVariables();
+if (args.Length > 0)
+{
+    builder.Configuration.AddCommandLine(args);
+}
 
 builder.Logging.ClearProviders();
 builder.Logging.AddSimpleConsole(options =>
@@ -213,8 +229,15 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 
 builder.Services.AddAutoMapper(
-    _ => { },
-    AppDomain.CurrentDomain.GetAssemblies());
+    options =>
+    {
+        var licenseKey = builder.Configuration["AutoMapper:LicenseKey"];
+        if (!string.IsNullOrWhiteSpace(licenseKey))
+        {
+            options.LicenseKey = licenseKey;
+        }
+    },
+    typeof(PedidoProfile).Assembly);
 builder.Services.AddValidatorsFromAssemblyContaining<PessoaCreateValidator>();
 builder.Services.AddScoped<FluentValidationFilter>();
 builder.Services.AddHttpContextAccessor();
@@ -227,6 +250,7 @@ builder.Services.Scan(scan => scan
     .WithScopedLifetime());
 
 var app = builder.Build();
+app.Services.GetRequiredService<IMapper>().ConfigurationProvider.AssertConfigurationIsValid();
 
 app.UseMiddleware<ExceptionMiddleware>();
 

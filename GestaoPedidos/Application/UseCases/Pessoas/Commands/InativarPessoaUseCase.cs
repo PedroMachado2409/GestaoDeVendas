@@ -2,30 +2,32 @@ using GestaoPedidos.Domain.Abstractions;
 using GestaoPedidos.Domain.Exceptions;
 using GestaoPedidos.Domain.Exceptions.Pessoas;
 
-namespace GestaoPedidos.Application.UseCases.Clientes.Commands
+namespace GestaoPedidos.Application.UseCases.Pessoas.Commands
 {
     public class InativarPessoaUseCase
     {
         private readonly IPessoaRepository _repository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public InativarPessoaUseCase(IPessoaRepository repository)
+        public InativarPessoaUseCase(IPessoaRepository repository, IUnitOfWork unitOfWork)
         {
             _repository = repository;
+            _unitOfWork = unitOfWork;
         }
 
-        public async Task<bool> Executar(int id)
+        public async Task Executar(int id)
         {
-            var cliente = await _repository.ObterPorId(id)
+            var pessoa = await _repository.ObterPorId(id)
                 ?? throw new NotFoundException(PessoasExceptions.Pessoa_NaoEncontrado);
 
-            if (cliente.Ativo == false)
+            if (!pessoa.Ativo)
             {
                 throw new BadRequestException(PessoasExceptions.Pessoa_JaInativo);
             }
 
-            cliente.Inativar();
-            await _repository.Atualizar(cliente);
-            return true;
+            pessoa.Inativar();
+            await _repository.Atualizar(pessoa);
+            await _unitOfWork.SalvarAlteracoes();
         }
     }
 }

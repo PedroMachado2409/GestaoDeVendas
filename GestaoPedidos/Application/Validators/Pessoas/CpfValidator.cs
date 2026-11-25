@@ -2,9 +2,14 @@ namespace GestaoPedidos.Application.Validators.Pessoas
 {
     public static class CpfValidator
     {
-        public static bool EhValido(string cpf)
+        public static bool EhValido(string? cpf)
         {
-            var numeros = new string(cpf.Where(char.IsDigit).ToArray());
+            if (string.IsNullOrWhiteSpace(cpf))
+            {
+                return false;
+            }
+
+            var numeros = new string(cpf.Where(char.IsAsciiDigit).ToArray());
 
             if (numeros.Length != 11 || numeros.Distinct().Count() == 1)
             {

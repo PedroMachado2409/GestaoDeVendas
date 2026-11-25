@@ -41,8 +41,8 @@ namespace GestaoPedidos.WebAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Listar()
-            => Ok(await _listarProdutoUseCase.Executar());
+        public async Task<IActionResult> Listar([FromQuery] int pagina = 1, [FromQuery] int tamanhoPagina = 20)
+            => Ok(await _listarProdutoUseCase.Executar(pagina, tamanhoPagina));
 
 
         [HttpGet("{id}")]
@@ -83,7 +83,7 @@ namespace GestaoPedidos.WebAPI.Controllers
         }
 
         [HttpPost("{id:int}/ajustarEstoque")]
-        [Authorize(Roles ="Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AjustarEstoque(int id, [FromBody] AjusteEstoqueProdutoDTO dto)
         {
             dto.Id = id;

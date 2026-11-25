@@ -10,6 +10,7 @@ import { Campo, Entrada } from '@/componentes/ui/Campo'
 import { Segmentos } from '@/componentes/ui/Filtros'
 import { Modal } from '@/componentes/ui/Modal'
 import { notificarErro } from '@/lib/notificacoes'
+import { LIMITE_INTEIRO } from '@/lib/numeros'
 import { cn, formatarNumero } from '@/lib/utils'
 
 type Sentido = 'entrada' | 'saida'
@@ -44,6 +45,8 @@ export function AjusteDeEstoque({ produto, aoFechar }: Propriedades) {
     ? undefined
     : !Number.isInteger(quantidade) || quantidade <= 0
       ? 'Informe um número inteiro maior que zero.'
+      : quantidade > LIMITE_INTEIRO || resultado > LIMITE_INTEIRO
+        ? 'O ajuste ultrapassa o limite suportado pelo estoque.'
       : resultado < 0
         ? `A saída não pode passar do disponível (${formatarNumero(disponivel)}).`
         : undefined
@@ -71,7 +74,7 @@ export function AjusteDeEstoque({ produto, aoFechar }: Propriedades) {
   return (
     <Modal
       aberto={produto !== null}
-      aoFechar={aoFechar}
+      aoFechar={() => { if (!ajustar.isPending) aoFechar() }}
       titulo="Ajustar estoque"
       descricao={
         produto
@@ -115,6 +118,7 @@ export function AjusteDeEstoque({ produto, aoFechar }: Propriedades) {
               {...propriedades}
               type="number"
               min={1}
+              max={LIMITE_INTEIRO}
               step={1}
               inputMode="numeric"
               placeholder="0"

@@ -52,7 +52,7 @@ namespace GestaoPedidos.Application.UseCases.Pedidos.Commands
                 var produtosPorId = produtos.ToDictionary(p => p.Id);
                 var itens = new List<PedidoItem>(dto.Itens.Count);
 
-                if(dto.tipoMovimentacao == TipoMovimentacao.Entrada && usuario.Role != UserRole.Admin)
+                if (dto.tipoMovimentacao == TipoMovimentacao.Entrada && usuario.Role != UserRole.Admin)
                 {
                     throw new ForbiddenException("Usuário sem permissão para realizar Pedidos de Compras");
                 }

@@ -9,11 +9,13 @@ namespace GestaoPedidos.Application.Validators.Pessoas
         public PessoaCreateValidator()
         {
             RuleFor(c => c.TipoPessoa).IsInEnum().WithMessage("Tipo de pessoa inválido.");
-            RuleFor(c => c.Nome).NotEmpty().WithMessage(PessoasExceptions.Pessoa_NomeObrigatorio);
+            RuleFor(c => c.Nome).NotEmpty().WithMessage(PessoasExceptions.Pessoa_NomeObrigatorio)
+                .MaximumLength(120);
             RuleFor(c => c.Email)
                 .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage(PessoasExceptions.Pessoa_EmailObrigatorio)
-                .EmailAddress().WithMessage(PessoasExceptions.Pessoa_EmailInvalido);
+                .EmailAddress().WithMessage(PessoasExceptions.Pessoa_EmailInvalido)
+                .MaximumLength(254);
 
             RuleFor(c => c.Cpf)
                  .Cascade(CascadeMode.Stop)

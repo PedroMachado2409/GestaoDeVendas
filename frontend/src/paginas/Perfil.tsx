@@ -1,5 +1,4 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useQueryClient } from '@tanstack/react-query'
 import { Eye, EyeOff, KeyRound, ShieldCheck, TriangleAlert, UserRound } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -114,7 +113,7 @@ export function Perfil() {
 }
 
 function FormularioDeDados({ nome, email }: { nome: string; email: string }) {
-  const clienteDeConsultas = useQueryClient()
+  const { sair } = useSessao()
 
   const {
     register,
@@ -129,9 +128,10 @@ function FormularioDeDados({ nome, email }: { nome: string; email: string }) {
   async function enviar(dados: z.infer<typeof esquemaPerfil>) {
     try {
       await usuariosApi.atualizarPerfil(dados)
-      toast.success('Perfil atualizado')
-      await clienteDeConsultas.invalidateQueries({ queryKey: ['usuario-autenticado'] })
-      await clienteDeConsultas.invalidateQueries({ queryKey: ['usuarios'] })
+      toast.success('Perfil atualizado', {
+        description: 'Entre novamente para continuar com os dados atualizados.',
+      })
+      sair('manual')
     } catch (erro) {
       tratarErroDeFormulario(erro, setError, ['nome', 'email'], 'Não foi possível salvar o perfil')
     }

@@ -7,8 +7,8 @@ namespace GestaoPedidosTests.Domain
     [TestClass]
     public class UsuarioTests
     {
-        private readonly Usuario _usuario = new Usuario (nome:"Pedro", email:"pedro@gmail.com",
-            senha:"senhaMuitoForte!12", role:UserRole.Admin);
+        private readonly Usuario _usuario = new Usuario(nome: "Pedro", email: "pedro@gmail.com",
+            senha: "senhaMuitoForte!12", role: UserRole.Admin);
 
         [TestMethod]
         public void Deve_Cadastrar_Usuario_Quando_Dados_Forem_Validos_E_Iniciar_Ativo()

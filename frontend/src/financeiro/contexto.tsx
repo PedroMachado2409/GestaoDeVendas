@@ -1,24 +1,8 @@
-import { createContext, useCallback, useMemo, useState, type ReactNode } from 'react'
+import { useCallback, useMemo, useState, type ReactNode } from 'react'
 
 import { gerarTitulosFicticios, prazosFicticios } from './dadosFicticios'
-import type { Baixa, PrazoPagamento, TituloFinanceiro } from './tipos'
-
-export type NovoTitulo = Omit<TituloFinanceiro, 'id'>
-export type DadosDaBaixa = Pick<Baixa, 'valor' | 'data' | 'forma'>
-
-export interface Financeiro {
-  titulos: TituloFinanceiro[]
-  prazos: PrazoPagamento[]
-  /** Verdadeiro enquanto o financeiro usa dados fictícios, sem API. */
-  ficticio: boolean
-  lancar: (novos: NovoTitulo[]) => void
-  baixar: (tituloId: number, dados: DadosDaBaixa) => void
-  cancelar: (tituloId: number) => void
-  salvarPrazo: (prazoId: number | null, dados: Pick<PrazoPagamento, 'nome' | 'parcelas'>) => void
-  alternarPrazo: (prazoId: number) => void
-}
-
-export const ContextoFinanceiro = createContext<Financeiro | null>(null)
+import type { PrazoPagamento } from './tipos'
+import { ContextoFinanceiro, type Financeiro, type NovoTitulo, type DadosDaBaixa } from './contextoFinanceiro'
 
 /**
  * Estado do financeiro compartilhado entre a tela do Financeiro e o Painel:

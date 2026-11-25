@@ -89,9 +89,9 @@ export interface Pedido {
   id: number
   /** Entrada = compra; Saida = venda. A API deve informar o tipo na resposta. */
   tipoMovimentacao: TipoMovimentacao
-  clienteId: number
-  /** Vazio quando o repositório não carrega o cliente junto. */
-  clienteNome: string
+  pessoaId: number
+  /** Vazio quando o repositório não carrega a pessoa junto. */
+  pessoaNome: string
   /** Autor do pedido. Pedidos históricos podem vir sem autor (0 e ""). */
   usuarioId: number
   usuarioNome: string
@@ -107,7 +107,7 @@ export interface CriarPedidoItem {
 }
 
 export interface CriarPedido {
-  clienteId: number
+  pessoaId: number
   // A API usa camelCase aqui ("tipoMovimentacao") e o padrão do enum é
   // Entrada: omitir o campo transforma uma venda em compra.
   tipoMovimentacao: TipoMovimentacao

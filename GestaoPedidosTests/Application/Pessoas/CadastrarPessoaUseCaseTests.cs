@@ -6,7 +6,6 @@ using GestaoPedidos.Domain.Entities;
 using GestaoPedidos.Domain.Enum;
 using GestaoPedidos.Domain.Exceptions;
 using GestaoPedidos.Domain.Exceptions.Pessoas;
-using Microsoft.VisualBasic;
 using Moq;
 
 
@@ -15,32 +14,31 @@ namespace GestaoPedidosTests.Application.Pessoas
     [TestClass]
     public class CadastrarPessoaUseCaseTests
     {
-        private readonly Pessoa _pessoa = new(
-            nome: "Pedro",
-            email: "pedro@exemplo.com",
-            cpf: "52998224725",
-            tipoPessoa: TipoPessoa.Cliente
-        );
+        private readonly Pessoa _pessoa = new(nome: "Pedro", email: "pedro@exemplo.com",
+            cpf: "52998224725", tipoPessoa: TipoPessoa.Cliente);
 
         private readonly Mock<IPessoaRepository> _repository = new();
+
+        private readonly Mock<IUnitOfWork> _unitOfWork = new();
         private readonly Mock<IMapper> _mapper = new();
 
         [TestMethod]
         public async Task Deve_Lancar_Excecao_E_Nao_Cadastrar_Pessoa_Quando_Cpf_Ja_Existir()
         {
             var dto = new PessoaCreateDTO
-            {Nome = "Maria", Email = "maria@exemplo.com", Cpf = _pessoa.Cpf, TipoPessoa = TipoPessoa.Cliente};
+            { Nome = "Maria", Email = "maria@exemplo.com", Cpf = _pessoa.Cpf, TipoPessoa = TipoPessoa.Cliente };
 
             _repository.Setup(r => r.ObterPorCpf(dto.Cpf)).ReturnsAsync(_pessoa);
 
-            var useCase = new CadastrarPessoaUseCase(_repository.Object,_mapper.Object);
+            var useCase = new CadastrarPessoaUseCase(_repository.Object, _unitOfWork.Object, _mapper.Object);
 
             var excecao = await Assert.ThrowsExceptionAsync<BadRequestException>(
                 () => useCase.Executar(dto));
 
             Assert.AreEqual(PessoasExceptions.Pessoa_CpfExistente, excecao.Message);
 
-            _repository.Verify(r => r.Cadastrar(It.IsAny<Pessoa>()),Times.Never);
+            _repository.Verify(r => r.Cadastrar(It.IsAny<Pessoa>()), Times.Never);
+            _unitOfWork.Verify(u => u.SalvarAlteracoes(), Times.Never);
         }
 
         [TestMethod]
@@ -51,7 +49,7 @@ namespace GestaoPedidosTests.Application.Pessoas
 
             _repository.Setup(r => r.ObterPorEmail(dto.Email)).ReturnsAsync(_pessoa);
 
-            var useCase = new CadastrarPessoaUseCase(_repository.Object, _mapper.Object);
+            var useCase = new CadastrarPessoaUseCase(_repository.Object, _unitOfWork.Object, _mapper.Object);
 
             var excecao = await Assert.ThrowsExceptionAsync<BadRequestException>(
                 () => useCase.Executar(dto));
@@ -59,6 +57,7 @@ namespace GestaoPedidosTests.Application.Pessoas
             Assert.AreEqual(PessoasExceptions.Pessoa_EmailExistente, excecao.Message);
 
             _repository.Verify(r => r.Cadastrar(It.IsAny<Pessoa>()), Times.Never);
+            _unitOfWork.Verify(u => u.SalvarAlteracoes(), Times.Never);
         }
 
         [TestMethod]
@@ -73,15 +72,16 @@ namespace GestaoPedidosTests.Application.Pessoas
             _repository.Setup(r => r.Cadastrar(It.IsAny<Pessoa>())).Returns(Task.CompletedTask);
             _mapper.Setup(m => m.Map<PessoaResponseDTO>(It.IsAny<object>())).Returns(respostaEsperada);
 
-            var useCase = new CadastrarPessoaUseCase(_repository.Object, _mapper.Object);
+            var useCase = new CadastrarPessoaUseCase(_repository.Object, _unitOfWork.Object, _mapper.Object);
 
             var resposta = await useCase.Executar(dto);
 
             Assert.AreSame(respostaEsperada, resposta);
             _repository.Verify(r => r.Cadastrar(It.IsAny<Pessoa>()), Times.Once());
+            _unitOfWork.Verify(u => u.SalvarAlteracoes(), Times.Once);
 
             _repository.Verify(r => r.Cadastrar(It.Is<Pessoa>(p => p.Nome == dto.Nome && p.Email == dto.Email
-                 && p.Cpf == dto.Cpf && p.TipoPessoa == dto.TipoPessoa && p.Ativo)),Times.Once);
+                 && p.Cpf == dto.Cpf && p.TipoPessoa == dto.TipoPessoa && p.Ativo)), Times.Once);
 
         }
     }

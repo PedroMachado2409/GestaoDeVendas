@@ -1,6 +1,5 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import {
-  createContext,
   useCallback,
   useEffect,
   useMemo,
@@ -10,27 +9,12 @@ import {
 } from 'react'
 
 import { usuariosApi } from '@/api/recursos'
-import type { LoginRequest, Papel, Usuario } from '@/api/tipos'
+import type { LoginRequest, Papel } from '@/api/tipos'
+import { ContextoSessao, type MotivoSaida, type Sessao } from './contexto'
 import { definirToken, definirTratadorDeSessaoExpirada } from '@/lib/http'
 import { lerToken, tokenExpirado } from '@/lib/jwt'
 
 const CHAVE_TOKEN = 'gp.token'
-
-export type MotivoSaida = 'manual' | 'expirada'
-
-export interface Sessao {
-  token: string | null
-  usuario: Usuario | null
-  carregando: boolean
-  autenticado: boolean
-  ehAdmin: boolean
-  entrar: (credenciais: LoginRequest) => Promise<void>
-  sair: (motivo?: MotivoSaida) => void
-  motivoDaUltimaSaida: MotivoSaida | null
-  limparMotivoDeSaida: () => void
-}
-
-export const ContextoSessao = createContext<Sessao | null>(null)
 
 function lerTokenSalvo() {
   const token = localStorage.getItem(CHAVE_TOKEN)

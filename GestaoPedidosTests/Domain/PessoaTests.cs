@@ -24,7 +24,7 @@ namespace GestaoPedidosTests.Domain
             var cpf = "52998224725";
             var tipoPessoa = TipoPessoa.Fornecedor;
 
-            
+
             var pessoa = new Pessoa(nome, email, cpf, tipoPessoa);
 
             Assert.AreEqual(nome, pessoa.Nome);
@@ -70,7 +70,7 @@ namespace GestaoPedidosTests.Domain
         [TestMethod]
         public void Deve_Atualizar_Pessoa_Quando_Dados_Forem_Validos()
         {
-            _pessoa.Atualizar("Carlos","Carlos@gmail.com","03251228095",TipoPessoa.Fornecedor);
+            _pessoa.Atualizar("Carlos", "Carlos@gmail.com", "03251228095", TipoPessoa.Fornecedor);
 
             Assert.AreEqual("Carlos", _pessoa.Nome);
             Assert.AreEqual("carlos@gmail.com", _pessoa.Email);

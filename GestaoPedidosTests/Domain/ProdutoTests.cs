@@ -10,21 +10,21 @@ namespace GestaoPedidosTests.Domain
     public class ProdutoTests
     {
 
-            private readonly Produto _produto = new(
-            nome: "Mouse",
-            marca: "Redragon",
-            estoque: 10,
-            preco: 20m
-        );
+        private readonly Produto _produto = new(
+        nome: "Mouse",
+        marca: "Redragon",
+        estoque: 10,
+        preco: 20m
+    );
 
 
         [TestMethod]
         public void ReservarQuantidadeVenda_ComEstoqueDisponivel_DeveAtualizarSaldoEReserva()
         {
-            
+
             _produto.ReservarQuantidadeVenda(3);
 
-           
+
             Assert.AreEqual(7, _produto.Estoque);
             Assert.AreEqual(3, _produto.QuantidadeReservada);
         }

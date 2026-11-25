@@ -11,7 +11,7 @@ import { Botao } from '@/componentes/ui/Botao'
 import { Cartao } from '@/componentes/ui/Cartao'
 import { Confirmacao } from '@/componentes/ui/Confirmacao'
 import { EsqueletoDeTabela, EstadoDeErro, EstadoVazio } from '@/componentes/ui/Estados'
-import { Etiqueta, type TomEtiqueta } from '@/componentes/ui/Etiqueta'
+import { Etiqueta } from '@/componentes/ui/Etiqueta'
 import { CampoDeBusca, Segmentos } from '@/componentes/ui/Filtros'
 import { ItemDeMenu, Menu } from '@/componentes/ui/Menu'
 import { Modal } from '@/componentes/ui/Modal'
@@ -25,13 +25,7 @@ import {
   pluralizar,
 } from '@/lib/utils'
 import { NovoPedido } from '@/pedidos/NovoPedido'
-import { filtrarPedidosPorTipo, podeOperarPedido } from '@/pedidos/tipos'
-
-export const tonsDeStatus: Record<StatusPedido, TomEtiqueta> = {
-  Aberto: 'marca',
-  Finalizado: 'positivo',
-  Cancelado: 'neutro',
-}
+import { filtrarPedidosPorTipo, podeOperarPedido, tonsDeStatus } from '@/pedidos/tipos'
 
 type Filtro = 'todos' | StatusPedido
 
@@ -80,7 +74,7 @@ export function Pedidos({ tipo }: { tipo: TipoMovimentacao }) {
   // um pedido (a resposta da criação não carrega cliente nem autor) e a lista
   // ser recarregada.
   const nomeDoCliente = (pedido: Pedido) =>
-    pedido.clienteNome || nomesDeClientes.get(pedido.clienteId)
+    pedido.pessoaNome || nomesDeClientes.get(pedido.pessoaId)
 
   const nomeDoVendedor = (pedido: Pedido) =>
     pedido.usuarioNome || (pedido.usuarioId === usuario?.id ? usuario.nome : undefined)
@@ -121,7 +115,7 @@ export function Pedidos({ tipo }: { tipo: TipoMovimentacao }) {
             {
               ...atualizado,
               tipoMovimentacao: atualizado.tipoMovimentacao ?? pedido.tipoMovimentacao,
-              clienteNome: atualizado.clienteNome || pedido.clienteNome,
+              pessoaNome: atualizado.pessoaNome || pedido.pessoaNome,
               usuarioNome: atualizado.usuarioNome || pedido.usuarioNome,
             }
           : pedido,
@@ -179,13 +173,13 @@ export function Pedidos({ tipo }: { tipo: TipoMovimentacao }) {
     },
     {
       chave: 'cliente',
-      cabecalho: 'Cliente',
+      cabecalho: ehCompra ? 'Fornecedor' : 'Cliente',
       larguraMinima: '11rem',
-      valor: (pedido) => nomeDoCliente(pedido) ?? String(pedido.clienteId),
+      valor: (pedido) => nomeDoCliente(pedido) ?? String(pedido.pessoaId),
       celula: (pedido) => (
         <span className="text-pretty text-ink-soft">
           {nomeDoCliente(pedido) ?? (
-            <span className="numerico text-ink-muted">cliente #{pedido.clienteId}</span>
+            <span className="numerico text-ink-muted">pessoa #{pedido.pessoaId}</span>
           )}
         </span>
       ),
@@ -517,9 +511,9 @@ function DetalheDoPedido({
       <div className="grid gap-5">
         <dl className="grid grid-cols-2 gap-4 sm:grid-cols-4">
           <div className="min-w-0">
-            <dt className="text-xs text-ink-muted">Cliente</dt>
+            <dt className="text-xs text-ink-muted">{tipo === 'Entrada' ? 'Fornecedor' : 'Cliente'}</dt>
             <dd className="mt-0.5 text-sm font-medium text-pretty text-ink">
-              {nomeDoCliente ?? `#${pedido.clienteId}`}
+              {nomeDoCliente ?? `#${pedido.pessoaId}`}
             </dd>
           </div>
           <div className="min-w-0">

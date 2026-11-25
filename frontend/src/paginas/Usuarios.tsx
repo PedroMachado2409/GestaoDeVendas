@@ -28,7 +28,7 @@ interface AcaoPendente {
 }
 
 export function Usuarios() {
-  const { usuario: eu, ehAdmin } = useSessao()
+  const { usuario: eu, ehAdmin, sair } = useSessao()
   const clienteDeConsultas = useQueryClient()
 
   const [busca, definirBusca] = useState('')
@@ -62,12 +62,16 @@ export function Usuarios() {
         description: 'Os tokens anteriores desse usuário foram revogados pela API.',
       })
       definirPendente(null)
+      if (acao.usuario.id === eu?.id) {
+        sair('manual')
+        return
+      }
       void clienteDeConsultas.invalidateQueries({ queryKey: ['usuarios'] })
     },
     onError: (erro) => notificarErro(erro, 'Não foi possível concluir a alteração'),
   })
 
-  const usuarios = consulta.data ?? []
+  const usuarios = useMemo(() => consulta.data ?? [], [consulta.data])
 
   const contagens = useMemo(
     () => ({

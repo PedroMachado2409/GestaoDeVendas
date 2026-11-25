@@ -4,7 +4,7 @@ namespace GestaoPedidos.Domain.Abstractions
 {
     public interface IPessoaRepository
     {
-        public Task<List<Pessoa>> Listar();
+        public Task<List<Pessoa>> Listar(int pagina, int tamanhoPagina);
         public Task<Pessoa?> ObterPorId(int id);
         public Task<Pessoa?> ObterPorCpf(string cpf);
         public Task<Pessoa?> ObterPorEmail(string email);

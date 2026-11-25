@@ -25,7 +25,8 @@ namespace GestaoPedidos.Application.UseCases.Pedidos.Queries
             var usuario = await _usuarioAutenticadoUseCase.Executar();
 
             var pedido = await _repository.ObterPorId(id);
-            if (pedido?.UsuarioId != usuario.Id && usuario.Role != UserRole.Admin || pedido == null)
+            if (pedido is null || (usuario.Role != UserRole.Admin &&
+                (pedido.UsuarioId != usuario.Id || pedido.TipoMovimentacao != TipoMovimentacao.Saida)))
             {
                 throw new NotFoundException(PedidosExceptions.Pedido_NaoEncontrado);
             }

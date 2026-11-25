@@ -1,5 +1,6 @@
 using GestaoPedidos.Domain.Abstractions;
 using GestaoPedidos.Domain.Entities.Pedidos;
+using GestaoPedidos.Domain.Enum;
 using GestaoPedidos.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,7 +15,7 @@ namespace GestaoPedidos.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task <List<Pedido>> Listar()
+        public async Task<List<Pedido>> Listar()
         {
             var pedidos = await _context.Pedidos
                 .Include(p => p.Itens)
@@ -24,13 +25,13 @@ namespace GestaoPedidos.Infrastructure.Repositories
             return pedidos;
         }
 
-        public async Task <List<Pedido>>ListarPorVendedor(int usuarioId)
+        public async Task<List<Pedido>> ListarPorVendedor(int usuarioId)
         {
             var pedidos = await _context.Pedidos
                .Include(p => p.Itens)
                .Include(p => p.Cliente)
                .Include(p => p.Usuario)
-               .Where(p => p.UsuarioId == usuarioId)
+               .Where(p => p.UsuarioId == usuarioId && p.TipoMovimentacao == TipoMovimentacao.Saida)
                .ToListAsync();
             return pedidos;
         }

@@ -1,6 +1,9 @@
 using GestaoPedidos.Domain.Exceptions;
+using GestaoPedidos.Domain.Exceptions.Pessoas;
+using GestaoPedidos.Domain.Exceptions.Usuarios;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 
 namespace GestaoPedidos.Infrastructure.Middlewares
 {
@@ -50,6 +53,21 @@ namespace GestaoPedidos.Infrastructure.Middlewares
                     "Conflito de concorrência",
                     "Os dados foram alterados por outra operação. Atualize a consulta e tente novamente.");
             }
+            catch (DbUpdateException exception) when (
+                exception.InnerException is PostgresException { SqlState: PostgresErrorCodes.UniqueViolation })
+            {
+                var postgres = (PostgresException)exception.InnerException;
+                var detalhe = postgres.ConstraintName switch
+                {
+                    "IX_Pessoas_Cpf" => PessoasExceptions.Pessoa_CpfExistente,
+                    "IX_Pessoas_Email" => PessoasExceptions.Pessoa_EmailExistente,
+                    "IX_Usuarios_Email" => UsuariosExceptions.Usuario_JaExistente,
+                    _ => "Já existe um registro com os dados informados."
+                };
+
+                _logger.LogWarning(exception, "Violação de unicidade ao persistir dados");
+                await EscreverProblema(context, StatusCodes.Status409Conflict, "Conflito de dados", detalhe);
+            }
             catch (DbUpdateException exception)
             {
                 _logger.LogError(exception, "Falha de integridade ao persistir dados");
@@ -59,6 +77,10 @@ namespace GestaoPedidos.Infrastructure.Middlewares
                     StatusCodes.Status409Conflict,
                     "Conflito de dados",
                     "A operação viola uma regra de integridade dos dados.");
+            }
+            catch (OperationCanceledException) when (context.RequestAborted.IsCancellationRequested)
+            {
+                _logger.LogDebug("Requisição cancelada pelo cliente");
             }
             catch (Exception exception)
             {
@@ -104,7 +126,8 @@ namespace GestaoPedidos.Infrastructure.Middlewares
             };
             problem.Extensions["traceId"] = context.TraceIdentifier;
 
-            await context.Response.WriteAsJsonAsync(problem);
+            await context.Response.WriteAsJsonAsync(problem, options: null,
+                contentType: "application/problem+json", cancellationToken: context.RequestAborted);
         }
 
         private static string TituloParaStatus(int statusCode)

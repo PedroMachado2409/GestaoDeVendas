@@ -8,11 +8,13 @@ namespace GestaoPedidos.Application.UseCases.Produtos.Commands
     public class CadastrarProdutoUseCase
     {
         private readonly IProdutoRepository _repository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public CadastrarProdutoUseCase(IProdutoRepository repository, IMapper mapper)
+        public CadastrarProdutoUseCase(IProdutoRepository repository, IUnitOfWork unitOfWork, IMapper mapper)
         {
             _repository = repository;
+            _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
 
@@ -20,8 +22,8 @@ namespace GestaoPedidos.Application.UseCases.Produtos.Commands
         {
             var novoProduto = new Produto(dto.Nome, dto.Marca, dto.Estoque, dto.Preco);
             await _repository.Cadastrar(novoProduto);
+            await _unitOfWork.SalvarAlteracoes();
             return _mapper.Map<ProdutoResponseDTO>(novoProduto);
         }
-
     }
 }

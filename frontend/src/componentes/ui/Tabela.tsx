@@ -9,8 +9,10 @@ import {
 import { useMemo, useState, type ReactNode } from 'react'
 
 import { cn, comparar } from '@/lib/utils'
+import { paginarItens } from '@/lib/paginacao'
 
 import { ItemDeMenu, Menu } from './Menu'
+import { Botao } from './Botao'
 
 export interface Coluna<T> {
   chave: string
@@ -76,6 +78,7 @@ export function Tabela<T>({
   const [ordenacao, definirOrdenacao] = useState<{ chave: string; direcao: Direcao } | null>(
     ordenacaoInicial ?? null,
   )
+  const [paginacao, definirPaginacao] = useState({ chave: '', pagina: 1 })
 
   const ordenados = useMemo(() => {
     if (!ordenacao) {
@@ -90,6 +93,12 @@ export function Tabela<T>({
     const sinal = ordenacao.direcao === 'crescente' ? 1 : -1
     return [...itens].sort((a, b) => comparar(extrair(a), extrair(b)) * sinal)
   }, [itens, colunas, ordenacao])
+
+  const chaveDaLista = JSON.stringify([ordenados.map(chaveDoItem), ordenacao])
+  const pagina = paginarItens(ordenados, paginacao.chave === chaveDaLista ? paginacao.pagina : 1)
+  if (paginacao.chave !== chaveDaLista) {
+    definirPaginacao({ chave: chaveDaLista, pagina: 1 })
+  }
 
   function alternar(chave: string) {
     definirOrdenacao((atual) => {
@@ -183,7 +192,7 @@ export function Tabela<T>({
         )}
 
         <ul aria-label={legenda} className="relative divide-y divide-line">
-          {ordenados.map((item) => (
+          {pagina.itens.map((item) => (
             <li
               key={chaveDoItem(item)}
               onClick={aoClicarNaLinha ? () => aoClicarNaLinha(item) : undefined}
@@ -276,7 +285,7 @@ export function Tabela<T>({
             </tr>
           </thead>
           <tbody>
-            {ordenados.map((item) => (
+            {pagina.itens.map((item) => (
               <tr
                 key={chaveDoItem(item)}
                 onClick={aoClicarNaLinha ? () => aoClicarNaLinha(item) : undefined}
@@ -289,6 +298,7 @@ export function Tabela<T>({
                 {colunas.map((coluna) => (
                   <td
                     key={coluna.chave}
+                    onClick={coluna.chave === CHAVE_ACOES ? (evento) => evento.stopPropagation() : undefined}
                     className={cn(
                       'px-4 py-3 align-middle',
                       alinhamentos[coluna.alinhamento ?? 'inicio'],
@@ -303,6 +313,33 @@ export function Tabela<T>({
           </tbody>
         </table>
       </div>
+      {pagina.totalPaginas > 1 && (
+        <nav
+          aria-label={`Paginação: ${legenda ?? 'tabela'}`}
+          className="flex flex-wrap items-center justify-between gap-3 border-t border-line px-4 py-3"
+        >
+          <p className="text-xs text-ink-muted" role="status">
+            {pagina.inicio}–{pagina.fim} de {itens.length} registros
+          </p>
+          <div className="flex items-center gap-2">
+            <Botao
+              tamanho="pequeno"
+              disabled={pagina.pagina === 1}
+              onClick={() => definirPaginacao({ chave: chaveDaLista, pagina: pagina.pagina - 1 })}
+            >
+              Anterior
+            </Botao>
+            <span className="text-xs text-ink-soft">Página {pagina.pagina} de {pagina.totalPaginas}</span>
+            <Botao
+              tamanho="pequeno"
+              disabled={pagina.pagina === pagina.totalPaginas}
+              onClick={() => definirPaginacao({ chave: chaveDaLista, pagina: pagina.pagina + 1 })}
+            >
+              Próxima
+            </Botao>
+          </div>
+        </nav>
+      )}
     </>
   )
 }

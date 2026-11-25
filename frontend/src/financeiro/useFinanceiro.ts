@@ -1,6 +1,6 @@
 import { useContext } from 'react'
 
-import { ContextoFinanceiro } from './contexto'
+import { ContextoFinanceiro } from './contextoFinanceiro'
 
 export function useFinanceiro() {
   const contexto = useContext(ContextoFinanceiro)

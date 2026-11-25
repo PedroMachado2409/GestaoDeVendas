@@ -29,7 +29,7 @@ namespace GestaoPedidos.Application.UseCases.MovimentacoesEstoque
 
             var movimentacoes = await _movimentacaoEstoqueRepository.ListarPorProduto(produtoId);
 
-          
+
             return _mapper.Map<List<MovimentacaoEstoqueResponseDTO>>(movimentacoes);
         }
     }

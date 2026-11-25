@@ -32,8 +32,9 @@ export function lerToken(token: string): ConteudoToken | null {
 
 export function tokenExpirado(token: string) {
   const conteudo = lerToken(token)
-  if (!conteudo?.expiraEm) return false
-  return conteudo.expiraEm.getTime() <= Date.now()
+  if (!conteudo?.expiraEm) return true
+  const instante = conteudo.expiraEm.getTime()
+  return !Number.isFinite(instante) || instante <= Date.now()
 }
 
 /**

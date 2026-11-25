@@ -2,7 +2,7 @@ using GestaoPedidos.Domain.Enum;
 
 namespace GestaoPedidos.Domain.Entities
 {
-    public class AReceber
+    public class ContasFinanceiras
     {
         public int Id { get; set; }
         public string Descricao { get; set; } = string.Empty;

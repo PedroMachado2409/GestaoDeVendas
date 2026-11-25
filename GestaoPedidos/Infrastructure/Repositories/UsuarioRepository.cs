@@ -34,7 +34,6 @@ namespace GestaoPedidos.Infrastructure.Repositories
 
         public async Task Atualizar(Usuario usuario)
         {
-            _context.Update(usuario);
             await _context.SaveChangesAsync();
         }
 

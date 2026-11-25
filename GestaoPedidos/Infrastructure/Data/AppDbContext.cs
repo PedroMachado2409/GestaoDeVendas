@@ -57,7 +57,8 @@ namespace GestaoPedidos.Infrastructure.Data
                     .HasMaxLength(100);
 
                 entity.Property(u => u.VersaoToken)
-                    .HasDefaultValueSql("gen_random_uuid()");
+                    .HasDefaultValueSql("gen_random_uuid()")
+                    .IsConcurrencyToken();
 
                 entity.HasIndex(u => u.Email)
                     .IsUnique();
@@ -119,7 +120,7 @@ namespace GestaoPedidos.Infrastructure.Data
                     .OnDelete(DeleteBehavior.Restrict);
 
                 entity.HasMany(p => p.Itens)
-                    .WithOne()
+                    .WithOne(i => i.Pedido)
                     .HasForeignKey(i => i.PedidoId)
                     .OnDelete(DeleteBehavior.Cascade);
             });

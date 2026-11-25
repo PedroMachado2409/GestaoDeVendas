@@ -26,17 +26,28 @@ namespace GestaoPedidos.Infrastructure.Data
 
             return await strategy.ExecuteAsync(async () =>
             {
-                await using var transacao = await _context.Database.BeginTransactionAsync();
+                var commitIniciado = false;
 
                 try
                 {
+                    await using var transacao = await _context.Database.BeginTransactionAsync();
+
                     var resultado = await operacao();
+                    commitIniciado = true;
                     await transacao.CommitAsync();
                     return resultado;
                 }
-                catch
+                catch (Exception exception)
                 {
-                    await transacao.RollbackAsync();
+                    _context.ChangeTracker.Clear();
+
+                    if (commitIniciado)
+                    {
+                        throw new InvalidOperationException(
+                            "Não foi possível confirmar o resultado da transação. Consulte o resultado antes de repetir a operação.",
+                            exception);
+                    }
+
                     throw;
                 }
             });

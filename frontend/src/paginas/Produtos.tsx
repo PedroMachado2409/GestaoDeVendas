@@ -33,6 +33,7 @@ import { Modal } from '@/componentes/ui/Modal'
 import { Tabela, type Coluna } from '@/componentes/ui/Tabela'
 import { tratarErroDeFormulario } from '@/lib/formulario'
 import { notificarErro } from '@/lib/notificacoes'
+import { LIMITE_INTEIRO, precoValido } from '@/lib/numeros'
 import { formatarMoeda, formatarNumero, normalizarTexto } from '@/lib/utils'
 import { AjusteDeEstoque } from '@/produtos/AjusteDeEstoque'
 
@@ -40,20 +41,20 @@ import { AjusteDeEstoque } from '@/produtos/AjusteDeEstoque'
 // e são convertidos só na hora de montar a carga — assim o campo vazio vira
 // "informe o valor" em vez de NaN.
 const esquema = z.object({
-  nome: z.string().trim().min(1, 'Informe o nome do produto.'),
-  marca: z.string().trim().min(1, 'Informe a marca.'),
+  nome: z.string().trim().min(1, 'Informe o nome do produto.').max(160, 'Máximo de 160 caracteres.'),
+  marca: z.string().trim().min(1, 'Informe a marca.').max(120, 'Máximo de 120 caracteres.'),
   preco: z
     .string()
     .trim()
     .min(1, 'Informe o preço.')
-    .refine((valor) => Number.isFinite(Number(valor)), 'Preço inválido.')
-    .refine((valor) => Number(valor) > 0, 'O preço deve ser maior que zero.'),
+    .refine(precoValido, 'Informe um preço positivo com até duas casas decimais e dentro do limite suportado.'),
   estoque: z
     .string()
     .trim()
     .min(1, 'Informe o estoque.')
     .refine((valor) => Number.isInteger(Number(valor)), 'O estoque deve ser um número inteiro.')
-    .refine((valor) => Number(valor) >= 0, 'O estoque não pode ser negativo.'),
+    .refine((valor) => Number(valor) >= 0, 'O estoque não pode ser negativo.')
+    .refine((valor) => Number(valor) <= LIMITE_INTEIRO, 'O estoque ultrapassa o limite suportado.'),
 })
 
 type Formulario = z.infer<typeof esquema>
@@ -89,7 +90,7 @@ export function Produtos() {
     onError: (erro) => notificarErro(erro, 'Não foi possível alterar o status'),
   })
 
-  const produtos = consulta.data ?? []
+  const produtos = useMemo(() => consulta.data ?? [], [consulta.data])
 
   const contagens = useMemo(
     () => ({
@@ -434,6 +435,9 @@ function FormularioDeProduto({
       }
 
       await clienteDeConsultas.invalidateQueries({ queryKey: ['produtos'] })
+      if (editando) {
+        await clienteDeConsultas.invalidateQueries({ queryKey: ['movimentacoes', produto.id] })
+      }
       reset()
       aoFechar()
     } catch (erro) {
@@ -466,13 +470,13 @@ function FormularioDeProduto({
       <form onSubmit={handleSubmit(enviar)} className="grid gap-4" noValidate>
         <Campo rotulo="Nome" erro={errors.nome?.message} obrigatorio>
           {(propriedades) => (
-            <Entrada {...propriedades} {...register('nome')} placeholder="Ex.: Teclado sem fio" autoFocus />
+            <Entrada {...propriedades} {...register('nome')} placeholder="Ex.: Teclado sem fio" maxLength={160} autoFocus />
           )}
         </Campo>
 
         <Campo rotulo="Marca" erro={errors.marca?.message} obrigatorio>
           {(propriedades) => (
-            <Entrada {...propriedades} {...register('marca')} placeholder="Ex.: Logitech" />
+            <Entrada {...propriedades} {...register('marca')} placeholder="Ex.: Logitech" maxLength={120} />
           )}
         </Campo>
 
@@ -509,6 +513,7 @@ function FormularioDeProduto({
                 type="number"
                 step="1"
                 min="0"
+                max={LIMITE_INTEIRO}
                 inputMode="numeric"
                 placeholder="0"
                 className="numerico"

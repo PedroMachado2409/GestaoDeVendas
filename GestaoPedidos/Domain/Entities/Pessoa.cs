@@ -40,6 +40,6 @@ namespace GestaoPedidos.Domain.Entities
             => email.Trim().ToLowerInvariant();
 
         public static string NormalizarCpf(string cpf)
-            => new(cpf.Where(char.IsDigit).ToArray());
+            => new(cpf.Where(char.IsAsciiDigit).ToArray());
     }
 }

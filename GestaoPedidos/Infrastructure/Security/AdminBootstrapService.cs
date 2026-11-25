@@ -1,3 +1,5 @@
+using GestaoPedidos.Application.DTO.Usuarios;
+using GestaoPedidos.Application.Validators.Usuarios;
 using GestaoPedidos.Domain.Abstractions.Usuarios;
 using GestaoPedidos.Domain.Entities;
 using GestaoPedidos.Domain.Enum;
@@ -33,18 +35,24 @@ namespace GestaoPedidos.Infrastructure.Security
                 return;
             }
 
-            if (senha.Length < 10
-                || !senha.Any(char.IsLetter)
-                || !senha.Any(char.IsDigit))
+            var emailNormalizado = email.Trim().ToLowerInvariant();
+            var validacao = new UsuarioCreateValidator().Validate(new UsuarioCreateDTO
+            {
+                Nome = nome,
+                Email = emailNormalizado,
+                Senha = senha
+            });
+
+            if (!validacao.IsValid)
             {
                 throw new InvalidOperationException(
-                    "A senha de BootstrapAdmin deve ter ao menos 10 caracteres, uma letra e um número.");
+                    "Configuração inválida de BootstrapAdmin: " +
+                    string.Join(" ", validacao.Errors.Select(erro => erro.ErrorMessage)));
             }
 
             await using var scope = _scopeFactory.CreateAsyncScope();
             var repository = scope.ServiceProvider.GetRequiredService<IUsuarioRepository>();
             var passwordHasher = scope.ServiceProvider.GetRequiredService<IPasswordHasher>();
-            var emailNormalizado = email.Trim().ToLowerInvariant();
             var existente = await repository.ObterPorEmail(emailNormalizado);
 
             if (existente is not null)

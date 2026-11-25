@@ -10,7 +10,7 @@ namespace GestaoPedidosTests.Domain.Pedidos
     public class PedidoItemTests
     {
 
-        private readonly PedidoItem _item = new PedidoItem(produtoId: 1, preco:10m, quantidade:10);
+        private readonly PedidoItem _item = new PedidoItem(produtoId: 1, preco: 10m, quantidade: 10);
 
         [TestMethod]
         public void Deve_Cadastrar_PedidoItem_Quando_Quantidade_For_Maior_Que_Zero()
@@ -32,7 +32,7 @@ namespace GestaoPedidosTests.Domain.Pedidos
               new PedidoItem(_item.ProdutoId, _item.Preco, quantidade));
 
             Assert.AreEqual(PedidosExceptions.Pedido_QuantidadeInvalida, excecao.Message);
-            
+
         }
 
         [TestMethod]

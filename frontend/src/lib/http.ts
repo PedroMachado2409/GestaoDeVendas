@@ -1,6 +1,6 @@
-import { ErroApi, STATUS_SEM_RESPOSTA, type ProblemDetails } from './erros'
+import { ErroApi, STATUS_SEM_RESPOSTA, type ProblemDetails } from './erros.ts'
 
-export const URL_API = (import.meta.env.VITE_API_URL ?? 'http://localhost:5143').replace(/\/+$/, '')
+export const URL_API = (import.meta.env?.VITE_API_URL ?? 'http://localhost:5143').replace(/\/+$/, '')
 
 type Ouvinte = () => void
 
@@ -27,13 +27,21 @@ interface Opcoes {
 
 export async function requisitar<T>(caminho: string, opcoes: Opcoes = {}): Promise<T> {
   const { metodo = 'GET', corpo, anonimo = false, sinal } = opcoes
+  const tokenEnviado = anonimo ? null : tokenAtual
+
+  function conferirSessao() {
+    sinal?.throwIfAborted()
+    if (tokenEnviado && tokenEnviado !== tokenAtual) {
+      throw new DOMException('Requisição de uma sessão anterior.', 'AbortError')
+    }
+  }
 
   const cabecalhos = new Headers({ Accept: 'application/json' })
   if (corpo !== undefined) {
     cabecalhos.set('Content-Type', 'application/json')
   }
-  if (!anonimo && tokenAtual) {
-    cabecalhos.set('Authorization', `Bearer ${tokenAtual}`)
+  if (tokenEnviado) {
+    cabecalhos.set('Authorization', `Bearer ${tokenEnviado}`)
   }
 
   let resposta: Response
@@ -45,18 +53,22 @@ export async function requisitar<T>(caminho: string, opcoes: Opcoes = {}): Promi
       signal: sinal,
     })
   } catch (causa) {
-    if (causa instanceof DOMException && causa.name === 'AbortError') {
+    conferirSessao()
+    if (causa instanceof Error && causa.name === 'AbortError') {
       throw causa
     }
     throw new ErroApi(STATUS_SEM_RESPOSTA)
   }
 
+  conferirSessao()
+
   if (!resposta.ok) {
     const problema = await lerProblema(resposta)
+    conferirSessao()
 
     // 401 em requisição autenticada significa sessão morta: derruba a sessão
     // local antes de propagar, para a interface não insistir com o token velho.
-    if (resposta.status === 401 && !anonimo && tokenAtual) {
+    if (resposta.status === 401 && tokenEnviado) {
       aoPerderSessao?.()
     }
 
@@ -69,10 +81,14 @@ export async function requisitar<T>(caminho: string, opcoes: Opcoes = {}): Promi
 
   const tipo = resposta.headers.get('Content-Type') ?? ''
   if (!tipo.includes('json')) {
-    return (await resposta.text()) as T
+    const resultado = await resposta.text()
+    conferirSessao()
+    return resultado as T
   }
 
-  return (await resposta.json()) as T
+  const resultado = await resposta.json() as T
+  conferirSessao()
+  return resultado
 }
 
 async function lerProblema(resposta: Response): Promise<ProblemDetails> {

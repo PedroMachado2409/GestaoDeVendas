@@ -10,33 +10,38 @@ namespace GestaoPedidos.Application.UseCases.Pessoas.Commands
     public class CadastrarPessoaUseCase
     {
         private readonly IPessoaRepository _pessoaRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public CadastrarPessoaUseCase(IPessoaRepository pessoaRepository, IMapper mapper)
+        public CadastrarPessoaUseCase(IPessoaRepository pessoaRepository, IUnitOfWork unitOfWork, IMapper mapper)
         {
             _pessoaRepository = pessoaRepository;
+            _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
 
         public async Task<PessoaResponseDTO> Executar(PessoaCreateDTO dto)
         {
-            var pessoaExistente = await _pessoaRepository.ObterPorCpf(dto.Cpf);
+            var cpf = Pessoa.NormalizarCpf(dto.Cpf);
+            var email = Pessoa.NormalizarEmail(dto.Email);
+
+            var pessoaExistente = await _pessoaRepository.ObterPorCpf(cpf);
             if (pessoaExistente != null)
             {
                 throw new BadRequestException(PessoasExceptions.Pessoa_CpfExistente);
             }
 
-            var emailExistente = await _pessoaRepository.ObterPorEmail(dto.Email);
+            var emailExistente = await _pessoaRepository.ObterPorEmail(email);
             if (emailExistente != null)
             {
                 throw new BadRequestException(PessoasExceptions.Pessoa_EmailExistente);
             }
 
-            var novoPessoa = new Pessoa(dto.Nome, dto.Email, dto.Cpf, dto.TipoPessoa);
+            var novaPessoa = new Pessoa(dto.Nome, email, cpf, dto.TipoPessoa);
+            await _pessoaRepository.Cadastrar(novaPessoa);
+            await _unitOfWork.SalvarAlteracoes();
 
-            await _pessoaRepository.Cadastrar(novoPessoa);
-
-            return _mapper.Map<PessoaResponseDTO>(novoPessoa);
+            return _mapper.Map<PessoaResponseDTO>(novaPessoa);
         }
     }
 }

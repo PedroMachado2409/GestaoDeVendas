@@ -13,6 +13,8 @@ namespace GestaoPedidos.Application.Mapper
                           opt => opt.MapFrom(src => src.SubTotal));
 
             CreateMap<Pedido, PedidoResponseDTO>()
+                .ForMember(dest => dest.PessoaId,
+                           opt => opt.MapFrom(src => src.ClienteId))
                 .ForMember(dest => dest.Status,
                            opt => opt.MapFrom(src => src.Status.ToString()))
                 .ForMember(dest => dest.ValorTotal,

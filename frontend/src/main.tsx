@@ -33,6 +33,7 @@ const clienteDeConsultas = new QueryClient({
       refetchOnWindowFocus: false,
       // 401/403/404 não melhoram com repetição; erro de rede e 5xx, sim.
       retry: (tentativas, erro) => {
+        if (erro instanceof Error && erro.name === 'AbortError') return false
         if (erro instanceof ErroApi && erro.status >= 400 && erro.status < 500) return false
         return tentativas < 2
       },

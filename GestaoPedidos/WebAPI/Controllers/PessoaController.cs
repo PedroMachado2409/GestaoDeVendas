@@ -1,5 +1,4 @@
 using GestaoPedidos.Application.DTO.Pessoas;
-using GestaoPedidos.Application.UseCases.Clientes.Commands;
 using GestaoPedidos.Application.UseCases.Pessoas.Commands;
 using GestaoPedidos.Application.UseCases.Pessoas.Queries;
 using Microsoft.AspNetCore.Authorization;
@@ -38,8 +37,8 @@ namespace GestaoPedidos.WebAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> ListarPessoas()
-            => Ok(await _listarPessoas.Executar());
+        public async Task<IActionResult> ListarPessoas([FromQuery] int pagina = 1, [FromQuery] int tamanhoPagina = 20)
+            => Ok(await _listarPessoas.Executar(pagina, tamanhoPagina));
 
         [HttpGet("{id}")]
         public async Task<IActionResult> ObterPessoaPorId(int id)

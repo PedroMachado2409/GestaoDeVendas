@@ -110,7 +110,7 @@ export function SeletorComPesquisa<T>({
     const item = itens.find((candidato) => obterId(candidato) === numero)
 
     if (!item) {
-      definirErro(`Nenhum ${nomeDaEntidade} com o código ${numero}.`)
+      definirErro(`Nenhum registro encontrado com o código ${numero}.`)
       return
     }
 
@@ -166,7 +166,7 @@ export function SeletorComPesquisa<T>({
             inputMode="numeric"
             autoComplete="off"
             placeholder="Código"
-            aria-label={`Código do ${nomeDaEntidade}`}
+            aria-label={`Código: ${nomeDaEntidade}`}
             aria-invalid={Boolean(erro) || invalido}
             aria-describedby={descritores}
             className="numerico"

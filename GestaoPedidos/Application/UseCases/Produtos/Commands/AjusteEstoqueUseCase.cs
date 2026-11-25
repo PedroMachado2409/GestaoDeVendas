@@ -17,7 +17,7 @@ namespace GestaoPedidos.Application.UseCases.Produtos.Commands
         private readonly ObterUsuarioAutenticadoUseCase _obterUsuarioAutenticadoUseCase;
         private readonly IUnitOfWork _unitOfWork;
 
-        public AjusteEstoqueUseCase (IProdutoRepository produtoRepository, IMapper mapper, IMovimentacaoEstoqueRepository movimentacaoEstoqueRepository, IUnitOfWork unitOfWork, ObterUsuarioAutenticadoUseCase obterUsuarioAutenticadoUseCase)
+        public AjusteEstoqueUseCase(IProdutoRepository produtoRepository, IMapper mapper, IMovimentacaoEstoqueRepository movimentacaoEstoqueRepository, IUnitOfWork unitOfWork, ObterUsuarioAutenticadoUseCase obterUsuarioAutenticadoUseCase)
         {
             _produtoRepository = produtoRepository;
             _mapper = mapper;
@@ -36,6 +36,12 @@ namespace GestaoPedidos.Application.UseCases.Produtos.Commands
             }
 
             var usuario = await _obterUsuarioAutenticadoUseCase.Executar();
+            if (usuario.Role != UserRole.Admin)
+            {
+                throw new ForbiddenException("Somente um administrador pode ajustar o estoque.");
+            }
+
+            produto.AjusteEstoque(dto.Quantidade);
 
             var tipo = dto.Quantidade > 0
                 ? TipoMovimentacao.Entrada
@@ -50,7 +56,6 @@ namespace GestaoPedidos.Application.UseCases.Produtos.Commands
                 tipo,
                 "Ajuste manual de estoque");
 
-            produto.AjusteEstoque(dto.Quantidade);
             await _movimentacaoEstoqueRepository.Cadastrar(novaMovimentacaoEstoque);
             await _unitOfWork.SalvarAlteracoes();
 

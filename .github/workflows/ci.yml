@@ -51,4 +51,5 @@ jobs:
           dotnet ef migrations has-pending-model-changes
           --project GestaoPedidos.csproj
           --startup-project GestaoPedidos.csproj
+          --configuration Release
           --no-build

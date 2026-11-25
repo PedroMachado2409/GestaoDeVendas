@@ -21,6 +21,7 @@ namespace GestaoPedidos.Domain.Entities
 
         public Produto(string nome, string marca, int estoque, decimal preco)
         {
+            ValidarDados(nome, marca, estoque, preco);
             Nome = nome.Trim();
             Marca = marca.Trim();
             Estoque = estoque;
@@ -31,11 +32,7 @@ namespace GestaoPedidos.Domain.Entities
 
         public void Atualizar(string nome, string marca, int estoque, decimal preco)
         {
-            if (estoque < 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(estoque));
-            }
-
+            ValidarDados(nome, marca, estoque, preco);
             Nome = nome.Trim();
             Marca = marca.Trim();
             Estoque = estoque;
@@ -64,33 +61,36 @@ namespace GestaoPedidos.Domain.Entities
                 throw new ConflictException(ProdutoExceptions.Produto_EstoqueInsuficiente);
             }
 
-            QuantidadeReservada += quantidade;
+            var novaReserva = SomarQuantidades(QuantidadeReservada, quantidade);
+            QuantidadeReservada = novaReserva;
             Estoque -= quantidade;
             AtualizarVersao();
         }
 
         public void AjusteEstoque(int quantidade)
         {
-            if(quantidade == 0)
+            if (quantidade == 0)
             {
                 throw new BadRequestException(ProdutoExceptions.Produto_AjusteNaoPodeSerZero);
             }
-            if(quantidade + Estoque < 0)
+            var novoEstoque = (long)Estoque + quantidade;
+            if (novoEstoque < 0)
             {
                 throw new BadRequestException(ProdutoExceptions.Produto_EstoqueNaoPodeSerNegativo);
             }
 
-            Estoque += quantidade;
+            Estoque = SomarQuantidades(Estoque, quantidade);
             AtualizarVersao();
-            
+
         }
 
         public void CancelarReserva(int quantidade)
         {
             ValidarReservaDeVenda(quantidade);
 
+            var novoEstoque = SomarQuantidades(Estoque, quantidade);
             QuantidadeReservada -= quantidade;
-            Estoque += quantidade;
+            Estoque = novoEstoque;
             AtualizarVersao();
         }
 
@@ -106,7 +106,7 @@ namespace GestaoPedidos.Domain.Entities
         {
             ValidarQuantidadePositiva(quantidade);
 
-            QuantidadeCompradaPendente += quantidade;
+            QuantidadeCompradaPendente = SomarQuantidades(QuantidadeCompradaPendente, quantidade);
             AtualizarVersao();
         }
 
@@ -114,8 +114,9 @@ namespace GestaoPedidos.Domain.Entities
         {
             ValidarCompraPendente(quantidade);
 
+            var novoEstoque = SomarQuantidades(Estoque, quantidade);
             QuantidadeCompradaPendente -= quantidade;
-            Estoque += quantidade;
+            Estoque = novoEstoque;
             AtualizarVersao();
         }
 
@@ -153,6 +154,25 @@ namespace GestaoPedidos.Domain.Entities
             {
                 throw new BadRequestException(ProdutoExceptions.Produto_QuantidadeInvalida);
             }
+        }
+
+        private static void ValidarDados(string nome, string marca, int estoque, decimal preco)
+        {
+            ArgumentException.ThrowIfNullOrWhiteSpace(nome);
+            ArgumentException.ThrowIfNullOrWhiteSpace(marca);
+            ArgumentOutOfRangeException.ThrowIfNegative(estoque);
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(preco);
+        }
+
+        private static int SomarQuantidades(int saldo, int quantidade)
+        {
+            var resultado = (long)saldo + quantidade;
+            if (resultado > int.MaxValue)
+            {
+                throw new BadRequestException("A quantidade ultrapassa o limite suportado pelo estoque.");
+            }
+
+            return (int)resultado;
         }
 
         private void AtualizarVersao() => Versao = Guid.NewGuid();

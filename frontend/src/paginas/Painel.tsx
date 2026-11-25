@@ -31,7 +31,7 @@ import {
   formatarNumero,
   pluralizar,
 } from '@/lib/utils'
-import { tonsDeStatus } from './Pedidos'
+import { tonsDeStatus } from '@/pedidos/tipos'
 import { filtrarPedidosPorTipo } from '@/pedidos/tipos'
 
 const MESES_NO_GRAFICO = 6
@@ -57,8 +57,8 @@ export function Painel() {
     queryFn: ({ signal }) => pedidosApi.listar(signal),
   })
 
-  const pessoas = consultaPessoas.data ?? []
-  const produtos = consultaProdutos.data ?? []
+  const pessoas = useMemo(() => consultaPessoas.data ?? [], [consultaPessoas.data])
+  const produtos = useMemo(() => consultaProdutos.data ?? [], [consultaProdutos.data])
   const pedidos = useMemo(
     () => filtrarPedidosPorTipo(consultaPedidos.data ?? SEM_PEDIDOS, 'Saida'),
     [consultaPedidos.data],
@@ -366,7 +366,7 @@ export function Painel() {
                   </span>
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm text-ink">
-                      {pedido.clienteNome || `Cliente #${pedido.clienteId}`}
+                      {pedido.pessoaNome || `Cliente #${pedido.pessoaId}`}
                     </p>
                     <p className="numerico truncate text-xs text-ink-muted">
                       {formatarData(pedido.dataCadastro)} · {pedido.itens.length}{' '}

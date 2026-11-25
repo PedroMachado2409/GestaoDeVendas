@@ -10,7 +10,7 @@ import { formatarMoeda } from '@/lib/utils'
 
 import { descreverVencimento, formatarDataISO, hoje } from './datas'
 import { descreverParcelas, formatarPercentual, gerarParcelas, lerNumero } from './prazos'
-import type { NovoTitulo } from './contexto'
+import type { NovoTitulo } from './contextoFinanceiro'
 import type { Contraparte, DataISO, PrazoPagamento, TipoTitulo } from './tipos'
 
 interface Propriedades {

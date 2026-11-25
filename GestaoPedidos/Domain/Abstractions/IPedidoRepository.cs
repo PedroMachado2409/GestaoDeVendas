@@ -7,10 +7,10 @@ namespace GestaoPedidos.Domain.Abstractions
         Task Cadastrar(Pedido pedido);
         Task<List<Pedido>> Listar();
         Task<List<Pedido>> ListarPorVendedor(int usuarioId);
-       
+
 
         Task<Pedido?> ObterPorId(int id);
         Task Atualizar(Pedido pedido);
-        
+
     }
 }

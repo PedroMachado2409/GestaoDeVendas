@@ -17,7 +17,7 @@ namespace GestaoPedidos.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.14")
+                .HasAnnotation("ProductVersion", "8.0.28")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -274,6 +274,7 @@ namespace GestaoPedidos.Migrations
                         .HasColumnType("character varying(100)");
 
                     b.Property<Guid>("VersaoToken")
+                        .IsConcurrencyToken()
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
                         .HasDefaultValueSql("gen_random_uuid()");
@@ -318,7 +319,7 @@ namespace GestaoPedidos.Migrations
 
             modelBuilder.Entity("GestaoPedidos.Domain.Entities.Pedidos.PedidoItem", b =>
                 {
-                    b.HasOne("GestaoPedidos.Domain.Entities.Pedidos.Pedido", null)
+                    b.HasOne("GestaoPedidos.Domain.Entities.Pedidos.Pedido", "Pedido")
                         .WithMany("Itens")
                         .HasForeignKey("PedidoId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -329,6 +330,8 @@ namespace GestaoPedidos.Migrations
                         .HasForeignKey("ProdutoId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Pedido");
                 });
 
             modelBuilder.Entity("GestaoPedidos.Domain.Entities.Pedidos.Pedido", b =>

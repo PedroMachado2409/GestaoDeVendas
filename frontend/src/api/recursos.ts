@@ -1,4 +1,5 @@
-import { http, URL_API } from '@/lib/http'
+import { http, URL_API } from '../lib/http.ts'
+import { listarTodasPaginas } from '../lib/paginacao.ts'
 
 import type {
   AjusteEstoque,
@@ -18,10 +19,14 @@ import type {
   UsuarioCreate,
   UsuarioUpdate,
   UsuarioUpdateSenha,
-} from './tipos'
+} from './tipos.ts'
 
 export const pessoasApi = {
-  listar: (sinal?: AbortSignal) => http.get<Pessoa[]>('/api/Pessoa', { sinal }),
+  listar: (sinal?: AbortSignal) => listarTodasPaginas(
+    (pagina, tamanhoPagina, sinal) =>
+      http.get<Pessoa[]>(`/api/Pessoa?pagina=${pagina}&tamanhoPagina=${tamanhoPagina}`, { sinal }),
+    sinal,
+  ),
   obter: (id: number) => http.get<Pessoa>(`/api/Pessoa/${id}`),
   criar: (dados: PessoaCreate) => http.post<Pessoa>('/api/Pessoa', dados),
   atualizar: ({ id, ...dados }: PessoaUpdate) =>
@@ -31,7 +36,11 @@ export const pessoasApi = {
 }
 
 export const produtosApi = {
-  listar: (sinal?: AbortSignal) => http.get<Produto[]>('/api/Produto', { sinal }),
+  listar: (sinal?: AbortSignal) => listarTodasPaginas(
+    (pagina, tamanhoPagina, sinal) =>
+      http.get<Produto[]>(`/api/Produto?pagina=${pagina}&tamanhoPagina=${tamanhoPagina}`, { sinal }),
+    sinal,
+  ),
   obter: (id: number) => http.get<Produto>(`/api/Produto/${id}`),
   criar: (dados: ProdutoCreate) => http.post<Produto>('/api/Produto', dados),
   atualizar: ({ id, ...dados }: ProdutoUpdate) =>
@@ -50,7 +59,7 @@ export const movimentacoesApi = {
 }
 
 export const pedidosApi = {
-  /** Todos os pedidos, com cliente e vendedor carregados. Sem paginação. */
+  /** Todos os pedidos, com pessoa e vendedor carregados. Sem paginação. */
   listar: (sinal?: AbortSignal) => http.get<Pedido[]>('/api/Pedido', { sinal }),
   obter: (id: number) => http.get<Pedido>(`/api/Pedido/${id}`),
   criar: (dados: CriarPedido) => http.post<Pedido>('/api/Pedido', dados),

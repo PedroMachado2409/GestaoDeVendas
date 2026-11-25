@@ -12,6 +12,7 @@ import { Etiqueta } from '@/componentes/ui/Etiqueta'
 import { Modal } from '@/componentes/ui/Modal'
 import { SeletorComPesquisa } from '@/componentes/ui/SeletorComPesquisa'
 import { notificarErro } from '@/lib/notificacoes'
+import { LIMITE_INTEIRO } from '@/lib/numeros'
 import { cn, formatarMoeda, formatarNumero } from '@/lib/utils'
 import { podeOperarPedido } from './tipos'
 
@@ -35,7 +36,7 @@ export function NovoPedido({ aberto, tipo, aoFechar, aoCriar }: Propriedades) {
   const { usuario } = useSessao()
   const permitido = podeOperarPedido(tipo, usuario?.role)
   const clienteDeConsultas = useQueryClient()
-  const [clienteId, definirClienteId] = useState<number | null>(null)
+  const [pessoaId, definirPessoaId] = useState<number | null>(null)
   const [itens, definirItens] = useState<ItemEmMontagem[]>([])
   // Venda retira do disponível; compra só anota a pendência e não depende dele.
   const ehVenda = tipo === 'Saida'
@@ -61,7 +62,7 @@ export function NovoPedido({ aberto, tipo, aoFechar, aoCriar }: Propriedades) {
 
   useEffect(() => {
     if (!aberto) {
-      definirClienteId(null)
+      definirPessoaId(null)
       definirItens([])
     }
   }, [aberto])
@@ -97,9 +98,10 @@ export function NovoPedido({ aberto, tipo, aoFechar, aoCriar }: Propriedades) {
   }, 0)
 
   function alterarQuantidade(produtoId: number, quantidade: number) {
+    if (!Number.isFinite(quantidade)) return
     const produto = porId.get(produtoId)
-    const limite = ehVenda ? (produto?.estoque ?? 1) : Number.MAX_SAFE_INTEGER
-    const ajustada = Math.min(Math.max(1, quantidade), Math.max(1, limite))
+    const limite = ehVenda ? (produto?.estoque ?? 1) : LIMITE_INTEIRO
+    const ajustada = Math.min(Math.max(1, Math.trunc(quantidade)), Math.max(1, limite))
     definirItens((atuais) =>
       atuais.map((item) => (item.produtoId === produtoId ? { ...item, quantidade: ajustada } : item)),
     )
@@ -109,7 +111,14 @@ export function NovoPedido({ aberto, tipo, aoFechar, aoCriar }: Propriedades) {
     definirItens((atuais) => atuais.filter((item) => item.produtoId !== produtoId))
   }
 
-  const podeEnviar = permitido && clienteId !== null && itens.length > 0 && !enviando
+  const itensValidos = itens.every((item) => {
+    const produto = porId.get(item.produtoId)
+    return produto?.ativo && Number.isInteger(item.quantidade) && item.quantidade > 0
+      && item.quantidade <= LIMITE_INTEIRO && (!ehVenda || item.quantidade <= produto.estoque)
+  })
+  const podeEnviar = permitido && pessoaId !== null
+    && clientes.some((pessoa) => pessoa.id === pessoaId && pessoa.ativo)
+    && itens.length > 0 && itensValidos && !enviando
 
   async function enviar() {
     if (!podeEnviar) {
@@ -119,7 +128,7 @@ export function NovoPedido({ aberto, tipo, aoFechar, aoCriar }: Propriedades) {
 
     try {
       const pedido = await pedidosApi.criar({
-        clienteId,
+        pessoaId,
         tipoMovimentacao: tipo,
         itens: itens.map(({ produtoId, quantidade }) => ({ produtoId, quantidade })),
       })
@@ -186,12 +195,17 @@ export function NovoPedido({ aberto, tipo, aoFechar, aoCriar }: Propriedades) {
       }
     >
       <div className="grid gap-5">
+        {!itensValidos && (
+          <p role="alert" className="text-sm text-negative-ink">
+            Um produto ficou indisponível ou a quantidade ultrapassa o estoque. Revise os itens do pedido.
+          </p>
+        )}
         <Campo
-          rotulo="Cliente"
+          rotulo={ehVenda ? 'Cliente' : 'Fornecedor'}
           obrigatorio
           dica={
             clientesAtivos === 0 && !consultaClientes.isPending
-              ? 'Nenhum cliente ativo. Ative ou cadastre um cliente antes de montar o pedido.'
+              ? 'Nenhuma pessoa ativa. Ative ou cadastre uma pessoa antes de montar o pedido.'
               : 'Digite o código e tecle Enter, ou pesquise pelo nome.'
           }
         >
@@ -199,17 +213,17 @@ export function NovoPedido({ aberto, tipo, aoFechar, aoCriar }: Propriedades) {
             <SeletorComPesquisa
               {...propriedades}
               itens={clientes}
-              valor={clienteId}
-              aoEscolher={(cliente) => definirClienteId(cliente.id)}
-              aoLimpar={() => definirClienteId(null)}
+              valor={pessoaId}
+              aoEscolher={(cliente) => definirPessoaId(cliente.id)}
+              aoLimpar={() => definirPessoaId(null)}
               obterId={(cliente) => cliente.id}
               obterTitulo={(cliente) => cliente.nome}
               obterDescricao={(cliente) => cliente.email}
               obterTextoDeBusca={(cliente) => cliente.cpf}
               obterMotivoIndisponivel={(cliente) => (cliente.ativo ? null : 'Inativo')}
-              nomeDaEntidade="cliente"
-              placeholder="Pesquisar cliente"
-              tituloDoModal="Pesquisar cliente"
+              nomeDaEntidade="pessoa"
+              placeholder={ehVenda ? 'Pesquisar cliente' : 'Pesquisar fornecedor'}
+              tituloDoModal={ehVenda ? 'Pesquisar cliente' : 'Pesquisar fornecedor'}
               descricaoDoModal="Busque por nome, e-mail, CPF ou código."
               carregando={consultaClientes.isPending}
             />
@@ -257,7 +271,7 @@ export function NovoPedido({ aberto, tipo, aoFechar, aoCriar }: Propriedades) {
 
           {itens.length === 0 ? (
             <p className="rounded-lg border border-dashed border-line-strong px-4 py-8 text-center text-sm text-ink-muted">
-              Nenhum item no pedido. A API recusa pedidos sem itens.
+              Nenhum item no pedido. Adicione pelo menos um produto.
             </p>
           ) : (
             <ul className="grid gap-2">
@@ -296,7 +310,7 @@ function LinhaDeItem({
   aoAlterar: (quantidade: number) => void
   aoRemover: () => void
 }) {
-  const noLimite = limitarAoEstoque && quantidade >= produto.estoque
+  const noLimite = quantidade >= (limitarAoEstoque ? produto.estoque : LIMITE_INTEIRO)
 
   return (
     <li className="flex flex-wrap items-center gap-x-3 gap-y-2 rounded-lg border border-line bg-surface-2/50 px-3 py-2.5">
@@ -323,7 +337,8 @@ function LinhaDeItem({
           type="number"
           value={quantidade}
           min={1}
-          max={limitarAoEstoque ? produto.estoque : undefined}
+          max={limitarAoEstoque ? produto.estoque : LIMITE_INTEIRO}
+          step={1}
           aria-label={`Quantidade de ${produto.nome}`}
           onChange={(evento) => aoAlterar(Number(evento.target.value))}
           className="numerico w-12 border-0 bg-transparent text-center text-sm font-medium text-ink outline-none"
@@ -355,7 +370,7 @@ function LinhaDeItem({
       {noLimite && (
         <Etiqueta tom="atencao" className="w-full sm:w-auto">
           <AlertTriangle aria-hidden className="size-3" />
-          No limite do estoque
+          {limitarAoEstoque ? 'No limite do estoque' : 'No limite de quantidade'}
         </Etiqueta>
       )}
     </li>

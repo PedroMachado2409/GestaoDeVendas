@@ -14,11 +14,9 @@ namespace GestaoPedidos.Infrastructure.Repositories
             _context = context;
         }
 
-        public Task<List<Produto>> Listar()
-            => _context.Produtos
-                .AsNoTracking()
-                .OrderBy(p => p.Id)
-                .ToListAsync();
+        public Task<List<Produto>> Listar(int pagina, int tamanhoPagina)
+            => _context.Produtos.AsNoTracking().OrderBy(p => p.Id)
+                .Skip((pagina - 1) * tamanhoPagina).Take(tamanhoPagina).ToListAsync();
 
         public Task<Produto?> ObterPorId(int id)
             => _context.Produtos.FirstOrDefaultAsync(p => p.Id == id);
@@ -34,14 +32,13 @@ namespace GestaoPedidos.Infrastructure.Repositories
         public async Task<Produto> Cadastrar(Produto produto)
         {
             await _context.Produtos.AddAsync(produto);
-            await _context.SaveChangesAsync();
             return produto;
         }
 
-        public async Task Atualizar(Produto produto)
+        public Task Atualizar(Produto produto)
         {
             _context.Produtos.Update(produto);
-            await _context.SaveChangesAsync();
+            return Task.CompletedTask;
         }
 
     }

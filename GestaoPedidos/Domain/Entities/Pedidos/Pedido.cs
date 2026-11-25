@@ -23,17 +23,37 @@ namespace GestaoPedidos.Domain.Entities.Pedidos
 
         public Pedido(int clienteId, List<PedidoItem> itens, int usuarioId, decimal valorTotal, TipoMovimentacao tipoMovimentacao)
         {
-            if (itens is null || !itens.Any())
+            if (itens is null || itens.Count == 0 || itens.Any(item => item is null))
             {
                 throw new BadRequestException(PedidosExceptions.Pedido_ItemObrigatório);
             }
 
+            if (!System.Enum.IsDefined(tipoMovimentacao))
+            {
+                throw new BadRequestException("Tipo de movimentação inválido.");
+            }
+
+            if (itens.Select(item => item.ProdutoId).Distinct().Count() != itens.Count)
+            {
+                throw new BadRequestException("Não é permitido repetir o mesmo produto no pedido.");
+            }
+
+            var totalCalculado = itens.Sum(item => item.SubTotal);
+            if (valorTotal != totalCalculado)
+            {
+                throw new BadRequestException("O valor total deve corresponder à soma dos itens do pedido.");
+            }
+
             ClienteId = clienteId;
             UsuarioId = usuarioId;
-            ValorTotal = valorTotal;
+            ValorTotal = totalCalculado;
             TipoMovimentacao = tipoMovimentacao;
             Status = StatusPedido.Aberto;
-            _itens = new List<PedidoItem>(itens);
+            _itens = itens.Select(item => new PedidoItem(item.ProdutoId, item.Preco, item.Quantidade)).ToList();
+            foreach (var item in _itens)
+            {
+                item.VincularAoPedido(this);
+            }
         }
 
         public void AtualizarItem(int produtoId, int novaQuantidade)
@@ -52,17 +72,19 @@ namespace GestaoPedidos.Domain.Entities.Pedidos
 
             if (novaQuantidade <= 0)
             {
-                _itens.Remove(item);
-
-                if (!_itens.Any())
+                if (_itens.Count == 1)
                 {
                     throw new BadRequestException(PedidosExceptions.Pedido_ItemObrigatório);
                 }
 
-                return;
+                _itens.Remove(item);
+            }
+            else
+            {
+                item.DefinirQuantidade(novaQuantidade);
             }
 
-            item.AlterarQuantidade(novaQuantidade);
+            ValorTotal = _itens.Sum(i => i.SubTotal);
         }
 
         public void Finalizar()
