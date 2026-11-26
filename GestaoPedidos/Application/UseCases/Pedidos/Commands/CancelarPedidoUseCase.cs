@@ -15,6 +15,7 @@ namespace GestaoPedidos.Application.UseCases.Pedidos.Commands
         private readonly IPedidoRepository _pedidoRepository;
         private readonly IProdutoRepository _produtoRepository;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly ITituloFinanceiroRepository _tituloFinanceiroRepository;
         private readonly ObterUsuarioAutenticadoUseCase _obterUsuarioAutenticadoUseCase;
 
         public CancelarPedidoUseCase(
@@ -22,6 +23,7 @@ namespace GestaoPedidos.Application.UseCases.Pedidos.Commands
             IPedidoRepository pedidoRepository,
             IProdutoRepository produtoRepository,
             IUnitOfWork unitOfWork,
+            ITituloFinanceiroRepository tituloFinanceiroRepository,
             ObterUsuarioAutenticadoUseCase obterUsuarioAutenticadoUseCase)
         {
             _mapper = mapper;
@@ -29,6 +31,7 @@ namespace GestaoPedidos.Application.UseCases.Pedidos.Commands
             _produtoRepository = produtoRepository;
             _unitOfWork = unitOfWork;
             _obterUsuarioAutenticadoUseCase = obterUsuarioAutenticadoUseCase;
+            _tituloFinanceiroRepository = tituloFinanceiroRepository;
         }
 
         public Task<PedidoResponseDTO> Executar(int pedidoId)
@@ -36,6 +39,8 @@ namespace GestaoPedidos.Application.UseCases.Pedidos.Commands
             {
                 var usuario = await _obterUsuarioAutenticadoUseCase.Executar();
                 var pedido = await _pedidoRepository.ObterPorId(pedidoId);
+                var titulo = await _tituloFinanceiroRepository.ObterPorOrigem(pedido?.Id, OrigemTitulo.Pedido);
+                
                 if (pedido is null || (pedido.UsuarioId != usuario.Id && usuario.Role != UserRole.Admin))
                 {
                     throw new NotFoundException(PedidosExceptions.Pedido_NaoEncontrado);
@@ -43,7 +48,7 @@ namespace GestaoPedidos.Application.UseCases.Pedidos.Commands
 
                 if (pedido.TipoMovimentacao == TipoMovimentacao.Entrada && usuario.Role != UserRole.Admin)
                 {
-                    throw new ForbiddenException("Somente um administrador pode cancelar pedidos de compra.");
+                    throw new ForbiddenException("Somente um administrador pode cancelar pedidos");
                 }
 
                 if (pedido.Status == StatusPedido.Cancelado)
@@ -76,7 +81,13 @@ namespace GestaoPedidos.Application.UseCases.Pedidos.Commands
                         produto.CancelarCompraPendente(item.Quantidade);
                     }
                 }
+                if(titulo is not null)
+                {
+                    titulo.Cancelar();
+                    await _tituloFinanceiroRepository.Atualizar(titulo);
+                }
 
+                
                 pedido.Cancelar();
                 await _pedidoRepository.Atualizar(pedido);
                 await _unitOfWork.SalvarAlteracoes();

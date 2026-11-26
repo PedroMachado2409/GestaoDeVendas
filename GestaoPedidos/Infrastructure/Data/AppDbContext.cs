@@ -12,6 +12,7 @@ namespace GestaoPedidos.Infrastructure.Data
         public DbSet<Pedido> Pedidos => Set<Pedido>();
         public DbSet<MovimentacaoEstoque> MovimentacoesEstoque => Set<MovimentacaoEstoque>();
         public DbSet<PedidoItem> PedidoItens => Set<PedidoItem>();
+        public DbSet<TituloFinanceiro> TitulosFinanceiros => Set<TituloFinanceiro>();
 
         public AppDbContext(DbContextOptions<AppDbContext> options)
             : base(options)
@@ -21,6 +22,49 @@ namespace GestaoPedidos.Infrastructure.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<TituloFinanceiro>(entity =>
+            {
+                entity.Ignore(t => t.ValorBaixado);
+                entity.Ignore(t => t.Saldo);
+                entity.HasMany(t => t.Baixas).WithOne()
+                    .HasForeignKey(b => b.TituloFinanceiroId).OnDelete(DeleteBehavior.Restrict);
+                entity.Navigation(t => t.Baixas).UsePropertyAccessMode(PropertyAccessMode.Field);
+
+                entity.Property(t => t.Descricao)
+                    .HasMaxLength(200);
+
+                entity.Property(t => t.ValorOriginal)
+                    .HasPrecision(18, 2);
+
+                entity.Property(t => t.Versao)
+                    .HasDefaultValueSql("gen_random_uuid()")
+                    .IsConcurrencyToken();
+
+                entity.HasOne<Pessoa>()
+                    .WithMany()
+                    .HasForeignKey(t => t.PessoaId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.ToTable("TitulosFinanceiros", table =>
+                {
+                    table.HasCheckConstraint(
+                        "CK_TitulosFinanceiros_ValorOriginal_Positivo",
+                        "\"ValorOriginal\" > 0");
+                });
+            });
+
+            modelBuilder.Entity<BaixaTituloFinanceiro>(entity =>
+            {
+                entity.ToTable("BaixasTitulosFinanceiros", table =>
+                    table.HasCheckConstraint("CK_BaixasTitulosFinanceiros_Valor_Positivo", "\"Valor\" > 0"));
+                entity.Property(b => b.Valor).HasPrecision(18, 2);
+                entity.HasIndex(b => new { b.TituloFinanceiroId, b.OperacaoId }).IsUnique();
+                entity.HasOne<Usuario>().WithMany().HasForeignKey(b => b.UsuarioId)
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne<Usuario>().WithMany().HasForeignKey(b => b.UsuarioEstornoId)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
 
             modelBuilder.Entity<Pessoa>(entity =>
             {

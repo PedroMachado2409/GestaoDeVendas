@@ -120,6 +120,9 @@
   <data name="Titulo_DescricaoInvalida" xml:space="preserve">
     <value>A descrição deve possui entre 1 e 200 caracteres</value>
   </data>
+  <data name="Titulo_DescricaoPedido" xml:space="preserve">
+    <value>Título referente ao pedido {0}</value>
+  </data>
   <data name="Titulo_TipoInvalido" xml:space="preserve">
     <value>Tipo de título financeiro inválido.</value>
   </data>
@@ -133,4 +136,24 @@
   <data name="Titulo_SemEstarAbertoNaoPodeCancelar" xml:space="preserve">
     <value>Somente títulos sem baixas podem ser cancelados.</value>
   </data>
+  <data name="Titulo_NaoEncontrado" xml:space="preserve">
+    <value>Título financeiro não encontrado.</value>
+  </data>
+  <data name="Titulo_SemPermissao" xml:space="preserve">
+    <value>Somente um administrador pode acessar o financeiro.</value>
+  </data>
+  <data name="Titulo_PessoaObrigatoria" xml:space="preserve">
+    <value>Informe uma pessoa válida para o título financeiro.</value>
+  </data>
+  <data name="Titulo_VencimentoObrigatorio" xml:space="preserve">
+    <value>Informe a data de vencimento do título financeiro.</value>
+  </data>
+  <data name="Baixa_OperacaoObrigatoria" xml:space="preserve"><value>Informe o identificador da operação de baixa.</value></data>
+  <data name="Baixa_OperacaoReutilizada" xml:space="preserve"><value>Esta operação de baixa já foi utilizada com outros dados.</value></data>
+  <data name="Baixa_TituloIndisponivel" xml:space="preserve"><value>Somente títulos em aberto ou parcialmente baixados podem receber baixas.</value></data>
+  <data name="Baixa_ValorAcimaDoSaldo" xml:space="preserve"><value>O valor da baixa não pode ultrapassar o saldo do título.</value></data>
+  <data name="Baixa_DataInvalida" xml:space="preserve"><value>Informe uma data de baixa válida, sem data futura.</value></data>
+  <data name="Baixa_FormaInvalida" xml:space="preserve"><value>Forma de pagamento inválida.</value></data>
+  <data name="Baixa_UsuarioObrigatorio" xml:space="preserve"><value>Informe o usuário responsável pela baixa.</value></data>
+  <data name="Baixa_NaoEncontrada" xml:space="preserve"><value>Baixa não encontrada neste título.</value></data>
 </root>

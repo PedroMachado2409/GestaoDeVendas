@@ -61,6 +61,15 @@ namespace GestaoPedidos.Domain.Exceptions.TituloFinanceiro {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Título referente ao pedido {0}.
+        /// </summary>
+        public static string Titulo_DescricaoPedido {
+            get {
+                return ResourceManager.GetString("Titulo_DescricaoPedido", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a A descrição deve possui entre 1 e 200 caracteres.
         /// </summary>
         public static string Titulo_DescricaoInvalida {
@@ -98,8 +107,53 @@ namespace GestaoPedidos.Domain.Exceptions.TituloFinanceiro {
         }
         
         /// <summary>
-        ///   Consulta uma cadeia de caracteres localizada semelhante a O valor deve ser positivo, possuir até 2 casas decimais e respeitar o limite de 18 dígitos..
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Título financeiro não encontrado.
         /// </summary>
+        public static string Titulo_NaoEncontrado {
+            get {
+                return ResourceManager.GetString("Titulo_NaoEncontrado", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Somente um administrador pode acessar o financeiro.
+        /// </summary>
+        public static string Titulo_SemPermissao {
+            get {
+                return ResourceManager.GetString("Titulo_SemPermissao", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Informe uma pessoa válida para o título financeiro.
+        /// </summary>
+        public static string Titulo_PessoaObrigatoria {
+            get {
+                return ResourceManager.GetString("Titulo_PessoaObrigatoria", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Informe a data de vencimento do título financeiro.
+        /// </summary>
+        public static string Titulo_VencimentoObrigatorio {
+            get {
+                return ResourceManager.GetString("Titulo_VencimentoObrigatorio", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a O valor deve ser positivo, possuir até 2 casas decimais e respeitar o limite de 18 dígitos.
+        /// </summary>
+        public static string Baixa_OperacaoObrigatoria => ResourceManager.GetString("Baixa_OperacaoObrigatoria", resourceCulture);
+        public static string Baixa_OperacaoReutilizada => ResourceManager.GetString("Baixa_OperacaoReutilizada", resourceCulture);
+        public static string Baixa_TituloIndisponivel => ResourceManager.GetString("Baixa_TituloIndisponivel", resourceCulture);
+        public static string Baixa_ValorAcimaDoSaldo => ResourceManager.GetString("Baixa_ValorAcimaDoSaldo", resourceCulture);
+        public static string Baixa_DataInvalida => ResourceManager.GetString("Baixa_DataInvalida", resourceCulture);
+        public static string Baixa_FormaInvalida => ResourceManager.GetString("Baixa_FormaInvalida", resourceCulture);
+        public static string Baixa_UsuarioObrigatorio => ResourceManager.GetString("Baixa_UsuarioObrigatorio", resourceCulture);
+        public static string Baixa_NaoEncontrada => ResourceManager.GetString("Baixa_NaoEncontrada", resourceCulture);
+
         public static string Titulo_ValorInvalido {
             get {
                 return ResourceManager.GetString("Titulo_ValorInvalido", resourceCulture);

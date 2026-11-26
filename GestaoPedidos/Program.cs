@@ -225,6 +225,7 @@ builder.Services.AddScoped<IProdutoRepository, ProdutoRepository>();
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<IPedidoRepository, PedidoRepository>();
 builder.Services.AddScoped<IMovimentacaoEstoqueRepository, MovimentacaoEstoqueRepository>();
+builder.Services.AddScoped<ITituloFinanceiroRepository, TituloFinanceiroRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 

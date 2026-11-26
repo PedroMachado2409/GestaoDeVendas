@@ -22,6 +22,60 @@ namespace GestaoPedidos.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("GestaoPedidos.Domain.Entities.BaixaTituloFinanceiro", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateOnly>("Data")
+                        .HasColumnType("date");
+
+                    b.Property<DateTime>("DataCadastro")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("DataEstorno")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("Estornada")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("Forma")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("OperacaoId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("TituloFinanceiroId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("UsuarioEstornoId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("Valor")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UsuarioEstornoId");
+
+                    b.HasIndex("UsuarioId");
+
+                    b.HasIndex("TituloFinanceiroId", "OperacaoId")
+                        .IsUnique();
+
+                    b.ToTable("BaixasTitulosFinanceiros", null, t =>
+                        {
+                            t.HasCheckConstraint("CK_BaixasTitulosFinanceiros_Valor_Positivo", "\"Valor\" > 0");
+                        });
+                });
+
             modelBuilder.Entity("GestaoPedidos.Domain.Entities.MovimentacaoEstoque", b =>
                 {
                     b.Property<int>("Id")
@@ -241,6 +295,60 @@ namespace GestaoPedidos.Migrations
                         });
                 });
 
+            modelBuilder.Entity("GestaoPedidos.Domain.Entities.TituloFinanceiro", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("DataCadastro")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("DataVencimento")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Descricao")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<int?>("IdOrigem")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("OrigemTitulo")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("PessoaId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Tipo")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("ValorOriginal")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
+
+                    b.Property<Guid>("Versao")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("gen_random_uuid()");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PessoaId");
+
+                    b.ToTable("TitulosFinanceiros", null, t =>
+                        {
+                            t.HasCheckConstraint("CK_TitulosFinanceiros_ValorOriginal_Positivo", "\"ValorOriginal\" > 0");
+                        });
+                });
+
             modelBuilder.Entity("GestaoPedidos.Domain.Entities.Usuario", b =>
                 {
                     b.Property<int>("Id")
@@ -285,6 +393,26 @@ namespace GestaoPedidos.Migrations
                         .IsUnique();
 
                     b.ToTable("Usuarios");
+                });
+
+            modelBuilder.Entity("GestaoPedidos.Domain.Entities.BaixaTituloFinanceiro", b =>
+                {
+                    b.HasOne("GestaoPedidos.Domain.Entities.TituloFinanceiro", null)
+                        .WithMany("Baixas")
+                        .HasForeignKey("TituloFinanceiroId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("GestaoPedidos.Domain.Entities.Usuario", null)
+                        .WithMany()
+                        .HasForeignKey("UsuarioEstornoId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("GestaoPedidos.Domain.Entities.Usuario", null)
+                        .WithMany()
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("GestaoPedidos.Domain.Entities.MovimentacaoEstoque", b =>
@@ -334,9 +462,23 @@ namespace GestaoPedidos.Migrations
                     b.Navigation("Pedido");
                 });
 
+            modelBuilder.Entity("GestaoPedidos.Domain.Entities.TituloFinanceiro", b =>
+                {
+                    b.HasOne("GestaoPedidos.Domain.Entities.Pessoa", null)
+                        .WithMany()
+                        .HasForeignKey("PessoaId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("GestaoPedidos.Domain.Entities.Pedidos.Pedido", b =>
                 {
                     b.Navigation("Itens");
+                });
+
+            modelBuilder.Entity("GestaoPedidos.Domain.Entities.TituloFinanceiro", b =>
+                {
+                    b.Navigation("Baixas");
                 });
 #pragma warning restore 612, 618
         }
